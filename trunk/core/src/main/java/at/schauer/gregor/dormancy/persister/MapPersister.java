@@ -1,0 +1,131 @@
+package at.schauer.gregor.dormancy.persister;
+
+import at.schauer.gregor.dormancy.Dormancy;
+import org.hibernate.EntityMode;
+import org.hibernate.impl.SessionImpl;
+import org.hibernate.metadata.ClassMetadata;
+import org.springframework.core.CollectionFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.util.Map;
+
+import static at.schauer.gregor.dormancy.util.DormancyUtils.findPendant;
+import static at.schauer.gregor.dormancy.util.DormancyUtils.getClassMetadata;
+
+/**
+ * Processes all types of {@link java.util.Map}s by traversing them and invoking the desired operation of the
+ * appropriate {@link EntityPersister} for all keys and values.
+ *
+ * @author Gregor Schauer
+ */
+public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
+	@Inject
+	public MapPersister(@Nonnull Dormancy dormancy) {
+		super(dormancy);
+	}
+
+	@Nullable
+	@Override
+	public <T extends Map<?, ?>> Map clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
+		if (dbObj == null || tree.containsKey(dbObj)) {
+			return (Map) tree.get(dbObj);
+		}
+		Map<Object, Object> map = createContainer(dbObj);
+		tree.put(dbObj, map);
+
+		for (Map.Entry<?, ?> entry : dbObj.entrySet()) {
+			Object key = dormancy.clone_(entry.getKey(), tree);
+			Object value = dormancy.clone_(entry.getValue(), tree);
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	@Nullable
+	@Override
+	public <T extends Map<?, ?>> Map<?, ?> merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
+		if (trObj == null || tree.containsKey(trObj)) {
+			return (Map<?, ?>) tree.get(trObj);
+		}
+		Map<Object, Object> map = createContainer(trObj);
+		tree.put(trObj, map);
+
+		for (Map.Entry<?, ?> entry : trObj.entrySet()) {
+			Object key = dormancy.merge_(entry.getKey(), tree);
+			Object value = dormancy.merge_(entry.getValue(), tree);
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	@Nullable
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Map<?, ?>> Map<?, ?> merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
+		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
+			return (Map<?, ?>) tree.get(trObj);
+		}
+		Map container = createContainer(dbObj);
+		tree.put(trObj, container);
+
+		// Create a modifiable copy of the persistent map
+		Map<Object, Object> dbCopy = createContainer(dbObj);
+		dbCopy.putAll(dbObj);
+
+		SessionImpl session = SessionImpl.class.cast(sessionFactory.getCurrentSession());
+
+		for (Map.Entry<?, ?> trEntry : trObj.entrySet()) {
+			// For every transient key, find a persistent element and the associated value
+			Object dbKey = trEntry.getKey() != null ? findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;
+			Object dbValue = dbKey != null ? dbObj.get(dbKey) : null;
+
+			// Merge the retrieved keys and values (if possible)
+			Object mKey = null, mValue = null;
+			if (trEntry.getKey() != null) {
+				mKey = dbKey != null ? dormancy.merge_(trEntry.getKey(), dbKey, tree) : dormancy.merge_(trEntry.getKey(), tree);
+			}
+			if (trEntry.getValue() != null) {
+				mValue = dbValue != null ? dormancy.merge_(trEntry.getValue(), dbValue, tree) : dormancy.merge_(trEntry.getValue(), tree);
+			}
+
+			container.put(mKey, mValue);
+		}
+
+		if (getConfig().getDeleteRemovedEntities()) {
+			ClassMetadata keyMetadata = null, valueMetadata = null;
+			// For every element that is left in the map, check if it is a Hibernate managed entity and delete it
+			for (Map.Entry<?, ?> deleted : dbCopy.entrySet()) {
+				keyMetadata = keyMetadata != null && keyMetadata.getMappedClass(EntityMode.POJO) == deleted.getKey().getClass()
+						? keyMetadata : getClassMetadata(deleted.getKey(), sessionFactory);
+				valueMetadata = valueMetadata != null && valueMetadata.getMappedClass(EntityMode.POJO) == deleted.getValue().getClass()
+						? valueMetadata : getClassMetadata(deleted.getValue(), sessionFactory);
+
+				if (keyMetadata != null) {
+					sessionFactory.getCurrentSession().delete(deleted.getKey());
+				}
+				if (valueMetadata != null) {
+					sessionFactory.getCurrentSession().delete(deleted.getValue());
+				}
+			}
+		}
+
+		// Add the processed entities to the persistent collection
+		dbObj.clear();
+		dbObj.putAll(container);
+		return dbObj;
+	}
+
+	@Nonnull
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Map<Object, Object> createContainer(@Nonnull Map<?, ?> map) {
+		return CollectionFactory.createApproximateMap(map, map.size());
+	}
+
+	@Override
+	public Class<?>[] getSupportedTypes() {
+		return new Class[]{Map.class};
+	}
+}
