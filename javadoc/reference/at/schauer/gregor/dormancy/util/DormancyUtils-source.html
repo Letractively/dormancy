@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for Core." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.ico" />
+<title>
+
+  DormancyUtils
+
+
+| Core
+
+</title>
+<link href="../../../../../../assets/doclava-developer-docs.css" rel="stylesheet" type="text/css" />
+<link href="../../../../../../assets/customizations.css" rel="stylesheet" type="text/css" />
+<script src="../../../../../../assets/search_autocomplete.js" type="text/javascript"></script>
+<script src="../../../../../../assets/jquery-resizable.min.js" type="text/javascript"></script>
+<script src="../../../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+<script src="../../../../../../assets/prettify.js" type="text/javascript"></script>
+<script type="text/javascript">
+  setToRoot("../../../../../", "../../../../../../assets/");
+</script>
+<script src="../../../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+<script src="../../../../../../assets/navtree_data.js" type="text/javascript"></script>
+<script src="../../../../../../assets/customizations.js" type="text/javascript"></script>
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">Core</span>
+    
+    </div>
+    <div id="headerRight">
+      
+  <div id="search" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, '../../../../../')"
+                      onkeyup="return search_changed(event, false, '../../../../../')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
+                      </table>
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links"><nobr>
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a></nobr>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/DormancyUtils.html">DormancyUtils</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links"><nobr>
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a></nobr>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="sum-details-links">
+
+<div>
+<a href="DormancyUtils.html">View Documentation</a>
+</div>
+
+
+</div><!-- end sum-details-links -->
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+     
+     
+    
+    class
+<h1>DormancyUtils</h1>
+
+
+
+  
+    extends <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a><br/>
+  
+  
+  
+
+  
+  
+  
+
+
+</div><!-- end header -->
+<div id="jd-content">
+  <pre class="prettyprint">
+package at.schauer.gregor.dormancy.util;
+
+import org.hibernate.EntityMode;
+import org.hibernate.Hibernate;
+import org.hibernate.PropertyValueException;
+import org.hibernate.SessionFactory;
+import org.hibernate.impl.SessionImpl;
+import org.hibernate.metadata.ClassMetadata;
+import org.springframework.beans.PropertyAccessor;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.util.Assert;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Collection;
+
+/**
+ * Utility methods for Dormancy support code.
+ *
+ * @author Gregor Schauer
+ */
+public class DormancyUtils {
+	private DormancyUtils() {
+	}
+
+	/**
+	 * Returns a {@link PropertyAccessor} for the given object.
+	 *
+	 * @param target the object to create a PropertyAccessor for
+	 * @return the PropertyAccessor
+	 */
+	@Nullable
+	public static PropertyAccessor forBeanPropertyAccess(@Nullable Object target) {
+		return target != null ? PropertyAccessorFactory.forBeanPropertyAccess(target) : null;
+	}
+
+	/**
+	 * Iterates over the given collection, looking for an object which is semantically equal to a certain object.&lt;br/&gt;
+	 * An object is semantically equal if one of the following conditions apply:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;the given object overrides the {@link #equals(Object)} equals methods, which returns {@code true} for
+	 * another object&lt;/li&gt;
+	 * &lt;li&gt;the given object has a non-null identifier and its type as well as the identifier value is equals to the
+	 * type and identifier value of another object&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 *
+	 * @param obj        the object
+	 * @param collection the collection to traverse
+	 * @param session    the Hibernate Session to use
+	 * @return the object found or {@code null} if the collection does not contain such an object
+	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.impl.SessionImpl)
+	 */
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public static &lt;T&gt; T findPendant(@Nonnull T obj, @Nonnull Collection collection, @Nonnull SessionImpl session) {
+		try {
+			Method method = obj.getClass().getMethod("equals", Object.class);
+			if (method.getDeclaringClass() != Object.class) {
+				// If the given object overrides the equals() method, invoke it for every object in the collection
+				for (Object elem : collection) {
+					if (obj.equals(elem) &amp;&amp; collection.remove(elem)) {
+						return (T) elem;
+					}
+				}
+			} else {
+				// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
+				ClassMetadata objMetadata = getClassMetadata(obj, session.getSessionFactory());
+				PropertyAccessor objPropertyAccessor = DormancyUtils.forBeanPropertyAccess(obj);
+				Object objIdentifier = objPropertyAccessor.getPropertyValue(objMetadata.getIdentifierPropertyName());
+
+				// For every object in the collection, check if the type matches and if the identifier is equal
+				for (Object elem : collection) {
+					if (elem != null &amp;&amp; elem.getClass() == obj.getClass()
+							&amp;&amp; objIdentifier.equals(getIdentifier(objMetadata, null, elem, session))
+							&amp;&amp; collection.remove(elem)) {
+						return (T) elem;
+					}
+				}
+			}
+			return null;
+		} catch (NoSuchMethodException e) {
+			// Must not happen because Object defines an equals() method
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Gets the {@link ClassMetadata} associated with the given entity class.
+	 *
+	 * @param obj            the object to retrieve ClassMetadata for
+	 * @param sessionFactory the SessionFactory to use
+	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
+	 * @see #getClassMetadata(Class, org.hibernate.SessionFactory)
+	 * @see #getClass(Object)
+	 */
+	@Nullable
+	public static ClassMetadata getClassMetadata(@Nullable Object obj, SessionFactory sessionFactory) {
+		return obj != null ? getClassMetadata(Hibernate.getClass(obj), sessionFactory) : null;
+	}
+
+	/**
+	 * Gets the {@link ClassMetadata} associated with the given entity class.
+	 *
+	 * @param clazz          the type to retrieve ClassMetadata for
+	 * @param sessionFactory the SessionFactory to use
+	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
+	 */
+	@Nullable
+	public static ClassMetadata getClassMetadata(@Nullable Class clazz, SessionFactory sessionFactory) {
+		return clazz != null ? sessionFactory.getClassMetadata(clazz) : null;
+	}
+
+	/**
+	 * Attempts to get the identifier of the given object by using the provided {@link ClassMetadata} or
+	 * {@link PropertyAccessor}.
+	 *
+	 * @param metadata         the ClassMetadata of the object (may be null)
+	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
+	 * @param bean             the object
+	 * @param session          the Hibernate session to use
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.impl.SessionImpl)
+	 */
+	@Nullable
+	public static &lt;T&gt; Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull SessionImpl session) {
+		Serializable identifier = metadata.getIdentifier(bean, EntityMode.POJO);
+		if (identifier == null &amp;&amp; propertyAccessor != null) {
+			identifier = Serializable.class.cast(propertyAccessor.getPropertyValue(metadata.getIdentifierPropertyName()));
+		}
+		return identifier;
+	}
+
+	/**
+	 * Retrieves the identifier of the given object by using the provided {@link ClassMetadata} or
+	 * {@link PropertyAccessor}.
+	 * If the identifier cannot be retrieved, an {@link PropertyValueException} is thrown.
+	 *
+	 * @param metadata         the ClassMetadata of the object (may be null)
+	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
+	 * @param bean             the object
+	 * @param session          the Hibernate session to use
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.impl.SessionImpl)
+	 */
+	@Nonnull
+	public static &lt;T&gt; Serializable getIdentifierValue(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull SessionImpl session) {
+		Serializable identifier = getIdentifier(metadata, propertyAccessor, bean, session);
+		if (identifier == null) {
+			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
+			throw new PropertyValueException("Cannot read identifier", metadata.getEntityName(), metadata.getIdentifierPropertyName());
+		}
+		return identifier;
+	}
+
+	/**
+	 * Retrieves the property of the given object by using the provided {@link ClassMetadata} or
+	 * {@link PropertyAccessor}.
+	 *
+	 * @param metadata         the ClassMetadata of the object (may be null)
+	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
+	 * @param bean             the object
+	 * @param propertyName     the name of the property
+	 * @return the property
+	 * @see PropertyAccessor#getPropertyValue(String)
+	 * @see ClassMetadata#getPropertyValue(Object, String, org.hibernate.EntityMode)
+	 */
+	@Nullable
+	public static Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName) {
+		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
+		return propertyAccessor != null ? propertyAccessor.getPropertyValue(propertyName) : metadata.getPropertyValue(bean, propertyName, EntityMode.POJO);
+	}
+
+	/**
+	 * Sets the property of the given object by using the provided {@link ClassMetadata} or {@link PropertyAccessor}.
+	 *
+	 * @param metadata         the ClassMetadata of the object (may be null)
+	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
+	 * @param bean             the object
+	 * @param propertyName     the name of the property
+	 * @param value            the value to set
+	 * @see PropertyAccessor#setPropertyValue(String, Object)
+	 * @see ClassMetadata#setPropertyValue(Object, String, Object, org.hibernate.EntityMode)
+	 */
+	public static void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
+		if (propertyAccessor != null) {
+			// Use Spring´s PropertyAccessor to set the value directly
+			propertyAccessor.setPropertyValue(propertyName, value);
+		} else {
+			// If no PropertyAccessor is available, use Hibernate´s ClassMetadata to set the value
+			metadata.setPropertyValue(bean, propertyName, value, EntityMode.POJO);
+		}
+	}
+
+	/**
+	 * Gets the unproxified type of the given object.
+	 *
+	 * @param proxy a persistable object or proxy
+	 * @return the true class of the instance
+	 * @throws org.hibernate.HibernateException
+	 *
+	 * @see Hibernate#getClass(Object)
+	 */
+	@Nonnull
+	@SuppressWarnings("unchecked")
+	public static &lt;T&gt; Class&lt;T&gt; getClass(@Nonnull Object proxy) {
+		return Hibernate.getClass(proxy);
+	}
+}
+
+  </pre>
+</div>
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div> <!-- jd-content -->
+
+</div><!-- end doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

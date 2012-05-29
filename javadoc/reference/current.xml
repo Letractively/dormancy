@@ -1,0 +1,1152 @@
+<api>
+<package name="at.schauer.gregor.dormancy"
+>
+<class name="Dormancy"
+ extends="at.schauer.gregor.dormancy.persister.AbstractEntityPersister"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="Dormancy"
+ type="at.schauer.gregor.dormancy.Dormancy"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="addEntityPersister"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="entityPersister" type="at.schauer.gregor.dormancy.persister.AbstractEntityPersister">
+</parameter>
+<parameter name="types" type="java.lang.Class...">
+</parameter>
+</method>
+<method name="clone"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="clone_"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="getConfig"
+ return="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getEntityPersister"
+ return="at.schauer.gregor.dormancy.persister.AbstractEntityPersister"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="clazz" type="java.lang.Class">
+</parameter>
+</method>
+<method name="getPersisterMap"
+ return="java.util.Map&lt;java.lang.Class, at.schauer.gregor.dormancy.persister.AbstractEntityPersister&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="initialize"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</method>
+<method name="merge"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="callback" type="org.springframework.orm.hibernate3.HibernateCallback&lt;T&gt;">
+</parameter>
+<exception name="SQLException" type="java.sql.SQLException">
+</exception>
+</method>
+<method name="merge"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="merge_"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="merge_"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="setApplicationContext"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="applicationContext" type="org.springframework.context.ApplicationContext">
+</parameter>
+</method>
+<method name="setConfig"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="config" type="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
+</parameter>
+</method>
+<method name="setSessionFactory"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="sessionFactory" type="org.hibernate.SessionFactory">
+</parameter>
+</method>
+<method name="throwNullIdentifierException"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="object" type="java.lang.Object">
+</parameter>
+<parameter name="session" type="org.hibernate.impl.SessionImpl">
+</parameter>
+</method>
+<method name="throwUnsavedTransientInstanceException"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="object" type="java.lang.Object">
+</parameter>
+<parameter name="session" type="org.hibernate.impl.SessionImpl">
+</parameter>
+</method>
+<field name="config"
+ type="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+<field name="persisterMap"
+ type="java.util.Map"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+<field name="sessionFactory"
+ type="org.hibernate.SessionFactory"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+</class>
+<class name="EntityPersisterConfiguration"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="EntityPersisterConfiguration"
+ type="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="EntityPersisterConfiguration"
+ type="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="parent" type="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
+</parameter>
+</constructor>
+<method name="getDeleteRemovedEntities"
+ return="java.lang.Boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getSaveAssociationsProperties"
+ return="java.lang.Boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getSaveNewEntities"
+ return="java.lang.Boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getVersionChecking"
+ return="java.lang.Boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setDeleteRemovedEntities"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="deleteRemovedEntities" type="java.lang.Boolean">
+</parameter>
+</method>
+<method name="setSaveAssociationsProperties"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="saveAssociationsProperties" type="java.lang.Boolean">
+</parameter>
+</method>
+<method name="setSaveNewEntities"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="saveNewEntities" type="java.lang.Boolean">
+</parameter>
+</method>
+<method name="setVersionChecking"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="versionChecking" type="java.lang.Boolean">
+</parameter>
+</method>
+</class>
+</package>
+<package name="at.schauer.gregor.dormancy.interceptor"
+>
+<class name="DormancyInterceptor"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="DormancyInterceptor"
+ type="at.schauer.gregor.dormancy.interceptor.DormancyInterceptor"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dormancy" type="at.schauer.gregor.dormancy.Dormancy">
+</parameter>
+</constructor>
+<method name="invoke"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="invocation" type="org.aopalliance.intercept.MethodInvocation">
+</parameter>
+<exception name="Throwable" type="java.lang.Throwable">
+</exception>
+</method>
+<method name="setBeanFactory"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="beanFactory" type="org.springframework.beans.factory.BeanFactory">
+</parameter>
+</method>
+<field name="beanFactory"
+ type="org.springframework.beans.factory.BeanFactory"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+<field name="dormancy"
+ type="at.schauer.gregor.dormancy.Dormancy"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+</class>
+<class name="PersistenceEndpoint"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+</class>
+</package>
+<package name="at.schauer.gregor.dormancy.persister"
+>
+<class name="AbstractContainerPersister"
+ extends="at.schauer.gregor.dormancy.persister.AbstractEntityPersister"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractContainerPersister"
+ type="at.schauer.gregor.dormancy.persister.AbstractContainerPersister"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dormancy" type="at.schauer.gregor.dormancy.Dormancy">
+</parameter>
+</constructor>
+<method name="createContainer"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="container" type="C">
+</parameter>
+</method>
+<method name="getConfig"
+ return="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</method>
+<method name="setConfig"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="config" type="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
+</parameter>
+</method>
+<method name="setSessionFactory"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="sessionFactory" type="org.hibernate.SessionFactory">
+</parameter>
+</method>
+<field name="config"
+ type="at.schauer.gregor.dormancy.EntityPersisterConfiguration"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+<field name="dormancy"
+ type="at.schauer.gregor.dormancy.Dormancy"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+<field name="sessionFactory"
+ type="org.hibernate.SessionFactory"
+ transient="false"
+ volatile="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</field>
+</class>
+<class name="AbstractEntityPersister"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="at.schauer.gregor.dormancy.persister.EntityPersister">
+</implements>
+<constructor name="AbstractEntityPersister"
+ type="at.schauer.gregor.dormancy.persister.AbstractEntityPersister"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="clone"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="clone_"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="createAdjacencyMap"
+ return="java.util.Map&lt;K, V&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</method>
+<method name="getSupportedTypes"
+ return="java.lang.Class&lt;?&gt;[]"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="merge"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="merge_"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="merge_"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+</class>
+<class name="CollectionPersister"
+ extends="at.schauer.gregor.dormancy.persister.AbstractContainerPersister"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="CollectionPersister"
+ type="at.schauer.gregor.dormancy.persister.CollectionPersister"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dormancy" type="at.schauer.gregor.dormancy.Dormancy">
+</parameter>
+</constructor>
+<method name="clone_"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="createContainer"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="container" type="C">
+</parameter>
+</method>
+<method name="merge_"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="merge_"
+ return="C"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+</class>
+<interface name="EntityPersister"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="clone"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="C"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+</interface>
+<class name="MapPersister"
+ extends="at.schauer.gregor.dormancy.persister.AbstractContainerPersister"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="MapPersister"
+ type="at.schauer.gregor.dormancy.persister.MapPersister"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dormancy" type="at.schauer.gregor.dormancy.Dormancy">
+</parameter>
+</constructor>
+<method name="clone_"
+ return="java.util.Map"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="createContainer"
+ return="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="map" type="java.util.Map&lt;?, ?&gt;">
+</parameter>
+</method>
+<method name="merge_"
+ return="java.util.Map&lt;?, ?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="merge_"
+ return="java.util.Map&lt;?, ?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+<parameter name="tree" type="java.util.Map&lt;java.lang.Object, java.lang.Object&gt;">
+</parameter>
+</method>
+</class>
+<class name="NoOpEntityPersister"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="at.schauer.gregor.dormancy.persister.EntityPersister">
+</implements>
+<constructor name="NoOpEntityPersister"
+ type="at.schauer.gregor.dormancy.persister.NoOpEntityPersister"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="clone"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+</method>
+<method name="merge"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trObj" type="T">
+</parameter>
+<parameter name="dbObj" type="T">
+</parameter>
+</method>
+</class>
+</package>
+<package name="at.schauer.gregor.dormancy.util"
+>
+<class name="DormancyUtils"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="findPendant"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="obj" type="T">
+</parameter>
+<parameter name="collection" type="java.util.Collection">
+</parameter>
+<parameter name="session" type="org.hibernate.impl.SessionImpl">
+</parameter>
+</method>
+<method name="forBeanPropertyAccess"
+ return="org.springframework.beans.PropertyAccessor"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="target" type="java.lang.Object">
+</parameter>
+</method>
+<method name="getClass"
+ return="java.lang.Class&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="proxy" type="java.lang.Object">
+</parameter>
+</method>
+<method name="getClassMetadata"
+ return="org.hibernate.metadata.ClassMetadata"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="obj" type="java.lang.Object">
+</parameter>
+<parameter name="sessionFactory" type="org.hibernate.SessionFactory">
+</parameter>
+</method>
+<method name="getClassMetadata"
+ return="org.hibernate.metadata.ClassMetadata"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="clazz" type="java.lang.Class">
+</parameter>
+<parameter name="sessionFactory" type="org.hibernate.SessionFactory">
+</parameter>
+</method>
+<method name="getIdentifier"
+ return="java.io.Serializable"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="metadata" type="org.hibernate.metadata.ClassMetadata">
+</parameter>
+<parameter name="propertyAccessor" type="org.springframework.beans.PropertyAccessor">
+</parameter>
+<parameter name="bean" type="T">
+</parameter>
+<parameter name="session" type="org.hibernate.impl.SessionImpl">
+</parameter>
+</method>
+<method name="getIdentifierValue"
+ return="java.io.Serializable"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="metadata" type="org.hibernate.metadata.ClassMetadata">
+</parameter>
+<parameter name="propertyAccessor" type="org.springframework.beans.PropertyAccessor">
+</parameter>
+<parameter name="bean" type="T">
+</parameter>
+<parameter name="session" type="org.hibernate.impl.SessionImpl">
+</parameter>
+</method>
+<method name="getPropertyValue"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="metadata" type="org.hibernate.metadata.ClassMetadata">
+</parameter>
+<parameter name="propertyAccessor" type="org.springframework.beans.PropertyAccessor">
+</parameter>
+<parameter name="bean" type="java.lang.Object">
+</parameter>
+<parameter name="propertyName" type="java.lang.String">
+</parameter>
+</method>
+<method name="setPropertyValue"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="metadata" type="org.hibernate.metadata.ClassMetadata">
+</parameter>
+<parameter name="propertyAccessor" type="org.springframework.beans.PropertyAccessor">
+</parameter>
+<parameter name="bean" type="java.lang.Object">
+</parameter>
+<parameter name="propertyName" type="java.lang.String">
+</parameter>
+<parameter name="value" type="java.lang.Object">
+</parameter>
+</method>
+</class>
+</package>
+</api>
