@@ -1,0 +1,84 @@
+package at.schauer.gregor.dormancy.persister;
+
+import at.schauer.gregor.dormancy.AbstractDormancyTest;
+import at.schauer.gregor.dormancy.entity.Book;
+import at.schauer.gregor.dormancy.entity.CollectionEntity;
+import org.hibernate.Session;
+import org.junit.Test;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+/**
+ * @author Gregor Schauer
+ */
+public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> {
+	@Override
+	@PostConstruct
+	public void postConstruct() {
+		super.postConstruct();
+		persister = new CollectionPersister<List>(dormancy);
+		persister.setSessionFactory(sessionFactory);
+		persister.setConfig(dormancy.getConfig());
+	}
+
+	@Test
+	public void testSame() {
+		List<String> singleton = new ArrayList<String>();
+
+		List clone = persister.clone(singleton);
+		assertEquals(singleton, clone);
+		assertNotSame(singleton, clone);
+
+		List merge = persister.merge(singleton);
+		assertEquals(singleton, merge);
+		assertNotSame(singleton, merge);
+
+		merge = persister.merge(clone, singleton);
+		assertEquals(singleton, merge);
+		assertSame(singleton, merge);
+	}
+
+	@Test
+	public void testEntity() {
+		Session session = sessionFactory.getCurrentSession();
+		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
+		assertEquals(false, a.getBooks().isEmpty());
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks(), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks().get(0), session));
+
+		List<Book> clone = persister.clone(a.getBooks());
+		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.get(0), session));
+
+		List<Book> merge = persister.merge(clone);
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), session));
+
+		merge = persister.merge(clone, a.getBooks());
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), session));
+	}
+
+	@Test
+	public void testNonEntity() {
+		Session session = sessionFactory.getCurrentSession();
+		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
+		assertEquals(false, a.getIntegers().isEmpty());
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getIntegers(), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(a.getIntegers().get(0), session));
+
+		List<Integer> clone = persister.clone(a.getIntegers());
+		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.get(0), session));
+
+		List<Integer> merge = persister.merge(clone);
+		assertEquals(false, AbstractDormancyTest.isManaged(merge, session));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), session));
+
+		merge = persister.merge(clone, a.getIntegers());
+		assertEquals(true, AbstractDormancyTest.isManaged(merge, session));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), session));
+	}
+}
