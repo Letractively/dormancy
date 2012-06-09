@@ -7,14 +7,21 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>1.0.0</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
 		<module>dev</module>
+		<module>hibernate3</module>
+		<module>hibernate4</module>
+		<module>sample</module>
 		<module>test</module>
 	</modules>
+
+
+	<inceptionYear>2012</inceptionYear>
 	<name>Dormancy</name>
+	<url>http://code.google.com/p/dormancy</url>
 
 
 	<build>
@@ -120,10 +127,47 @@
 				</executions>
 			</plugin>
 			-->
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<basedir>${basedir}</basedir>
+					<header>src/etc/apache_v2.header.txt</header>
+					<quiet>false</quiet>
+					<failIfMissing>true</failIfMissing>
+					<aggregate>false</aggregate>
+					<includes>
+						<include>src/main/java/**/*.java</include>
+						<include>src/test/java/**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>target/**</exclude>
+					</excludes>
+					<useDefaultExcludes>true</useDefaultExcludes>
+					<useDefaultMapping>true</useDefaultMapping>
+					<properties>
+						<name>Gregor Schauer</name>
+						<email>schauer.gregor@gmail.com</email>
+						<year>${project.inceptionYear}</year>
+					</properties>
+					<encoding>UTF-8</encoding>
+					<headerDefinitions>
+						<headerDefinition>src/etc/javadoc.header.xml</headerDefinition>
+					</headerDefinitions>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
-
+	<!--
 	<dependencies>
 		<dependency>
 			<groupId>jaxen</groupId>
@@ -131,7 +175,7 @@
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
-
+	-->
 
 	<dependencyManagement>
 		<dependencies>
@@ -148,6 +192,16 @@
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
 				<artifactId>dev</artifactId>
+				<version>${dormancy.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>at.schauer.gregor.dormancy</groupId>
+				<artifactId>hibernate3</artifactId>
+				<version>${dormancy.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>at.schauer.gregor.dormancy</groupId>
+				<artifactId>hibernate4</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 
@@ -184,7 +238,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.7</version>
+				<version>4.8.2</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -193,9 +247,14 @@
 				<version>1.2.14</version>
 			</dependency>
 			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>3.3.2.GA</version>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>1.6.12</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>1.6.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -206,6 +265,11 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-commons-annotations</artifactId>
 				<version>3.1.0.GA</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>3.3.2.GA</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate.javax.persistence</groupId>
@@ -234,6 +298,16 @@
 				<version>1.5.8</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
@@ -267,8 +341,23 @@
 	</developers>
 
 
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/dormancy/issues/list</url>
+	</issueManagement>
+
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+
 	<properties>
-		<dormancy.version>1.0</dormancy.version>
+		<dormancy.version>1.0.0</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>

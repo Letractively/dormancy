@@ -10,6 +10,14 @@ import javax.annotation.Nullable;
  */
 public class EntityPersisterConfiguration {
 	/**
+	 * Permanently deletes removed entities from collections
+	 */
+	private Boolean deleteRemovedEntities;
+	/**
+	 * Enables saving of dirty properties of associations (similar to {@link javax.persistence.CascadeType})
+	 */
+	private Boolean saveAssociationsProperties;
+	/**
 	 * Enables saving of new Hibernate entities without identifier
 	 */
 	private Boolean saveNewEntities;
@@ -18,27 +26,57 @@ public class EntityPersisterConfiguration {
 	 */
 	private Boolean versionChecking;
 	/**
-	 * Enables saving of dirty properties of associations (similar to {@link javax.persistence.CascadeType})
-	 */
-	private Boolean saveAssociationsProperties;
-	/**
-	 * Permanently deletes removed entities from collections
-	 */
-	private Boolean deleteRemovedEntities;
-	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
 
 	public EntityPersisterConfiguration() {
+		this.deleteRemovedEntities = false;
+		this.saveAssociationsProperties = true;
 		this.saveNewEntities = true;
 		this.versionChecking = true;
-		this.saveAssociationsProperties = true;
-		this.deleteRemovedEntities = false;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Returns whether entities of deleted associated should be deleted permanently.
+	 *
+	 * @return {@code true} if the removed entities should be deleted, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getDeleteRemovedEntities() {
+		return deleteRemovedEntities == null ? parent.getDeleteRemovedEntities() : deleteRemovedEntities;
+	}
+
+	/**
+	 * Sets whether entities of deleted associated should be deleted permanently.
+	 *
+	 * @param deleteRemovedEntities {@code true} if the removed entities should be deleted, {@code false} otherwise
+	 */
+	public void setDeleteRemovedEntities(@Nullable Boolean deleteRemovedEntities) {
+		this.deleteRemovedEntities = deleteRemovedEntities;
+	}
+
+	/**
+	 * Returns whether properties of associated entities should be processed.
+	 *
+	 * @return {@code true} if the properties of associated entities should be processed, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getSaveAssociationsProperties() {
+		return saveAssociationsProperties == null ? parent.getSaveAssociationsProperties() : saveAssociationsProperties;
+	}
+
+	/**
+	 * Sets whether properties of associated entities should be processed.
+	 *
+	 * @param saveAssociationsProperties {@code true} if the properties of associated entities should be processed, {@code false} otherwise
+	 */
+	public void setSaveAssociationsProperties(@Nullable Boolean saveAssociationsProperties) {
+		this.saveAssociationsProperties = saveAssociationsProperties;
 	}
 
 	/**
@@ -77,43 +115,5 @@ public class EntityPersisterConfiguration {
 	 */
 	public void setVersionChecking(@Nullable Boolean versionChecking) {
 		this.versionChecking = versionChecking;
-	}
-
-	/**
-	 * Returns whether properties of associated entities should be processed.
-	 *
-	 * @return {@code true} if the properties of associated entities should be processed, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getSaveAssociationsProperties() {
-		return saveAssociationsProperties == null ? parent.getSaveAssociationsProperties() : saveAssociationsProperties;
-	}
-
-	/**
-	 * Sets whether properties of associated entities should be processed.
-	 *
-	 * @param saveAssociationsProperties {@code true} if the properties of associated entities should be processed, {@code false} otherwise
-	 */
-	public void setSaveAssociationsProperties(@Nullable Boolean saveAssociationsProperties) {
-		this.saveAssociationsProperties = saveAssociationsProperties;
-	}
-
-	/**
-	 * Returns whether entities of deleted associated should be deleted permanently.
-	 *
-	 * @return {@code true} if the removed entities should be deleted, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getDeleteRemovedEntities() {
-		return deleteRemovedEntities == null ? parent.getDeleteRemovedEntities() : deleteRemovedEntities;
-	}
-
-	/**
-	 * Sets whether entities of deleted associated should be deleted permanently.
-	 *
-	 * @param deleteRemovedEntities {@code true} if the removed entities should be deleted, {@code false} otherwise
-	 */
-	public void setDeleteRemovedEntities(@Nullable Boolean deleteRemovedEntities) {
-		this.deleteRemovedEntities = deleteRemovedEntities;
 	}
 }

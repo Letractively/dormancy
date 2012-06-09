@@ -9,39 +9,23 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>test</artifactId>
-	<name>Test</name>
+	<artifactId>sample</artifactId>
+	<name>Sample</name>
 
 
 	<dependencies>
-		<dependency>
-			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>closure</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>dev</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
 			<artifactId>hibernate3</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -49,12 +33,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>

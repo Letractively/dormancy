@@ -6,12 +6,15 @@ import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import at.schauer.gregor.dormancy.entity.Employee;
+import at.schauer.gregor.dormancy.persister.AbstractContainerPersister;
+import at.schauer.gregor.dormancy.persister.CollectionPersister;
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.Query;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -22,13 +25,28 @@ import static org.junit.Assert.assertNotNull;
  * @author Gregor Schauer
  */
 public class DormancyConfigTest extends AbstractDormancyTest {
+	EntityPersisterConfiguration config;
+
 	@After
 	@Override
 	public void after() {
 		super.after();
 
-		ReflectionTestUtils.setField(dormancy, "config", null);
-		ReflectionTestUtils.invokeMethod(dormancy, "initialize");
+		try {
+			dormancy.setConfig((EntityPersisterConfiguration) BeanUtils.cloneBean(config));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@PostConstruct
+	public void postConstruct() {
+		super.postConstruct();
+		try {
+			config = (EntityPersisterConfiguration) BeanUtils.cloneBean(dormancy.getConfig());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Test
@@ -131,7 +149,8 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 	@Test
 	public void testDeleteFromList() {
-		dormancy.getConfig().setDeleteRemovedEntities(true);
+		AbstractContainerPersister entityPersister = (AbstractContainerPersister) dormancy.getEntityPersister(CollectionPersister.class);
+		entityPersister.getConfig().setDeleteRemovedEntities(true);
 
 		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
 		Employee b = (Employee) query.setParameter("id", 2L).uniqueResult();
