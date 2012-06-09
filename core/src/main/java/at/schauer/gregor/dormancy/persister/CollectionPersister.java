@@ -1,8 +1,7 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
-import org.hibernate.EntityMode;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.Session;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.core.CollectionFactory;
 
@@ -11,9 +10,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Map;
-
-import static at.schauer.gregor.dormancy.util.DormancyUtils.findPendant;
-import static at.schauer.gregor.dormancy.util.DormancyUtils.getClassMetadata;
 
 /**
  * Processes all types of {@link Collection}s by traversing them and invoking the desired operation of the appropriate
@@ -73,11 +69,11 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 		C dbCopy = createContainer(dbObj);
 		dbCopy.addAll(dbObj);
 
-		SessionImpl session = SessionImpl.class.cast(sessionFactory.getCurrentSession());
+		Session session = sessionFactory.getCurrentSession();
 
 		for (Object trElem : trObj) {
 			// For every transient element, find a persistent element
-			Object dbElem = findPendant(trElem, dbCopy, session);
+			Object dbElem = dormancy.getUtils().findPendant(trElem, dbCopy, session);
 
 			if (dbElem == null) {
 				container.add(dormancy.merge_(trElem, tree));
@@ -90,8 +86,8 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 			ClassMetadata metadata = null;
 			// For every element that is left in the collection, check if it is a Hibernate managed entity and delete it
 			for (Object deleted : dbCopy) {
-				metadata = metadata != null && metadata.getMappedClass(EntityMode.POJO) == deleted.getClass()
-						? metadata : getClassMetadata(deleted, sessionFactory);
+				metadata = metadata != null && dormancy.getUtils().getMappedClass(metadata) == deleted.getClass()
+						? metadata : dormancy.getUtils().getClassMetadata(deleted, sessionFactory);
 				if (metadata != null) {
 					sessionFactory.getCurrentSession().delete(deleted);
 				}

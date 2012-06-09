@@ -1,8 +1,7 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
-import org.hibernate.EntityMode;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.Session;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.core.CollectionFactory;
 
@@ -10,9 +9,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Map;
-
-import static at.schauer.gregor.dormancy.util.DormancyUtils.findPendant;
-import static at.schauer.gregor.dormancy.util.DormancyUtils.getClassMetadata;
 
 /**
  * Processes all types of {@link java.util.Map}s by traversing them and invoking the desired operation of the
@@ -74,11 +70,11 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 		Map<Object, Object> dbCopy = createContainer(dbObj);
 		dbCopy.putAll(dbObj);
 
-		SessionImpl session = SessionImpl.class.cast(sessionFactory.getCurrentSession());
+		Session session = sessionFactory.getCurrentSession();
 
 		for (Map.Entry<?, ?> trEntry : trObj.entrySet()) {
 			// For every transient key, find a persistent element and the associated value
-			Object dbKey = trEntry.getKey() != null ? findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;
+			Object dbKey = trEntry.getKey() != null ? dormancy.getUtils().findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;
 			Object dbValue = dbKey != null ? dbObj.get(dbKey) : null;
 
 			// Merge the retrieved keys and values (if possible)
@@ -97,10 +93,10 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 			ClassMetadata keyMetadata = null, valueMetadata = null;
 			// For every element that is left in the map, check if it is a Hibernate managed entity and delete it
 			for (Map.Entry<?, ?> deleted : dbCopy.entrySet()) {
-				keyMetadata = keyMetadata != null && keyMetadata.getMappedClass(EntityMode.POJO) == deleted.getKey().getClass()
-						? keyMetadata : getClassMetadata(deleted.getKey(), sessionFactory);
-				valueMetadata = valueMetadata != null && valueMetadata.getMappedClass(EntityMode.POJO) == deleted.getValue().getClass()
-						? valueMetadata : getClassMetadata(deleted.getValue(), sessionFactory);
+				keyMetadata = keyMetadata != null && dormancy.getUtils().getMappedClass(keyMetadata) == deleted.getKey().getClass()
+						? keyMetadata : dormancy.getUtils().getClassMetadata(deleted.getKey(), sessionFactory);
+				valueMetadata = valueMetadata != null && dormancy.getUtils().getMappedClass(valueMetadata) == deleted.getValue().getClass()
+						? valueMetadata : dormancy.getUtils().getClassMetadata(deleted.getValue(), sessionFactory);
 
 				if (keyMetadata != null) {
 					sessionFactory.getCurrentSession().delete(deleted.getKey());

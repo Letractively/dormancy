@@ -4,7 +4,6 @@ import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.container.Team;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
-import at.schauer.gregor.dormancy.interceptor.PersistenceEndpoint;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.SessionFactory;

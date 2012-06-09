@@ -29,7 +29,7 @@ import java.util.*;
  * @author Gregor Schauer
  */
 @ContextConfiguration(classes = DormancySpringConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 public abstract class AbstractDormancyTest {
@@ -66,7 +66,7 @@ public abstract class AbstractDormancyTest {
 
 	// @After
 	public void after() {
-		sessionFactory.close();
+		// Currently it is not necessary to tear down the database after test methods
 		/*
 		Session session = sessionFactory.getCurrentSession();
 

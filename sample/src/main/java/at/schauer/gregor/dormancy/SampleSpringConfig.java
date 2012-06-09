@@ -1,13 +1,7 @@
 package at.schauer.gregor.dormancy;
 
-import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
-import at.schauer.gregor.dormancy.interceptor.ServiceInterceptor;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
-import at.schauer.gregor.dormancy.service.Service;
-import at.schauer.gregor.dormancy.service.ServiceImpl;
-import org.aopalliance.aop.Advice;
 import org.hibernate.dialect.HSQLDialect;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -28,7 +22,7 @@ import java.util.Properties;
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan(value = "at.schauer.gregor.dormancy.persister",
 		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
-public class DormancySpringConfig {
+public class SampleSpringConfig {
 	@Bean
 	public Dormancy dormancy() {
 		return new Dormancy();
@@ -38,7 +32,7 @@ public class DormancySpringConfig {
 	public AnnotationSessionFactoryBean sessionFactory() {
 		AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan(new String[]{this.getClass().getPackage().getName()});
+		sessionFactory.setPackagesToScan(new String[] {this.getClass().getPackage().getName()});
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}
@@ -66,31 +60,5 @@ public class DormancySpringConfig {
 		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		properties.setProperty("javax.persistence.validation.mode", "none");
 		return properties;
-	}
-
-	@Bean
-	public Service service() {
-		ProxyFactoryBean factoryBean = new ProxyFactoryBean();
-		factoryBean.addAdvice(serviceInterceptor());
-		factoryBean.addAdvice(dormancyInterceptor());
-		factoryBean.setTarget(serviceImpl());
-		return (Service) factoryBean.getObject();
-	}
-
-	@Bean
-	public Advice serviceInterceptor() {
-		return new ServiceInterceptor();
-	}
-
-	@Bean
-	public Advice dormancyInterceptor() {
-		DormancyAdvisor support = new DormancyAdvisor(dormancy());
-		support.setMode(DormancyAdvisor.Mode.BOTH);
-		return support;
-	}
-
-	@Bean
-	public Service serviceImpl() {
-		return new ServiceImpl();
 	}
 }

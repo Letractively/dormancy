@@ -5,10 +5,10 @@ import at.schauer.gregor.dormancy.persister.EntityPersister;
 import java.lang.annotation.*;
 
 /**
- * Provides metadata for the {@link DormancyInterceptor}.
+ * Provides metadata for the {@link DormancyAdvisor}.
  *
  * @author Gregor Schauer
- * @see DormancyInterceptor
+ * @see DormancyAdvisor
  */
 @Documented
 @Inherited

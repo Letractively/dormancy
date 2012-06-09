@@ -46,7 +46,9 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 	public void testCustomPersister() {
 		dormancy.getPersisterMap().clear();
 		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
-		dormancy.addEntityPersister(new CollectionPersister<List>(dormancy));
+		CollectionPersister<List> collectionPersister = new CollectionPersister<List>(dormancy);
+		collectionPersister.setSessionFactory(sessionFactory);
+		dormancy.addEntityPersister(collectionPersister);
 
 		Employee a = service.load(Employee.class, 1L);
 		Team custom = new Team(a);

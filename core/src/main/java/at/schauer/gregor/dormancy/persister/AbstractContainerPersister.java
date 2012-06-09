@@ -39,7 +39,7 @@ public abstract class AbstractContainerPersister<C> extends AbstractEntityPersis
 	 * @return the EntityPersisterConfiguration to use
 	 */
 	@Nonnull
-	protected EntityPersisterConfiguration getConfig() {
+	public EntityPersisterConfiguration getConfig() {
 		return config;
 	}
 

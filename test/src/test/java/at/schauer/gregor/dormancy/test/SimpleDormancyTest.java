@@ -10,9 +10,7 @@ import org.hibernate.Session;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
