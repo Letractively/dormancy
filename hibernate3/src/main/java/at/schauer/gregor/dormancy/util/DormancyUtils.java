@@ -1,3 +1,18 @@
+/*
+ * Copyright 2012 Gregor Schauer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.schauer.gregor.dormancy.util;
 
 import org.hibernate.EntityMode;
@@ -41,10 +56,10 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
 		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
 		if (propertyAccessor != null) {
-			// Use Spring´s PropertyAccessor to set the value directly
+			// Use Spring's PropertyAccessor to set the value directly
 			propertyAccessor.setPropertyValue(propertyName, value);
 		} else {
-			// If no PropertyAccessor is available, use Hibernate´s ClassMetadata to set the value
+			// If no PropertyAccessor is available, use Hibernate's ClassMetadata to set the value
 			metadata.setPropertyValue(bean, propertyName, value, EntityMode.POJO);
 		}
 	}
