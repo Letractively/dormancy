@@ -1,3 +1,18 @@
+/*
+ * Copyright 2012 Gregor Schauer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.schauer.gregor.dormancy;
 
 import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
@@ -31,7 +46,14 @@ import java.util.Properties;
 public class DormancySpringConfig {
 	@Bean
 	public Dormancy dormancy() {
-		return new Dormancy();
+		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
+		config.setDeleteRemovedEntities(false);
+		config.setSaveAssociationsProperties(true);
+		config.setSaveNewEntities(true);
+		config.setVersionChecking(true);
+		Dormancy dormancy = new Dormancy();
+		dormancy.setConfig(config);
+		return dormancy;
 	}
 
 	@Bean
@@ -72,7 +94,7 @@ public class DormancySpringConfig {
 	public Service service() {
 		ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 		factoryBean.addAdvice(serviceInterceptor());
-		factoryBean.addAdvice(dormancyInterceptor());
+		factoryBean.addAdvice(dormancyAdvisor());
 		factoryBean.setTarget(serviceImpl());
 		return (Service) factoryBean.getObject();
 	}
@@ -83,7 +105,7 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Advice dormancyInterceptor() {
+	public Advice dormancyAdvisor() {
 		DormancyAdvisor support = new DormancyAdvisor(dormancy());
 		support.setMode(DormancyAdvisor.Mode.BOTH);
 		return support;
