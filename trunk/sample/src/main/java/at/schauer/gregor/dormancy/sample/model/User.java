@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.model;
+package at.schauer.gregor.dormancy.sample.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

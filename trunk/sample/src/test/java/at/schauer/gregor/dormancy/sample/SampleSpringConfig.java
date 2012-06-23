@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy;
+package at.schauer.gregor.dormancy.sample;
 
+import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
 import org.hibernate.dialect.HSQLDialect;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
