@@ -8,7 +8,7 @@ Dormancy is capable of dealing with such requests. Furthermore, the performance 
 
 The listing below contains a service method retrieving and returning an `Employee` and any number of colleagues (a `Set` of `Employees`), which would be loaded lazily by default:
 
-{{{#!highlight java
+{{{
 public Employee getEmployee(final Employee e) {
 	HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 		@Override

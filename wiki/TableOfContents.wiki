@@ -7,5 +7,5 @@
 		* [ComplexQueries Complex Queries]
 	* Advanced Topics
 		* [AOPSupport AOP Support]
-		* [Configuration Configuration]
-		* [Customization Customization]
+		* [CustomEntityPersisters Custom EntityPersisters]
+		* [EntityPersisterConfiguration Configuration]

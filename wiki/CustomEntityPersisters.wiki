@@ -6,7 +6,7 @@ As already mentioned, custom entity persisters can be registered for handling ce
 
 The complete source code of the following listings can be found in the [code.google.com/p/dormancy/source/browse/#svn/trunk/sample sample module].
 
-{{{#!highlight java
+{{{
 @Entity
 public class User {
 	private String username;
@@ -25,7 +25,7 @@ public class User {
 Below, the implementation of a custom `EntityPersister` is outlined.
 It ensures that the client may only retrieve insensitive data of the `User` entity and inhibits undesired overrides to certain properties.
 
-{{{#!highlight java
+{{{
 public class UserPersister extends AbstractEntityPersister<User> {
 	@Inject
 	SessionFactory sessionFactory;
@@ -43,7 +43,7 @@ public class UserPersister extends AbstractEntityPersister<User> {
 
 The `clone_(T, Map<Object, Object>)` method simply creates a new instance of the object to clone and copies all	property values except the user´s `password` to it.
 
-{{{#!highlight java
+{{{
 	@Override
 	public <T extends User> User merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
 		if (trObj == null || tree.containsKey(trObj)) {
@@ -56,7 +56,7 @@ The `clone_(T, Map<Object, Object>)` method simply creates a new instance of the
 
 The `merge(T, Map<Object, Object>)` method retrieves the `User` entity with the same identifier than the given object if possible and passes it to another method, which is responsible for mering the properties.
 
-{{{#!highlight java
+{{{
 	@Override
 	public <T extends User> User merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
@@ -70,7 +70,7 @@ The `merge(T, Map<Object, Object>)` method retrieves the `User` entity with the 
 The `merge_(T, T, Map<Object, Object>)` copies all properties except the identifier (`username`) and the `password` from the transient object to the persistent object previously loaded.
 Thus the persistent object is attached to the current Hibernate session and all property changes are applied to it.
 
-{{{#!highlight java
+{{{
 	@Override
 	public Class<?>[] getSupportedTypes() {
 		return new Class[] {User.class};

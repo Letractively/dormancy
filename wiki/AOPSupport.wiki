@@ -1,4 +1,4 @@
-# Using Dormancy in aspects
+#summar Using Dormancy in aspects
 
 = AOP support =
 
@@ -22,7 +22,7 @@ In other words, whenever Spring applies a `org.springframework.transaction.inter
 The `order` value must be chosen in a way that all aspects are applied in the correct order i.e., the `DormancyAdvisor` must have a lower precedence than the `TransactionInterceptor`.
 Otherwise, the transaction used for loading entities, which are required for the merger with the transient objects, is not initialized in time and it will be closed before `Dormancy` can traverse the object graph for cloning them, which may result in a `org.hibernate.LazyInitializationException`.
 
-{{{#!highlight xml
+{{{
 <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 <aop:config>
@@ -45,7 +45,7 @@ For further information about defining pure AspectJ aspects, please refer to [ht
 This alternative approach is easier to configure and only recommended for tests or small use cases.
 The listing below creates a `ProxyFactoryBean`, which can also be defined declaratively in the `beans.xml` and applies the `DormancyAdvisor` as a `MethodInterceptor` to a target object.
 
-{{{#!highlight java
+{{{
 Dormancy dormancy = ...			// optain an instance of Dormancy
 ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 factoryBean.addAdvice(new DormancyAdvisor(dormancy));
