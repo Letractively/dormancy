@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.persister;
+package at.schauer.gregor.dormancy.sample.persister;
 
-import at.schauer.gregor.dormancy.model.User;
+import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
+import at.schauer.gregor.dormancy.sample.model.User;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeanUtils;
 
