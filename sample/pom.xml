@@ -9,14 +9,14 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>sample</artifactId>
+	<artifactId>dormancy-sample</artifactId>
 	<name>Sample</name>
 
 
 	<dependencies>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>hibernate3</artifactId>
+			<artifactId>dormancy-hibernate3</artifactId>
 		</dependency>
 
 		<dependency>

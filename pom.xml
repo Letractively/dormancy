@@ -36,29 +36,22 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<scope>runtime</scope>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>2.1.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
-					<docletArtifact>
-						<groupId>com.google.doclava</groupId>
-						<artifactId>doclava</artifactId>
-						<version>1.0.5</version>
-					</docletArtifact>
-					<doclet>com.google.doclava.Doclava</doclet>
-					<!-- | bootclasspath required by Sun's JVM -->
-					<bootclasspath>${sun.boot.class.path}</bootclasspath>
 					<additionalparam>
 						-generatesources
 						-quiet
@@ -66,7 +59,18 @@
 						-federationxml JDK http://doclava.googlecode.com/svn/static/api/openjdk-6.xml
 						-hdf project.name "${project.name}"
 						-d ${project.build.directory}/apidocs
+						-templatedir ${project.root}/src/main/javadoc
 					</additionalparam>
+					<!-- | bootclasspath required by Sun's JVM -->
+					<bootclasspath>${sun.boot.class.path}</bootclasspath>
+					<doclet>com.google.doclava.Doclava</doclet>
+					<docletArtifact>
+						<groupId>com.google.doclava</groupId>
+						<artifactId>doclava</artifactId>
+						<version>1.0.5</version>
+					</docletArtifact>
+					<excludePackageNames>at.schauer.gregor.commons.*:at.schauer.gregor.dormancy.sample.*</excludePackageNames>
+					<maxmemory>512m</maxmemory>
 					<useStandardDocletOptions>false</useStandardDocletOptions>
 				</configuration>
 				<dependencies>
@@ -76,16 +80,6 @@
 						<version>1.1.1</version>
 					</dependency>
 				</dependencies>
-				<!--
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				-->
 			</plugin>
 			<!--
 			<plugin>
@@ -155,19 +149,11 @@
 						<headerDefinition>src/etc/javadoc.header.xml</headerDefinition>
 					</headerDefinitions>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>format</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
 
-	<!--
+
 	<dependencies>
 		<dependency>
 			<groupId>jaxen</groupId>
@@ -175,33 +161,33 @@
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
-	-->
+
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
-				<artifactId>core</artifactId>
+				<artifactId>dormancy-core</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
-				<artifactId>closure</artifactId>
+				<artifactId>dormancy-closure</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
-				<artifactId>dev</artifactId>
+				<artifactId>dormancy-dev</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
-				<artifactId>hibernate3</artifactId>
+				<artifactId>dormancy-hibernate3</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
-				<artifactId>hibernate4</artifactId>
+				<artifactId>dormancy-hibernate4</artifactId>
 				<version>${dormancy.version}</version>
 			</dependency>
 
@@ -341,6 +327,15 @@
 	</developers>
 
 
+	<distributionManagement>
+		<repository>
+			<id>googlecode</id>
+			<uniqueVersion>false</uniqueVersion>
+			<url>svn:https://dormancy.googlecode.com/svn/repo</url>
+		</repository>
+	</distributionManagement>
+
+
 	<issueManagement>
 		<system>Google Code</system>
 		<url>http://code.google.com/p/dormancy/issues/list</url>
@@ -354,6 +349,85 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+
+	<profiles>
+		<profile>
+			<id>strict</id>
+			<properties>
+				<maven.test.failure.ignore>false</maven.test.failure.ignore>
+			</properties>
+		</profile>
+		<profile>
+			<id>fast</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>package</id>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!--
+					<plugin>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>aggregate-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					-->
+					<plugin>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.mycila.maven-license-plugin</groupId>
+						<artifactId>maven-license-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>jaxen</groupId>
+					<artifactId>jaxen</artifactId>
+					<version>1.1.1</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 
 	<properties>
@@ -394,5 +468,12 @@
 		</plugins>
 	</reporting>
 	-->
+
+
+	<scm>
+		<url>http://dormancy.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://dormancy.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:http://dormancy.googlecode.com/svn/trunk/</developerConnection>
+	</scm>
 
 </project>

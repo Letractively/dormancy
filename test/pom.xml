@@ -9,22 +9,22 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>test</artifactId>
+	<artifactId>dormancy-test</artifactId>
 	<name>Test</name>
 
 
 	<dependencies>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>closure</artifactId>
+			<artifactId>dormancy-closure</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>dev</artifactId>
+			<artifactId>dormancy-dev</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>hibernate3</artifactId>
+			<artifactId>dormancy-hibernate3</artifactId>
 		</dependency>
 
 		<dependency>
