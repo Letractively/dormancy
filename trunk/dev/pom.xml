@@ -9,7 +9,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>dev</artifactId>
+	<artifactId>dormancy-dev</artifactId>
 	<name>Dev</name>
 
 

@@ -9,14 +9,14 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>closure</artifactId>
+	<artifactId>dormancy-closure</artifactId>
 	<name>Closure</name>
 
 
 	<dependencies>
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>dormancy-core</artifactId>
 		</dependency>
 
 		<dependency>
