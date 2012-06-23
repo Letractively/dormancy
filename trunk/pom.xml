@@ -25,6 +25,13 @@
 
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<version>1.9</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -44,8 +51,22 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -69,8 +90,9 @@
 						<artifactId>doclava</artifactId>
 						<version>1.0.5</version>
 					</docletArtifact>
-					<excludePackageNames>at.schauer.gregor.commons.*:at.schauer.gregor.dormancy.sample.*</excludePackageNames>
-					<maxmemory>512m</maxmemory>
+					<excludePackageNames>at.schauer.gregor.commons.*:at.schauer.gregor.dormancy.sample.*
+					</excludePackageNames>
+					<maxmemory>256m</maxmemory>
 					<useStandardDocletOptions>false</useStandardDocletOptions>
 				</configuration>
 				<dependencies>
@@ -329,9 +351,10 @@
 
 	<distributionManagement>
 		<repository>
-			<id>googlecode</id>
+			<id>dormancy.googlecode.com</id>
+			<name>Maven Repository for Dormancy</name>
 			<uniqueVersion>false</uniqueVersion>
-			<url>svn:https://dormancy.googlecode.com/svn/repo</url>
+			<url>svn:https://dormancy.googlecode.com/svn/m2/repository</url>
 		</repository>
 	</distributionManagement>
 
@@ -468,6 +491,15 @@
 		</plugins>
 	</reporting>
 	-->
+
+
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+	</repositories>
 
 
 	<scm>

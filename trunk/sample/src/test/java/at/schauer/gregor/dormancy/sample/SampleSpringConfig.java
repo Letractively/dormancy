@@ -36,7 +36,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan(value = "at.schauer.gregor.dormancy.persister",
+@ComponentScan(value = "at.schauer.gregor.dormancy.sample.persister",
 		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
 public class SampleSpringConfig {
 	@Bean
