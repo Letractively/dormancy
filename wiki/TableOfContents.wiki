@@ -2,3 +2,5 @@
 	* User's Guide
 		* [Motivation Motivation]
 		* [GettingStarted Getting Started]
+		* [Architecture Architecture]
+		* [UsingSpring Using Spring]
