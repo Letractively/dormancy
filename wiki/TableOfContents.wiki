@@ -1,0 +1,4 @@
+#summary documentation outline for docreader
+	* User's Guide
+		* [Motivation Motivation]
+		* [GettingStarted Getting Started]
