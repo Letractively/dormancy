@@ -6,4 +6,4 @@ It is recommended to have a look at the [Architecture architecture] of Dormancy.
 
 At the very first a `Dormancy` instance has to be created.
 This can be done manually by creating a new instance or using a dependency injection framework like Spring.
-For further information about using Dormancy in Spring-based applications see using [UsingSpring Spring].
+For further information about using Dormancy in Spring-based applications see [UsingSpring using Spring].

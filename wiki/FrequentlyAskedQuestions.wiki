@@ -1,0 +1,41 @@
+= Frequently Asked Questions =
+
+<wiki:toc max_depth="3" />
+
+== General ==
+
+=== I have a Maven project. Which modules do I need? ===
+You basically need `hibernate3` or `hibernate4`
+{{{
+<dependency>
+	<groupId>at.schauer.gregor.dormancy</groupId>
+	<artifactId>hibernate3</artifactId>
+	<version>1.0.0</version>
+</dependency>
+}}}
+or
+{{{
+<dependency>
+	<groupId>at.schauer.gregor.dormancy</groupId>
+	<artifactId>hibernate3</artifactId>
+	<version>1.0.0</version>
+</dependency>
+}}}
+The `core` module and all required dependencies are included automatically.
+
+=== I do not have a Maven project. Which JARs do I need? ===
+You can simply download `dormancy-1.0.0_dist.zip` from the [http://code.google.com/p/dormancy/downloads/list Downloads] section.
+It contains all modules (use either `hibernate3` or `hibernate4`) as well as all dependencies.
+
+=== Which JPA providers are supported? ===
+Currently Dormancy supports only Hibernate 3 and Hibernate 4.
+There are no plans to support other JPA providers in the near future.
+However, if you plan to adapt Dormancy to support another JPA implementation or persistence framework, please let me know.
+
+== Spring ==
+
+=== Why does Dormancy require many Spring modules? ===
+Spring provides many aspect oriented utility classes for beans.
+Thus it is a logical consequence to make use of them instead of providing proprietary mechanisms.
+Furthermore, it is very likely that a dependency injection framework is used for wiring the business logic together.
+However, Dormancy does not force you to use Spring as your IoC container.

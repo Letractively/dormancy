@@ -4,7 +4,7 @@
 
 Dormancy is designed to provide a compact and easy to use solution for cloning graphs of persistent entities as well as merging transient entities with their persistent pendants. However, it also has great capabilities in terms of fine-tuning and customization for complex business scenarios. Thus custom `EntityPersisters` can be registered for processing certain entities. These implementations even may perform conditional cloning and merging depending on the properties of the entities or any external context.
 
-Further details about implementing `EntityPersister`s for specific entities can be found in the chapter [Customization].
+Further details about implementing `EntityPersister`s for specific entities can be found in the chapter [CustomEntityPersisters Custom EntityPersisters].
 
 == Typical Scenario ==
 

@@ -1,6 +1,6 @@
-#summar Using Dormancy in aspects
+#summary Using Dormancy in aspects
 
-= AOP support =
+= AOP Support =
 
 The `DormancyAdvisor` is capable of intercepting method invocations like service calls and transparently performs the appropriate clone or merge operations for the parameters and the return value, respectively.
 It provides maximum flexibility by implementing `org.springframework.aop.support.AbstractPointcutAdvisor` as well as `org.aopalliance.intercept.MethodInterceptor`.
@@ -46,7 +46,7 @@ This alternative approach is easier to configure and only recommended for tests 
 The listing below creates a `ProxyFactoryBean`, which can also be defined declaratively in the `beans.xml` and applies the `DormancyAdvisor` as a `MethodInterceptor` to a target object.
 
 {{{
-Dormancy dormancy = ...			// optain an instance of Dormancy
+Dormancy dormancy = ...		// optain an instance of Dormancy
 ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 factoryBean.addAdvice(new DormancyAdvisor(dormancy));
 factoryBean.setTarget(target);	// object to proxify

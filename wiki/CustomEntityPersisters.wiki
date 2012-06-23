@@ -1,6 +1,6 @@
 #summary Customized entity mapping
 
-= Custom EntityPersisters =
+= Custom !EntityPersisters =
 
 As already mentioned, custom entity persisters can be registered for handling certain object types. This section demonstrates the necessary steps for a notional `User` entity.
 

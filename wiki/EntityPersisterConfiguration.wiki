@@ -1,14 +1,13 @@
 #summary Configuring entity persisters individually
 
-= EntityPersisterConfiguration =
+= !EntityPersister Configuration =
 
 Every `EntityPersister` (even `Dormancy` itself) might have an `EntityPersisterConfiguration` that contains the various configuration options for changing the behaviour massively.
 
-|| *Option*						|| *Default Value*	|| *Description*												||
-|| `deleteRemovedEntities`		|| `false`			|| Permanently deletes removed entities from collections		||
-|| `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier	||
-|| `saveAssociationsProperties`	|| `false`			|| Enables saving of dirty properties of associations			||
-||								||					|| (similar to JPA´s `javax.persistence.CascadeType`)			||
-|| `versionChecking`			|| `true`			|| Enables version checking for Hibernate entities				||
+|| *Option*						|| *Default Value*	|| *Description*																						||
+|| `deleteRemovedEntities`		|| `false`			|| Permanently deletes removed entities from collections												||
+|| `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier											||
+|| `saveAssociationsProperties`	|| `false`			|| Enables saving of dirty properties of associations (similar to JPA´s `javax.persistence.CascadeType`)||
+|| `versionChecking`			|| `true`			|| Enables version checking for Hibernate entities														||
 
 *Note that the first three options are fully supported but enabling them may lead to unexpected results and some side-effects may be difficult to discover. Use them with care!*
