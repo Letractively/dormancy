@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><project xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.1 http://maven.apache.org/xsd/decoration-1.0.1.xsd" name="Dormancy" xmlns="http://maven.apache.org/DECORATION/1.0.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <bannerLeft>
+    <name>Dormancy</name>
+  </bannerLeft>
+  <bannerRight>
+    <src>/images/logo.png</src>
+    <href>http://code.google.com/p/dormancy/</href>
+  </bannerRight>
+  <body>
+    <head>
+      <link rel="stylesheet" type="text/css" href="/css/site.css" />
+    </head>
+    <menu name="Main">
+      <item name="Welcome" href="index.html" />
+    </menu>
+    <menu name="About Dormancy">
+      <item name="What is Dormancy?" href="about/what-is-dormancy.html" />
+      <item name="Features" href="about/features.html" />
+      <item name="Architecture" href="about/architecture.html" />
+      <item name="Getting Started" href="about/getting-started.html">
+        <item name="Spring" href="howto/spring.html" />
+        <item name="Configuration" href="howto/configuration.html" />
+        <item name="Complex Queries" href="howto/complex-queries.html" />
+      </item>
+      <item name="Advanced Configuration" href="about/advanced-configuration.html">
+        <item name="AOP" href="advanced/aop.html" />
+        <item name="Customization" href="advanced/customization.html" />
+      </item>
+    </menu>
+    <menu name="Get Dormancy">
+      <item name="Download" href="download.html" />
+      <item name="Release Notes" href="docs/1.0/release-notes.html" />
+      <item name="API" href="/javadoc/index.html" />
+      <item name="License" href="license.html" />
+    </menu>
+    <menu name="Community">
+      <item name="How to Contribute" href="community/contribute.html" />
+      <item name="Getting Help" href="community/getting-help.html" />
+      <item name="Issue Tracking" href="issue-tracking.html" />
+      <item name="FAQ" href="help/faq.html" />
+    </menu>
+    <menu ref="parent" />
+    <menu ref="reports" />
+  </body>
+</project>
