@@ -4,3 +4,4 @@
 		* [GettingStarted Getting Started]
 		* [Architecture Architecture]
 		* [UsingSpring Using Spring]
+		* [ComplexQueries Complex Queries]

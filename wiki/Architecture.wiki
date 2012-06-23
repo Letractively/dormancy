@@ -16,4 +16,4 @@ In the end, if some Hibernate entities should be returned to the client, Dormanc
 
 The following picture outlines the previously mentioned steps:
 
-http://code.google.com/p/dormancy/wiki/architecture.png
+http://dormancy.googlecode.com/svn/wiki/images/architecture.png
