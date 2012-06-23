@@ -1,3 +1,5 @@
+#summary Large object graphs, batch processing and performance
+
 = Complex Queries =
 
 In typical business use cases, there might be sequences of queries, which build an object graph by performing excessive batch processing or accumulative data operations.
@@ -6,7 +8,7 @@ Dormancy is capable of dealing with such requests. Furthermore, the performance 
 
 The listing below contains a service method retrieving and returning an `Employee` and any number of colleagues (a `Set` of `Employees`), which would be loaded lazily by default:
 
-{{{!highlight java
+{{{#!highlight java
 public Employee getEmployee(final Employee e) {
 	HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 		@Override

@@ -11,7 +11,7 @@ To make this more clearly, here is an example of how Spring can be used to seria
 
 Spring scans for `EntityPersister`s in the classpath and registers them for the appropriate entity types:
 
-{{{!highlight xml
+{{{#!highlight xml
 <ctx:component-scan base-package="org.acme" use-default-filters="false">
 	<ctx:include-filter type="assignable" expression="at.schauer.gregor.dormancy.persister.EntityPersister"/>
 </ctx:component-scan>
@@ -19,7 +19,7 @@ Spring scans for `EntityPersister`s in the classpath and registers them for the 
 
 Next, a `Dormancy` instance has to be configured.
 
-{{{!highlight xml
+{{{#!highlight xml
 <bean class="at.schauer.gregor.dormancy.Dormancy"/>
 }}}
 
@@ -27,7 +27,7 @@ Several properties can also be set declarativly if necessary.
 
 The following listing outlines a alternative configuration:
 
-{{{!highlight xml
+{{{#!highlight xml
 <bean class="at.schauer.gregor.dormancy.Dormancy">
 	<property name="config">
 		<bean class="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
@@ -44,7 +44,7 @@ The following listing outlines a alternative configuration:
 
 Furthermore, the initial entity persister mapping can be defined by declaring a map with the object type as the key and the `EntityPersister` as the value.
 
-{{{!highlight xml
+{{{#!highlight xml
 <bean class="at.schauer.gregor.dormancy.Dormancy">
 	<property name="persisterMap">
 		<map>
