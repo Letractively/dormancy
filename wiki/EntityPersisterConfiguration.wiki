@@ -9,5 +9,7 @@ Every `EntityPersister` (even `Dormancy` itself) might have an `EntityPersisterC
 || `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier											||
 || `saveAssociationsProperties`	|| `false`			|| Enables saving of dirty properties of associations (similar to JPA´s `javax.persistence.CascadeType`)||
 || `versionChecking`			|| `true`			|| Enables version checking for Hibernate entities														||
+|| `skipTransient`				|| `true`			|| Skips fields declared `transient`																	||
+|| `skipFinal`					|| `true`			|| Skips fields declared `final`																		||
 
 *Note that the first three options are fully supported but enabling them may lead to unexpected results and some side-effects may be difficult to discover. Use them with care!*

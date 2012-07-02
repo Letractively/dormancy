@@ -11,4 +11,5 @@
 		* [EntityPersisterConfiguration Configuration]
 	* Community
 		* [Contribute Contribute]
+	* [History History]
 	* [FrequentlyAskedQuestions Frequently Asked Questions]

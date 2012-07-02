@@ -1,0 +1,11 @@
+#summary Dormancy 1.0 Release
+
+== Changes ==
+
+=== 1.0.1 (2012-07-02) ===
+EntityPersisterConfiguration: skipTransient, skipFinal
+GenericPropertyPersisters (BeanPropertyPersister, PredicateEntityPersister)
+ContextFunctions replacing experimental Closures
+
+=== 1.0.0 (2012-05-29) ===
+Initial release

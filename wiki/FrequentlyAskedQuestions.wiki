@@ -7,8 +7,9 @@
 === Which JARs do I need? ===
 You can simply download `dormancy-core-<version>-dist.zip` and `dormancy-hibernate3-<version>-dist.zip` or `dormancy-hibernate4-<version>-dist.zip` from the [http://code.google.com/p/dormancy/downloads/list Downloads] section (use either `hibernate3` or `hibernate4`).
 They contain all dependencies required for Dormancy including Hibernate. However, you can of course replace the shipped JARs with the desired version.
+
 The file `dormancy-<version>.zip` contains all Dormancy modules (including `hibernate3` and `hibernate4`) but contains no dependencies.
-Please refer also to the next question.
+Please also refer to the next question.
 
 === I maintain the libraries myself. Which third-party JARs do I need? ===
 Basically, this depends on the Hibernate version an the features you want to use. In general, you will need the following libraries:
