@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
 /**
+ * Invokes the provided {@link ContextFunction} on the object.<br/>
+ * This class exists as a convenience for internal implementations delegating to another {@link ContextFunction}.
+ *
  * @author Gregor Schauer
+ * @since 1.0.1
  */
-public class DormancyCloneClosure extends DormancyClosure {
-	@Override
-	public void execute(Object input) {
-		result = dormancy.clone_(input, tree);
-	}
+public abstract class DelegateFunction<E, D> implements ContextFunction<E> {
+	protected ContextFunction<D> delegate;
 }
