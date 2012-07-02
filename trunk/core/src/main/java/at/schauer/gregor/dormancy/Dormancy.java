@@ -21,6 +21,7 @@ import at.schauer.gregor.dormancy.persister.CollectionPersister;
 import at.schauer.gregor.dormancy.persister.MapPersister;
 import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.hibernate.*;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
@@ -40,6 +41,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,6 +134,13 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Process the properties
 		String[] propertyNames = metadata.getPropertyNames();
 		for (String propertyName : propertyNames) {
+			// Skipping transient and final fields, which should also be declared transient.
+			Field field = FieldUtils.getField(dbObj.getClass(), propertyName, true);
+			if (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
+					|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers())) {
+				continue;
+			}
+
 			Object dbValue = utils.getPropertyValue(metadata, dbPropertyAccessor, dbObj, propertyName);
 
 			// If the property (e.g., a lazy persistent collection) is not initialized, simply ignore it

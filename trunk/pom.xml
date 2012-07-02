@@ -7,7 +7,7 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
@@ -214,6 +214,11 @@
 			</dependency>
 
 			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<version>2.7.7</version>
+			</dependency>
+			<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib</artifactId>
 				<version>2.2.2</version>
@@ -227,6 +232,11 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>1.8.3</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>
@@ -454,7 +464,7 @@
 
 
 	<properties>
-		<dormancy.version>1.0.0</dormancy.version>
+		<dormancy.version>1.0.1</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>

@@ -60,7 +60,7 @@ public class DormancySpringConfig {
 	public AnnotationSessionFactoryBean sessionFactory() {
 		AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan(new String[]{this.getClass().getPackage().getName()});
+		sessionFactory.setPackagesToScan(new String[]{DormancySpringConfig.class.getPackage().getName()});
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}
