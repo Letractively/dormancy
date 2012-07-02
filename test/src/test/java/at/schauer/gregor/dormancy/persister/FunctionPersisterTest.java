@@ -35,7 +35,6 @@ public class FunctionPersisterTest extends PersisterTest<FunctionPersister<Emplo
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new FunctionPersister<Employee>(dormancy);
-		persister.setDormancy(dormancy);
 	}
 
 	@Test
