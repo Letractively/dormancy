@@ -3,9 +3,9 @@
 == Changes ==
 
 === 1.0.1 (2012-07-02) ===
-	* !EntityPersisterConfiguration: skipTransient, skipFinal
-	* !GenericEntityPersisters (!BeanPropertyPersister, !FieldFilterEntityPersister)
-	* !ContextFunctions replacing experimental Closures
+	* Added !`EntityPersisterConfiguration` flags `skipTransient` and `skipFinal`
+	* Introduced !`GenericEntityPersisters` (!`BeanPropertyPersister`, !`FieldFilterEntityPersister`)
+	* !`ContextFunctions` replacing experimental Closures
 
 === 1.0.0 (2012-05-29) ===
 	* Initial release
