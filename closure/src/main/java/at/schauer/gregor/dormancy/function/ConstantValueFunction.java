@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
-import at.schauer.gregor.dormancy.Dormancy;
-
-import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
+ * Applies a constant value to every {@link FunctionContext}.
+ *
  * @author Gregor Schauer
+ * @since 1.0.1
  */
-public abstract class DormancyClosure extends ResultClosure<Object> {
-	protected Dormancy dormancy;
-	protected Map<Object, Object> tree;
+public class ConstantValueFunction<E> implements ContextFunction<E> {
+	protected E value;
+
+	public ConstantValueFunction() {
+		this(null);
+	}
+
+	public ConstantValueFunction(@Nullable E value) {
+		this.value = value;
+	}
+
+	@Nullable
+	@Override
+	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
+		input.setObj(value);
+		return input;
+	}
 }

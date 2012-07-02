@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
-import org.springframework.core.CollectionFactory;
-
-import java.util.List;
+import at.schauer.gregor.dormancy.Dormancy;
 
 /**
+ * This class exists as a convenience for internal implementations, which use {@link Dormancy}.
+ *
  * @author Gregor Schauer
+ * @since 1.0.1
  */
-public abstract class ListClosure extends CollectionClosure<List, List> {
-	public ListClosure() {
-	}
-
-	public ListClosure(List src) {
-		super(src);
-	}
-
-	@Override
-	public void createCollection(List src) {
-		result = List.class.cast(CollectionFactory.createApproximateCollection(src, src.size()));
-	}
+public abstract class DormancyFunction<E> implements ContextFunction<E> {
+	protected Dormancy dormancy;
 }

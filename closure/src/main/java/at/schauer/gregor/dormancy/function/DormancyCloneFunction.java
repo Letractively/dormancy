@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
-import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
+ * Uses {@link at.schauer.gregor.dormancy.Dormancy} to clone the objects.
+ *
  * @author Gregor Schauer
+ * @see at.schauer.gregor.dormancy.Dormancy#clone_(Object, java.util.Map)
+ * @since 1.0.1
  */
-public abstract class SetClosure extends CollectionClosure<Set, Set> {
-	public SetClosure() {
-		super();
-	}
-
-	public SetClosure(Set src) {
-		super(src);
-	}
-
+public class DormancyCloneFunction<E> extends DormancyFunction<E> {
+	@Nullable
 	@Override
-	public abstract void createCollection(Set src);
+	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
+		input.setObj(dormancy.clone_(input.getObj(), input.getTree()));
+		return input;
+	}
 }

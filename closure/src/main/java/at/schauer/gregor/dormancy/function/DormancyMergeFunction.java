@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
-import java.util.Collection;
+import javax.annotation.Nullable;
 
 /**
+ * Uses {@link at.schauer.gregor.dormancy.Dormancy} to clone the objects.
+ *
  * @author Gregor Schauer
+ * @see at.schauer.gregor.dormancy.Dormancy#merge_(Object, java.util.Map)
+ * @since 1.0.1
  */
-public abstract class CollectionClosure<S extends Collection, T extends Collection> extends DelegateClosure<T> {
-	public CollectionClosure() {
-	}
-
-	public CollectionClosure(S src) {
-		createCollection(src);
-	}
-
+public class DormancyMergeFunction<E> extends DormancyFunction<E> {
+	@Nullable
 	@Override
-	@SuppressWarnings("unchecked")
-	public void execute(Object input) {
-		Collection collection = Collection.class.cast(input);
-		for (Object element : collection) {
-			delegate.execute(element);
-			getResult().add(delegate.getResult());
-		}
+	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
+		input.setObj(dormancy.merge_(input.getObj(), input.getTree()));
+		return input;
 	}
-
-	public abstract void createCollection(S src);
 }

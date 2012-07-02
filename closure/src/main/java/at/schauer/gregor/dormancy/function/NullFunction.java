@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.closure;
+package at.schauer.gregor.dormancy.function;
 
 /**
+ * Applies {@code null} to every {@link FunctionContext}.
+ *
  * @author Gregor Schauer
+ * @since 1.0.1
  */
-public class DelegateClosure<T> extends ResultClosure<T> {
-	protected ResultClosure<? extends T> delegate;
-
-	@Override
-	public void execute(Object input) {
-		delegate.execute(input);
-		result = delegate.getResult();
+public class NullFunction<E> extends ConstantValueFunction<E> {
+	public NullFunction() {
+		super();
 	}
 }
