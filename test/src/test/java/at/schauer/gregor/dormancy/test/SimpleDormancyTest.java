@@ -96,6 +96,19 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test
+	public void testDateTime() {
+		Clock clock = new Clock();
+		sessionFactory.getCurrentSession().save(clock);
+		sessionFactory.getCurrentSession().flush();
+
+		Clock load = service.load(Clock.class, 1L);
+		load.update();
+		service.save(load);
+		Clock bar = service.load(Clock.class, 1L);
+		assertEquals(load, bar);
+	}
+
+	@Test
 	public void testCompare() throws Exception {
 		Book a = (Book) sessionFactory.getCurrentSession().load(Book.class, 1L);
 		Book b = service.load(Book.class, 1L);

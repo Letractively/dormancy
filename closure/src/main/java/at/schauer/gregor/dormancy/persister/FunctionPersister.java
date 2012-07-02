@@ -81,7 +81,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 	public <T extends Iterable<E>> Function<E, E> getCloneFunction(@Nonnull T dbObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.clone_(input, tree);
 			}
 		};
@@ -90,7 +90,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.clone_(input, tree);
 			}
 		};
@@ -100,17 +100,19 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		final Iterator<E> iterator = dbObj.iterator();
 		return new Function<E, E>() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.merge_(input, iterator.next(), tree);
 			}
 		};
 	}
 
-	@Inject
-	public void setDormancy(@Nonnull Dormancy dormancy) {
-		this.dormancy = dormancy;
-	}
-
+	/**
+	 * Creates an empty container of the given type.
+	 *
+	 * @param container the original container
+	 * @return the new container
+	 * @see CollectionFactory#createApproximateCollection(Object, int)
+	 */
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")

@@ -41,6 +41,14 @@ public class EntityPersisterConfiguration {
 	 */
 	private Boolean versionChecking;
 	/**
+	 * Skips fields declared {@code transient}
+	 */
+	private Boolean skipTransient;
+	/**
+	 * Skips fields declared {@code final}
+	 */
+	private Boolean skipFinal;
+	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
@@ -50,6 +58,8 @@ public class EntityPersisterConfiguration {
 		this.saveAssociationsProperties = false;
 		this.saveNewEntities = false;
 		this.versionChecking = true;
+		this.skipTransient = true;
+		this.skipFinal = true;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
@@ -130,5 +140,43 @@ public class EntityPersisterConfiguration {
 	 */
 	public void setVersionChecking(@Nullable Boolean versionChecking) {
 		this.versionChecking = versionChecking;
+	}
+
+	/**
+	 * Returns whether {@code transient} fields should be skipped.
+	 *
+	 * @return {@code true} if {@code transient} fields should be skipped, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getSkipTransient() {
+		return skipTransient == null ? parent.getSkipTransient() : skipTransient;
+	}
+
+	/**
+	 * Sets whether {@code transient} fields should be skipped.
+	 *
+	 * @param skipTransient {@code true} if {@code transient} fields should be skipped, {@code false} otherwise
+	 */
+	public void setSkipTransient(Boolean skipTransient) {
+		this.skipTransient = skipTransient;
+	}
+
+	/**
+	 * Returns whether {@code final} fields should be skipped.
+	 *
+	 * @return {@code true} if {@code final} fields should be skipped, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getSkipFinal() {
+		return skipFinal == null ? parent.getSkipFinal() : skipFinal;
+	}
+
+	/**
+	 * Sets whether {@code final} fields should be skipped.
+	 *
+	 * @param skipFinal {@code true} if {@code final} fields should be skipped, {@code false} otherwise
+	 */
+	public void setSkipFinal(Boolean skipFinal) {
+		this.skipFinal = skipFinal;
 	}
 }
