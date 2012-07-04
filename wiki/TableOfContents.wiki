@@ -9,6 +9,7 @@
 		* [AOPSupport AOP Support]
 		* [CustomEntityPersisters Custom EntityPersisters]
 		* [EntityPersisterConfiguration Configuration]
+		* [ContextFunction Using ContextFunctions]
 	* Community
 		* [Contribute Contribute]
 	* [History History]
