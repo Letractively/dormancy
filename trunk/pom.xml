@@ -7,7 +7,7 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
@@ -16,6 +16,7 @@
 		<module>hibernate4</module>
 		<module>sample</module>
 		<module>test</module>
+		<module>scenario</module>
 	</modules>
 
 
@@ -464,7 +465,7 @@
 
 
 	<properties>
-		<dormancy.version>1.0.1</dormancy.version>
+		<dormancy.version>1.0.2</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>
