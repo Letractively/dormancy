@@ -1,8 +1,8 @@
-#summary Building custom `EntityPersister`s by using modular stateless functions
+#summary Building custom EntityPersisters by using modular stateless functions
 
 = Using `ContextFunction`s =
 Instead of implementing custom `EntityPersister`s, which are very similar to each other, `ContextFunction`s can be uses as a lightweight alternative.
-They take a single `FunctionContext`, which holds the value(s) as well as the current execution state, applies a sequence of custom operations to it and returns the resulting `FunctionContext`.
+They take a single `FunctionContext`, which holds the value(s) as well as the current execution state, applies a sequence of operations to it and returns the resulting `FunctionContext`.
 Due to the fact that `ContextFunction`s are stateless, they can be executed chained, iteratively and/or recursively.
 The processing just depends on the given `FunctionContext` and therefore may vary significantly.
 However, there are two recommendations, which are _generall expected_ but not required:

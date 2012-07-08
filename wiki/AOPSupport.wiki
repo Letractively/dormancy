@@ -23,11 +23,12 @@ The `order` value must be chosen in a way that all aspects are applied in the co
 Otherwise, the transaction used for loading entities, which are required for the merger with the transient objects, is not initialized in time and it will be closed before `Dormancy` can traverse the object graph for cloning them, which may result in a `org.hibernate.LazyInitializationException`.
 
 {{{
+<tx:annotation-driven proxy-target-class="true" order="0"/>
 <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 <aop:config>
 	<aop:pointcut id="persistenceEndpoint" expression="@within(org.springframework.transaction.annotation.Transactional)"/>
-	<aop:aspect ref="dormancyAspect" order="1000"/>
+	<aop:advisor advice-ref="dormancyAspect" pointcut-ref="persistenceEndpoint" order="1000"/>
 </aop:config>
 
 <bean id="dormancyAspect" class="at.schauer.gregor.dormancy.interceptor.DormancyAdvisor">
@@ -46,7 +47,7 @@ This alternative approach is easier to configure and only recommended for tests 
 The listing below creates a `ProxyFactoryBean`, which can also be defined declaratively in the `beans.xml` and applies the `DormancyAdvisor` as a `MethodInterceptor` to a target object.
 
 {{{
-Dormancy dormancy = ...		// optain an instance of Dormancy
+Dormancy dormancy = ...		// obtain an instance of Dormancy
 ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 factoryBean.addAdvice(new DormancyAdvisor(dormancy));
 factoryBean.setTarget(target);	// object to proxify
