@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 @Transactional
 public class DormancyScenarioDao {

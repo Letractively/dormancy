@@ -16,8 +16,8 @@
 package at.schauer.gregor.dormancy.scenario.client;
 
 import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioService;
-import at.schauer.gregor.dormancy.scenario.client.ui.EmployeesPresenter;
 import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioServiceAsync;
+import at.schauer.gregor.dormancy.scenario.client.ui.EmployeesPresenter;
 import at.schauer.gregor.dormancy.scenario.client.ui.EmployeesView;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -25,13 +25,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 public class Scenario implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		DormancyScenarioServiceAsync service = GWT.create(DormancyScenarioService.class);
 		EmployeesView view = new EmployeesView();
-		EmployeesPresenter presenter = new EmployeesPresenter(view, service);
 		RootPanel.get().add(view);
+		EmployeesPresenter presenter = new EmployeesPresenter(view, service);
+		presenter.reload();
 	}
 }

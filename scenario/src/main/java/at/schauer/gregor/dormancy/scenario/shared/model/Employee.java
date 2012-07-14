@@ -22,6 +22,7 @@ import java.util.Set;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 @Entity
 public class Employee implements Serializable {

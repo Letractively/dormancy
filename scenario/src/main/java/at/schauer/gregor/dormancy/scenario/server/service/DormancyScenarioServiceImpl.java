@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 public class DormancyScenarioServiceImpl extends RemoteServiceServlet implements DormancyScenarioService {
 	private WebApplicationContext ctx;

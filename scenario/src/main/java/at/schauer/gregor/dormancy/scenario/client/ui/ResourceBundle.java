@@ -21,6 +21,7 @@ import net.floatz.gwt.client.resource.Floatz;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 public interface ResourceBundle extends ClientBundle {
 	ResourceBundle INSTANCE = GWT.create(ResourceBundle.class);
