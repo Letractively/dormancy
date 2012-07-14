@@ -1,4 +1,5 @@
 #summary How this fits together
+#labels Featured
 
 = Architecture =
 
