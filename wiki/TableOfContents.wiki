@@ -13,4 +13,5 @@
 	* Community
 		* [Contribute Contribute]
 	* [History History]
+	* [https://dormancy.googlecode.com/svn/report/coverage/index.html Code Coverage]
 	* [FrequentlyAskedQuestions Frequently Asked Questions]

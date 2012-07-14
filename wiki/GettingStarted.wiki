@@ -1,4 +1,5 @@
 #summary How to start using Dormancy?
+#labels Featured
 
 = Getting Started =
 
