@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 public class EmployeesPresenter {
 	public interface Display {
@@ -80,8 +81,6 @@ public class EmployeesPresenter {
 				view.setEmployee(employee);
 			}
 		});
-
-		reload();
 	}
 
 	public void reload() {

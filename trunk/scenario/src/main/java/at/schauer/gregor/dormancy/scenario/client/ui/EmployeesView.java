@@ -30,6 +30,7 @@ import com.google.gwt.view.client.HasData;
 
 /**
  * @author Gregor Schauer
+ * @since 1.0.2
  */
 public class EmployeesView extends Composite implements EmployeesPresenter.Display {
 	private static EmployeesUiBinder uiBinder = GWT.create(EmployeesUiBinder.class);
