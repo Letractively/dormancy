@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="3" />
 
-=== General ===
+== General ==
 
 === Which JARs do I need? ===
 You can simply download `dormancy-core-<version>-dist.zip` and `dormancy-hibernate3-<version>-dist.zip` or `dormancy-hibernate4-<version>-dist.zip` from the [http://code.google.com/p/dormancy/downloads/list Downloads] section (use either `hibernate3` or `hibernate4`).
