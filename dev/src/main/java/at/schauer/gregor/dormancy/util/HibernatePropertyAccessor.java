@@ -30,7 +30,7 @@ public class HibernatePropertyAccessor implements PropertyAccessor {
 		try {
 			PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor(null);
 			return propertyAccessor.getGetter(theClass, propertyName);
-		} catch (PropertyNotFoundException e) {
+		} catch (PropertyNotFoundException ignored) {
 			PropertyAccessor directAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
 			return directAccessor.getGetter(theClass, propertyName);
 		}
@@ -41,7 +41,7 @@ public class HibernatePropertyAccessor implements PropertyAccessor {
 		try {
 			PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor(null);
 			return propertyAccessor.getSetter(theClass, propertyName);
-		} catch (PropertyNotFoundException e) {
+		} catch (PropertyNotFoundException ignored) {
 			PropertyAccessor directAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
 			return directAccessor.getSetter(theClass, propertyName);
 		}

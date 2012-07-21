@@ -32,7 +32,7 @@ public abstract class GenericEntityPersister<C> extends AbstractEntityPersister<
 	protected Dormancy dormancy;
 
 	@Inject
-	public GenericEntityPersister(@Nonnull Dormancy dormancy) {
+	protected GenericEntityPersister(@Nonnull Dormancy dormancy) {
 		this.dormancy = dormancy;
 	}
 

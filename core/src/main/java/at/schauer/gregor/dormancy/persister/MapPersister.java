@@ -131,8 +131,8 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	protected Map<Object, Object> createContainer(@Nonnull Map<?, ?> map) {
-		return CollectionFactory.createApproximateMap(map, map.size());
+	protected Map<Object, Object> createContainer(@Nonnull Map<?, ?> container) {
+		return CollectionFactory.createApproximateMap(container, container.size());
 	}
 
 	@Override

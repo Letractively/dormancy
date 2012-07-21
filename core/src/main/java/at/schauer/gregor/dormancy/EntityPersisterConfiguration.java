@@ -54,12 +54,12 @@ public class EntityPersisterConfiguration {
 	private EntityPersisterConfiguration parent;
 
 	public EntityPersisterConfiguration() {
-		this.deleteRemovedEntities = false;
-		this.saveAssociationsProperties = false;
-		this.saveNewEntities = false;
-		this.versionChecking = true;
-		this.skipTransient = true;
-		this.skipFinal = true;
+		deleteRemovedEntities = false;
+		saveAssociationsProperties = false;
+		saveNewEntities = false;
+		versionChecking = true;
+		skipTransient = true;
+		skipFinal = true;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {

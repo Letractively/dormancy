@@ -34,6 +34,7 @@ public class DormancyScenarioDao {
 	@Inject
 	private Dormancy dormancy;
 
+	@SuppressWarnings("unchecked")
 	public ArrayList<Employee> listEmployees() {
 		return (ArrayList<Employee>) sessionFactory.getCurrentSession().createQuery("FROM Employee").list();
 	}

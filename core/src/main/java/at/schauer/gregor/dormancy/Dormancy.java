@@ -33,6 +33,7 @@ import org.springframework.beans.PropertyAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.util.ClassUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +63,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 
 	public Dormancy() {
 		try {
-			Class<?> type = this.getClass().getClassLoader().loadClass("at.schauer.gregor.dormancy.util.DormancyUtils");
+			Class<?> type = getClass().getClassLoader().loadClass("at.schauer.gregor.dormancy.util.DormancyUtils");
 			utils = BeanUtils.instantiateClass(type, AbstractDormancyUtils.class);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
@@ -74,6 +75,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * If no {@link EntityPersisterConfiguration} is set, a default configuration is created.
 	 */
 	@PostConstruct
+	@SuppressWarnings("unchecked")
 	public void initialize() {
 		if (config == null) {
 			config = new EntityPersisterConfiguration();
@@ -86,7 +88,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 
 	@Override
 	public final <T> T clone(T dbObj) {
-		return this.clone_(dbObj, createAdjacencyMap());
+		return clone_(dbObj, createAdjacencyMap());
 	}
 
 	@Nullable
@@ -491,7 +493,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @see #addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, Class[])
 	 */
 	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class... types) {
-		Constructor<? extends AbstractEntityPersister> constructor = org.springframework.util.ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
+		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
 		AbstractEntityPersister entityPersister = BeanUtils.instantiateClass(constructor, this);
 		if (entityPersister instanceof AbstractContainerPersister) {
 			AbstractContainerPersister.class.cast(entityPersister).setSessionFactory(sessionFactory);

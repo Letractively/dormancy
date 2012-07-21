@@ -33,7 +33,7 @@ public abstract class AbstractContainerPersister<C> extends AbstractEntityPersis
 	protected EntityPersisterConfiguration config;
 
 	@Inject
-	public AbstractContainerPersister(@Nonnull Dormancy dormancy) {
+	protected AbstractContainerPersister(@Nonnull Dormancy dormancy) {
 		this.dormancy = dormancy;
 		this.config = new EntityPersisterConfiguration(dormancy.getConfig());
 	}
