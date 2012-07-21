@@ -46,7 +46,7 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 			return (C) tree.get(dbObj);
 		}
 		try {
-			final Set<Field> fields = filter(dbObj);
+			Set<Field> fields = filter(dbObj);
 			T trObj = createObject(dbObj);
 			for (Field field : fields) {
 				Object dbVal = FieldUtils.readField(field, dbObj, true);
@@ -75,7 +75,7 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 			return (C) tree.get(trObj);
 		}
 		try {
-			final Set<Field> fields = filter(dbObj);
+			Set<Field> fields = filter(dbObj);
 			for (Field field : fields) {
 				Object trVal = FieldUtils.readField(field, trObj, true);
 				Object dbVal = dormancy.merge_(trVal, tree);

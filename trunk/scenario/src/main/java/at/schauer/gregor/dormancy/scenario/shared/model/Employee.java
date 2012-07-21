@@ -104,7 +104,7 @@ public class Employee implements Serializable {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Employee");
 		sb.append("{id=").append(id);
 		sb.append(", version=").append(version);
@@ -115,15 +115,15 @@ public class Employee implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 
-		Employee employee = (Employee) o;
+		Employee employee = (Employee) obj;
 
 		return !(id == null ? employee.id != null : !id.equals(employee.id));
 

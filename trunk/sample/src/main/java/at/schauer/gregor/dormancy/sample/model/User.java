@@ -17,12 +17,13 @@ package at.schauer.gregor.dormancy.sample.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * @author Gregor Schauer
  */
 @Entity
-public class User {
+public class User implements Serializable {
 	private String username;
 	private String mail;
 	private transient String password;

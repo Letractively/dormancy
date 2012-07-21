@@ -70,7 +70,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	protected Pointcut pointcut;
 	protected Integer order;
 
-	public static enum Mode {
+	public enum Mode {
 		PARAMETERS, RESULT, BOTH
 	}
 
@@ -85,6 +85,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		this.dormancy = dormancy;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable<?> callable) throws Throwable {
 		// If the method to invoke takes no parameters and does not return anything, directly invoke it
 		if (args.length == 0 && method.getReturnType() == void.class) {
@@ -212,7 +213,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	@Override
 	public int getOrder() {
 		if (order != null) {
-			return this.order;
+			return order;
 		}
 		Advice advice = getAdvice();
 		if (advice instanceof Ordered && advice != this) {

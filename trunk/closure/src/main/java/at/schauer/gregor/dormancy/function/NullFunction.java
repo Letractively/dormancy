@@ -22,7 +22,4 @@ package at.schauer.gregor.dormancy.function;
  * @since 1.0.1
  */
 public class NullFunction<E> extends ConstantValueFunction<E> {
-	public NullFunction() {
-		super();
-	}
 }

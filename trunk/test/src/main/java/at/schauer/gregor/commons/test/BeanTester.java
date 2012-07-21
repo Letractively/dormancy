@@ -27,7 +27,7 @@ import java.lang.reflect.Modifier;
  * @author Gregor Schauer
  */
 public class BeanTester {
-	public static enum Mode {
+	public enum Mode {
 		TO_STRING, EQUALS_HASHCODE, GETTER, SETTER, ALL
 	}
 	private static BeanTester instance = new BeanTester();
@@ -44,7 +44,7 @@ public class BeanTester {
 			return beanClass == null || Modifier.isAbstract(beanClass.getModifiers())
 					|| beanClass.getDeclaredConstructor() == null
 					? null : BeanUtils.instantiateClass(beanClass);
-		} catch (NoSuchMethodException e) {
+		} catch (NoSuchMethodException ignored) {
 			return null;
 		}
 	}

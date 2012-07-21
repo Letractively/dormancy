@@ -39,7 +39,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Iterable<E>> Iterable<E> clone_(@Nullable T dbObj, @Nonnull final Map<Object, Object> tree) {
+	public <T extends Iterable<E>> Iterable<E> clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		if (dbObj == null || tree.containsKey(dbObj)) {
 			return (Iterable<E>) tree.get(dbObj);
 		}
@@ -53,7 +53,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Iterable<E>> Iterable<E> merge_(@Nullable T trObj, @Nonnull final Map<Object, Object> tree) {
+	public <T extends Iterable<E>> Iterable<E> merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
 		if (trObj == null || tree.containsKey(trObj)) {
 			return (Iterable<E>) tree.get(trObj);
 		}
@@ -67,7 +67,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Iterable<E>> Iterable<E> merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull final Map<Object, Object> tree) {
+	public <T extends Iterable<E>> Iterable<E> merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
 			return (Iterable<E>) tree.get(trObj);
 		}

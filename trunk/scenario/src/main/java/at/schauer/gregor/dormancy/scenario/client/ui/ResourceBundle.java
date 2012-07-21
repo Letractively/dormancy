@@ -15,9 +15,9 @@
  */
 package at.schauer.gregor.dormancy.scenario.client.ui;
 
+import com.floatzcss.gwt.client.resource.Floatz;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import net.floatz.gwt.client.resource.Floatz;
 
 /**
  * @author Gregor Schauer

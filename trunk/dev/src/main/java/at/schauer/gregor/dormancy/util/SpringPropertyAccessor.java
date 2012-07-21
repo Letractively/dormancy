@@ -55,7 +55,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	@Override
 	public TypeDescriptor getPropertyTypeDescriptor(String propertyName) {
 		TypeDescriptor descriptor = propertyAccessor.getPropertyTypeDescriptor(propertyName);
-		return descriptor != null ? descriptor : descriptor;
+		return descriptor != null ? descriptor : directAccessor.getPropertyTypeDescriptor(propertyName);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValue(String propertyName, Object value) {
 		try {
 			propertyAccessor.setPropertyValue(propertyName, value);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValue(propertyName, value);
 		}
 	}
@@ -77,7 +77,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValue(PropertyValue pv) {
 		try {
 			propertyAccessor.setPropertyValue(pv);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValue(pv);
 		}
 	}
@@ -86,7 +86,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValues(Map<?, ?> map) {
 		try {
 			propertyAccessor.setPropertyValues(map);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValues(map);
 		}
 	}
@@ -95,7 +95,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValues(PropertyValues pvs) {
 		try {
 			propertyAccessor.setPropertyValues(pvs);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValues(pvs);
 		}
 	}
@@ -104,7 +104,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown) {
 		try {
 			propertyAccessor.setPropertyValues(pvs, ignoreUnknown);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValues(pvs, ignoreUnknown);
 		}
 	}
@@ -113,7 +113,7 @@ public class SpringPropertyAccessor implements PropertyAccessor {
 	public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown, boolean ignoreInvalid) {
 		try {
 			propertyAccessor.setPropertyValues(pvs, ignoreUnknown, ignoreInvalid);
-		} catch (BeansException e) {
+		} catch (BeansException ignored) {
 			directAccessor.setPropertyValues(pvs, ignoreUnknown, ignoreInvalid);
 		}
 	}
