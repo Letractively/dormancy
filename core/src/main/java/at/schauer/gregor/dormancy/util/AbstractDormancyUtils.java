@@ -15,13 +15,19 @@
  */
 package at.schauer.gregor.dormancy.util;
 
+import at.schauer.gregor.dormancy.beans.HibernatePropertyAccessor;
+import at.schauer.gregor.dormancy.beans.HibernatePropertyAccessorDelegate;
+import at.schauer.gregor.dormancy.beans.LazyInitializerPropertyAccessor;
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyObject;
 import org.hibernate.Hibernate;
 import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyAccessorFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,12 +47,23 @@ public abstract class AbstractDormancyUtils {
 	/**
 	 * Returns a {@link org.springframework.beans.PropertyAccessor} for the given object.
 	 *
-	 * @param target the object to create a PropertyAccessor for
+	 * @param target the object to create a property accessor for
 	 * @return the PropertyAccessor
 	 */
 	@Nullable
-	public PropertyAccessor forBeanPropertyAccess(@Nullable Object target) {
-		return target != null ? PropertyAccessorFactory.forBeanPropertyAccess(target) : null;
+	public PropertyAccessor forBeanPropertyAccess(@Nullable final Object target) {
+		if (target instanceof HibernateProxy) {
+			HibernateProxy hibernateProxy = (HibernateProxy) target;
+			LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
+			return new LazyInitializerPropertyAccessor(lazyInitializer);
+		}
+		if (target instanceof ProxyObject) {
+			ProxyObject proxyObject = (ProxyObject) target;
+			MethodHandler methodHandler = proxyObject.getHandler();
+			return new LazyInitializerPropertyAccessor((LazyInitializer) methodHandler);
+		}
+
+		return target != null ? new HibernatePropertyAccessorDelegate(HibernatePropertyAccessor.getInstance(), target) : null;
 	}
 
 	/**
@@ -204,7 +221,8 @@ public abstract class AbstractDormancyUtils {
 
 	/**
 	 * Returns the persistent class, or {@code null}.
-	 * @param metadata    the class metadata
+	 *
+	 * @param metadata the class metadata
 	 * @return the persistent class, or {@code null}
 	 */
 	@Nullable
