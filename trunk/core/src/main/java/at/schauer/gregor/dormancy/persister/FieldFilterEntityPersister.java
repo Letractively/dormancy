@@ -16,6 +16,8 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -125,7 +127,9 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 	 * @param filters the field filters
 	 */
 	public void setFieldFilters(ReflectionUtils.FieldFilter... filters) {
-		this.fieldFilters.clear();
-		this.fieldFilters.addAll(Arrays.asList(filters));
+		fieldFilters.clear();
+		if (ArrayUtils.isNotEmpty(filters)) {
+			CollectionUtils.addAll(fieldFilters, filters);
+		}
 	}
 }
