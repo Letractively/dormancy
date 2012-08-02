@@ -241,7 +241,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 		HibernateCallback<Application> hibernateCallback = new HibernateCallback<Application>() {
 			@Override
-			public Application doInHibernate(Session session) throws SQLException {
+			public Application doInHibernate(Session session) {
 				return (Application) session.createQuery("SELECT a FROM Application a JOIN FETCH a.employees WHERE a.id = 1").uniqueResult();
 			}
 		};

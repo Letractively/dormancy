@@ -79,23 +79,6 @@ public abstract class AbstractDormancyTest {
 		session.close();
 	}
 
-	// @After
-	public void after() {
-		// Currently it is not necessary to tear down the database after test methods
-		/*
-		Session session = sessionFactory.getCurrentSession();
-
-		Map<String, AbstractCollectionPersister> collectionPersisterMap = sessionFactory.getAllCollectionMetadata();
-		for (AbstractCollectionPersister persister : collectionPersisterMap.values()) {
-			session.createSQLQuery("DELETE FROM " + persister.getTableName()).executeUpdate();
-		}
-		for (Object entityName : sessionFactory.getAllClassMetadata().keySet()) {
-			session.createQuery("DELETE FROM " + entityName).executeUpdate();
-		}
-		session.flush();
-		*/
-	}
-
 	@Nonnull
 	@SuppressWarnings("unchecked")
 	public static Map<String, ?> describe(@Nullable Object bean) {
@@ -114,7 +97,7 @@ public abstract class AbstractDormancyTest {
 		return isManaged(entity, sessionFactory.getCurrentSession());
 	}
 
-	public static boolean isManaged(@Nonnull final Object entity, @Nonnull Session session) {
+	public static boolean isManaged(@Nonnull Object entity, @Nonnull Session session) {
 		if (entity instanceof HibernateProxy || entity instanceof PersistentCollection) {
 			return true;
 		} else if (entity instanceof Iterable) {
@@ -144,7 +127,7 @@ public abstract class AbstractDormancyTest {
 		final List<Field> list = new ArrayList<Field>();
 		ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
 			@Override
-			public void doWith(Field field) throws IllegalAccessException {
+			public void doWith(Field field) {
 				ReflectionUtils.makeAccessible(field);
 				list.add(field);
 			}

@@ -54,6 +54,7 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 		}
 	}
 
+	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();

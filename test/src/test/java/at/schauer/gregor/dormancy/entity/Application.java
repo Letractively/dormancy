@@ -97,7 +97,7 @@ public class Application implements Serializable {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append("Application");
 		sb.append("{id=").append(id);
 		sb.append(", lastUpdate=").append(lastUpdate);

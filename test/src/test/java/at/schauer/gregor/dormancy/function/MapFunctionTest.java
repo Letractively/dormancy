@@ -42,7 +42,7 @@ public class MapFunctionTest {
 		DelegateFunction<Employee, Employee> valueDelegate = new DelegateFunction<Employee, Employee>() {
 			@Nonnull
 			@Override
-			public FunctionContext<Employee> apply(@Nonnull FunctionContext<Employee> input) {
+			public FunctionContext<Employee> apply(@Nullable FunctionContext<Employee> input) {
 				input.getObj().setId(input.getObj().getId() != null ? input.getObj().getId() + 1 : 1);
 				return input;
 			}

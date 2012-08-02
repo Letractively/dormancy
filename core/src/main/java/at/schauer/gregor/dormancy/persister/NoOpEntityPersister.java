@@ -15,7 +15,9 @@
  */
 package at.schauer.gregor.dormancy.persister;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * Simply returns the given entities.
@@ -41,7 +43,25 @@ import javax.annotation.Nullable;
  *
  * @author Gregor Schauer
  */
-public class NoOpEntityPersister<C> implements EntityPersister<C> {
+public class NoOpEntityPersister<C> extends AbstractEntityPersister<C> {
+	/**
+	 * @author Gregor Schauer
+	 * @since 1.0.2
+	 */
+	protected static class NoOpEntityPersisterHolder {
+		protected static final NoOpEntityPersister instance = new NoOpEntityPersister();
+	}
+
+	/**
+	 * Returns the singleton instance.
+	 *
+	 * @return the instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <C> NoOpEntityPersister<C> getInstance() {
+		return NoOpEntityPersisterHolder.instance;
+	}
+
 	/**
 	 * Returns the given object.
 	 *
@@ -50,6 +70,17 @@ public class NoOpEntityPersister<C> implements EntityPersister<C> {
 	 */
 	@Override
 	public <T extends C> T clone(@Nullable T dbObj) {
+		return dbObj;
+	}
+
+	/**
+	 * Returns the given object.
+	 *
+	 * @param dbObj the object to clone
+	 * @return the given object
+	 */
+	@Override
+	public <T extends C> C clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return dbObj;
 	}
 
@@ -65,6 +96,17 @@ public class NoOpEntityPersister<C> implements EntityPersister<C> {
 	}
 
 	/**
+	 * Returns the given object.
+	 *
+	 * @param trObj the object to merge
+	 * @return the given object
+	 */
+	@Override
+	public <T extends C> C merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
+		return trObj;
+	}
+
+	/**
 	 * Returns the given transient object.
 	 *
 	 * @param trObj the transient object
@@ -73,6 +115,18 @@ public class NoOpEntityPersister<C> implements EntityPersister<C> {
 	 */
 	@Override
 	public <T extends C> T merge(@Nullable T trObj, @Nullable T dbObj) {
+		return trObj;
+	}
+
+	/**
+	 * Returns the given transient object.
+	 *
+	 * @param trObj the transient object
+	 * @param dbObj the persistent object
+	 * @return the transient object
+	 */
+	@Override
+	public <T extends C> C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return trObj;
 	}
 }

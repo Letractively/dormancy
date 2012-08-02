@@ -36,8 +36,9 @@ import static org.junit.Assert.*;
  */
 public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testListPersister() {
-		final List<Employee> list = sessionFactory.getCurrentSession().createCriteria(Employee.class).list();
+		List<Employee> list = sessionFactory.getCurrentSession().createCriteria(Employee.class).list();
 		assertSame(PersistentSet.class, list.get(0).getEmployees().getClass());
 		assertEquals(false, list.get(0).getColleagues() == null);
 

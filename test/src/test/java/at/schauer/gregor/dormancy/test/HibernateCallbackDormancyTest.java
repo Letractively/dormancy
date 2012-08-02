@@ -19,7 +19,6 @@ import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Employee;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 		HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 			@Override
 			@Transactional
-			public Employee doInHibernate(Session session) throws SQLException {
+			public Employee doInHibernate(Session session) {
 				Criteria criteria = session.createCriteria(Employee.class);
 				criteria.add(Restrictions.eq("id", 2L));
 				criteria.setFetchMode("employees", FetchMode.JOIN);
@@ -88,7 +87,7 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 		HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 			@Override
 			@Transactional
-			public Employee doInHibernate(Session session) throws HibernateException, SQLException {
+			public Employee doInHibernate(Session session) {
 				return (Employee) session.createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees LEFT JOIN FETCH e.colleagues WHERE e.id = 1").uniqueResult();
 			}
 		};
