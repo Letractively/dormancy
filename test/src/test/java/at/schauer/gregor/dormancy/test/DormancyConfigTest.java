@@ -43,10 +43,7 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 	EntityPersisterConfiguration config;
 
 	@After
-	@Override
 	public void after() {
-		super.after();
-
 		try {
 			dormancy.setConfig((EntityPersisterConfiguration) BeanUtils.cloneBean(config));
 		} catch (Exception e) {
