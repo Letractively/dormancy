@@ -17,25 +17,36 @@ package at.schauer.gregor.dormancy.persister;
 
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Gregor Schauer
  */
 public class NoOpEntityPersisterTest {
-	private NoOpEntityPersister persister = new NoOpEntityPersister();
-
 	@Test
 	public final void testNull() {
+		NoOpEntityPersister<?> persister = NoOpEntityPersister.getInstance();
+		Map<Object, Object> tree = Collections.emptyMap();
 		assertEquals(null, persister.clone(null));
 		assertEquals(null, persister.merge(null));
 		assertEquals(null, persister.merge(null, null));
+		assertEquals(null, persister.clone_(null, tree));
+		assertEquals(null, persister.merge_(null, tree));
+		assertEquals(null, persister.merge_(null, null, tree));
 	}
 
 	@Test
 	public void testString() {
+		NoOpEntityPersister<String> persister = NoOpEntityPersister.getInstance();
+		Map<Object, Object> tree = Collections.emptyMap();
 		assertEquals("", persister.clone(""));
 		assertEquals("", persister.merge(""));
 		assertEquals("", persister.merge("", " "));
+		assertEquals("", persister.clone_("", tree));
+		assertEquals("", persister.merge_("", tree));
+		assertEquals("", persister.merge_("", " ", tree));
 	}
 }

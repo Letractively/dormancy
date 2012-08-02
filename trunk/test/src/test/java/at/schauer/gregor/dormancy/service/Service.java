@@ -35,7 +35,6 @@ public interface Service {
 
 	<T extends Serializable> T load(Class<T> type, Long id);
 
-	@SuppressWarnings("unchecked")
 	List<Application> list();
 
 	@PersistenceEndpoint(types = TeamPersister.class)

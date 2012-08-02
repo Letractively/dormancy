@@ -77,15 +77,15 @@ public class Clock implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 
-		Clock clock = (Clock) o;
+		Clock clock = (Clock) obj;
 
 		return date.equals(clock.date) && id.equals(clock.id)
 				&& sqlDate.equals(clock.sqlDate) && timestamp.equals(clock.timestamp);

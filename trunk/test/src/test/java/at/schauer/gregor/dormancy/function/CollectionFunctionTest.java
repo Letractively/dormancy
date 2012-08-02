@@ -20,6 +20,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class CollectionFunctionTest {
 		DelegateFunction<Employee, Employee> delegateFunction = new DelegateFunction<Employee, Employee>() {
 			@Nonnull
 			@Override
-			public FunctionContext<Employee> apply(@Nonnull FunctionContext<Employee> input) {
+			public FunctionContext<Employee> apply(@Nullable FunctionContext<Employee> input) {
 				input.getObj().setVersion(input.getObj().getVersion() != null ? input.getObj().getVersion() + 1 : 1);
 				return input;
 			}

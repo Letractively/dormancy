@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
- * Determines dynamically the properties to process.
+ * Determines the properties to process dynamically.
  *
  * @author Gregor Schauer
  * @since 1.0.1

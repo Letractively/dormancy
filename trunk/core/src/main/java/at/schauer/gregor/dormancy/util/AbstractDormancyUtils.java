@@ -50,8 +50,8 @@ public abstract class AbstractDormancyUtils {
 	 * @param target the object to create a property accessor for
 	 * @return the PropertyAccessor
 	 */
-	@Nullable
-	public PropertyAccessor forBeanPropertyAccess(@Nullable final Object target) {
+	@Nonnull
+	public PropertyAccessor forBeanPropertyAccess(@Nonnull Object target) {
 		if (target instanceof HibernateProxy) {
 			HibernateProxy hibernateProxy = (HibernateProxy) target;
 			LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
@@ -63,7 +63,7 @@ public abstract class AbstractDormancyUtils {
 			return new LazyInitializerPropertyAccessor((LazyInitializer) methodHandler);
 		}
 
-		return target != null ? new HibernatePropertyAccessorDelegate(HibernatePropertyAccessor.getInstance(), target) : null;
+		return new HibernatePropertyAccessorDelegate(HibernatePropertyAccessor.getInstance(), target);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public abstract class AbstractDormancyUtils {
 	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public <T> T findPendant(@Nonnull T obj, @Nonnull Collection collection, @Nonnull Session session) {
+	public <T> T findPendant(@Nonnull T obj, @Nonnull Collection<?> collection, @Nonnull Session session) {
 		try {
 			Method method = obj.getClass().getMethod("equals", Object.class);
 			if (method.getDeclaringClass() != Object.class) {
@@ -126,7 +126,7 @@ public abstract class AbstractDormancyUtils {
 	 * @see #getClass(Object)
 	 */
 	@Nullable
-	public ClassMetadata getClassMetadata(@Nullable Object obj, SessionFactory sessionFactory) {
+	public ClassMetadata getClassMetadata(@Nullable Object obj, @Nonnull SessionFactory sessionFactory) {
 		return obj != null ? getClassMetadata(Hibernate.getClass(obj), sessionFactory) : null;
 	}
 
@@ -138,7 +138,7 @@ public abstract class AbstractDormancyUtils {
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
 	 */
 	@Nullable
-	public ClassMetadata getClassMetadata(@Nullable Class clazz, SessionFactory sessionFactory) {
+	public ClassMetadata getClassMetadata(@Nullable Class clazz, @Nonnull SessionFactory sessionFactory) {
 		return clazz != null ? sessionFactory.getClassMetadata(clazz) : null;
 	}
 

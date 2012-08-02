@@ -58,6 +58,7 @@ public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> 
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testEntity() {
 		Session session = sessionFactory.getCurrentSession();
 		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
@@ -77,6 +78,7 @@ public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> 
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testNonEntity() {
 		Session session = sessionFactory.getCurrentSession();
 		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);

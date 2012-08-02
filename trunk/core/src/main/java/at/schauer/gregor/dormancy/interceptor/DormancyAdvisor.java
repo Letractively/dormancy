@@ -152,7 +152,6 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	}
 
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public Object around(@Nonnull final ProceedingJoinPoint joinPoint) throws Throwable {
 		Method method = MethodSignature.class.cast(joinPoint.getSignature()).getMethod();
 		return process(joinPoint.getArgs(), method, joinPoint.getTarget(), new Callable<Object>() {
