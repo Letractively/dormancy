@@ -1,0 +1,40 @@
+package at.schauer.gregor.dormancy.persister;
+
+import at.schauer.gregor.dormancy.entity.Application;
+import at.schauer.gregor.dormancy.entity.Employee;
+import org.junit.Test;
+
+import javax.annotation.PostConstruct;
+import java.util.Collections;
+
+import static at.schauer.gregor.dormancy.AbstractDormancyTest.describe;
+import static org.junit.Assert.*;
+
+public class DirectFieldAccessorPersisterTest extends PersisterTest<DirectFieldAccessorPersister<Application>> {
+	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
+
+	@Override
+	@PostConstruct
+	public void postConstruct() {
+		super.postConstruct();
+		persister = new DirectFieldAccessorPersister<Application>(dormancy);
+	}
+
+	@Test
+	public void test() {
+		Application clone = persister.clone(app);
+		assertEquals(describe(app), describe(clone));
+
+		Application merge = persister.merge(app);
+		assertEquals(describe(app), describe(merge));
+	}
+
+	@Test
+	public void testReuse() {
+		Application clone = persister.clone(app);
+		assertNotSame(app, clone);
+		persister.setReuseObject(true);
+		clone = persister.clone(app);
+		assertSame(app, clone);
+	}
+}

@@ -32,11 +32,11 @@ import java.util.Map;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class BeanPropertyPersister<C> extends GenericEntityPersister<C> {
+public class BeanPropertiesPersister<C> extends GenericEntityPersister<C> {
 	protected List<String> propertyNames = new ArrayList<String>();
 
 	@Inject
-	public BeanPropertyPersister(@Nonnull Dormancy dormancy) {
+	public BeanPropertiesPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
 	}
 
