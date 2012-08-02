@@ -31,14 +31,14 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class BeanPropertyPersisterTest extends PersisterTest<BeanPropertyPersister<Application>> {
+public class BeanPropertiesPersisterTest extends PersisterTest<BeanPropertiesPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
-		persister = new BeanPropertyPersister<Application>(dormancy);
+		persister = new BeanPropertiesPersister<Application>(dormancy);
 		persister.getPropertyNames().addAll(Arrays.asList("id", "lastUpdate", "name", "responsibleUser", "employees"));
 	}
 
