@@ -138,8 +138,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		for (String propertyName : propertyNames) {
 			// Skipping transient and final fields, which should also be declared transient.
 			Field field = FieldUtils.getField(dbObj.getClass(), propertyName, true);
-			if (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
-					|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers())) {
+			if (field != null
+					&& (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
+					|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers()))) {
 				continue;
 			}
 

@@ -7,7 +7,7 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
@@ -33,6 +33,31 @@
 				<version>1.9</version>
 			</extension>
 		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>1.7.1</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+							<configuration>
+								<relocations>
+									<relocation>
+										<pattern>at.schauer.gregor</pattern>
+										<shadedPattern>at.schauer.gregor</shadedPattern>
+									</relocation>
+								</relocations>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -104,46 +129,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clover-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<excludes>
-						<exclude>**/BeanTester.java</exclude>
-						<exclude>**/*Test.java</exclude>
-					</excludes>
-					<licenseLocation>src/test/resources/clover.license</licenseLocation>
-					<jdk>1.5</jdk>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<excludes>
-						<exclude>**/BeanTester.java</exclude>
-						<exclude>**/*Test.java</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
@@ -461,6 +446,17 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>shade</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 
@@ -470,38 +466,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>
 	</properties>
-
-
-	<!--
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clover-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<excludes>
-						<exclude>**/BeanTester.java</exclude>
-						<exclude>**/*Test.java</exclude>
-					</excludes>
-					<licenseLocation>src/test/resources/clover.license</licenseLocation>
-					<jdk>1.5</jdk>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<excludes>
-						<exclude>**/BeanTester.java</exclude>
-						<exclude>**/*Test.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-	-->
 
 
 	<repositories>
