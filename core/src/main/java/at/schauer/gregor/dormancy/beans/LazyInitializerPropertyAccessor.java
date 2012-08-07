@@ -102,7 +102,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 		} catch (Exception e) {
 			try {
 				return FieldUtils.readField(getTarget(), propertyName, true);
-			} catch (Exception ignored) {
+			} catch (IllegalAccessException ignored) {
 				throw throwException(propertyName, e);
 			}
 		}
@@ -127,7 +127,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 		} catch (Exception e) {
 			try {
 				FieldUtils.writeField(getTarget(), propertyName, value, true);
-			} catch (Exception ignored) {
+			} catch (IllegalAccessException ignored) {
 				throw throwException(propertyName, e);
 			}
 		}

@@ -75,18 +75,18 @@ public class LazyInitializerPropertyAccessorTest extends AbstractDormancyTest {
 		try {
 			propertyAccessor.getPropertyValue("");
 			fail(IllegalArgumentException.class.getSimpleName() + " expected");
-		} catch (InvalidPropertyException ex) {
+		} catch (IllegalArgumentException ex) {
 			// expected
 		}
 		try {
 			propertyAccessor.setPropertyValue("", null);
 			fail(IllegalArgumentException.class.getSimpleName() + " expected");
-		} catch (InvalidPropertyException ex) {
+		} catch (IllegalArgumentException ex) {
 			// expected
 		}
 		try {
 			propertyAccessor.getPropertyTypeDescriptor("");
-			fail(IllegalArgumentException.class.getSimpleName() + " expected");
+			fail(InvalidPropertyException.class.getSimpleName() + " expected");
 		} catch (InvalidPropertyException ex) {
 			// expected
 		}

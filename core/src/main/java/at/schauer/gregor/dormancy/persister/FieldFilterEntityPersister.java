@@ -50,6 +50,8 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 		try {
 			Set<Field> fields = filter(dbObj);
 			T trObj = createObject(dbObj);
+			tree.put(dbObj, trObj);
+
 			for (Field field : fields) {
 				Object dbVal = FieldUtils.readField(field, dbObj, true);
 				Object trVal = dormancy.clone_(dbVal, tree);
@@ -76,6 +78,8 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
 			return (C) tree.get(trObj);
 		}
+		tree.put(trObj, dbObj);
+
 		try {
 			Set<Field> fields = filter(dbObj);
 			for (Field field : fields) {
