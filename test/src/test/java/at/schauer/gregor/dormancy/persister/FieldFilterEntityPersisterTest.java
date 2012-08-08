@@ -59,7 +59,9 @@ public class FieldFilterEntityPersisterTest extends PersisterTest<FieldFilterEnt
 		assertEquals(appMap, describe(clone));
 
 		Application merge = persister.merge(app);
-		assertEquals(describe(app), describe(merge));
+		appMap = describe(app);
+		appMap.put("authKey", null);
+		assertEquals(appMap, describe(merge));
 	}
 
 	@Test

@@ -80,7 +80,7 @@ public class BeanPropertiesPersister<C> extends GenericEntityPersister<C> {
 				Object dbVal = dormancy.merge_(trVal, tree);
 				FieldUtils.writeField(dbObj, propertyName, dbVal, true);
 			}
-			return trObj;
+			return dbObj;
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}

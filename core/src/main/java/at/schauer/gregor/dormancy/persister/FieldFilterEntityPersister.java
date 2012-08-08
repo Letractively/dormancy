@@ -34,13 +34,14 @@ import java.util.*;
  * @since 1.0.1
  */
 public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
-	protected List<ReflectionUtils.FieldFilter> fieldFilters = new ArrayList<ReflectionUtils.FieldFilter>();
+	protected List<ReflectionUtils.FieldFilter> fieldFilters;
 
 	@Inject
 	public FieldFilterEntityPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends C> C clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
@@ -63,6 +64,7 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 		}
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends C> C merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
@@ -72,6 +74,7 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 		return merge_(trObj, createObject(trObj), tree);
 	}
 
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends C> C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
@@ -87,7 +90,7 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 				Object dbVal = dormancy.merge_(trVal, tree);
 				FieldUtils.writeField(field, dbObj, dbVal, true);
 			}
-			return trObj;
+			return dbObj;
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
@@ -100,9 +103,10 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 	 * @param <T> the type of the object
 	 * @return the fields
 	 */
-	protected <T extends C> Set<Field> filter(T obj) {
+	@Nonnull
+	protected <T extends C> Set<Field> filter(@Nonnull T obj) {
 		final Set<Field> fields = new LinkedHashSet<Field>();
-		for (ReflectionUtils.FieldFilter filter : fieldFilters) {
+		for (ReflectionUtils.FieldFilter filter : getFieldFilters()) {
 			ReflectionUtils.doWithFields(obj.getClass(), new ReflectionUtils.FieldCallback() {
 				@Override
 				public void doWith(Field field) {
@@ -121,7 +125,11 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 	 *
 	 * @return the field filters
 	 */
+	@Nonnull
 	public List<ReflectionUtils.FieldFilter> getFieldFilters() {
+		if (fieldFilters == null) {
+			fieldFilters = new ArrayList<ReflectionUtils.FieldFilter>();
+		}
 		return fieldFilters;
 	}
 
@@ -130,10 +138,10 @@ public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
 	 *
 	 * @param filters the field filters
 	 */
-	public void setFieldFilters(ReflectionUtils.FieldFilter... filters) {
-		fieldFilters.clear();
+	public void setFieldFilters(@Nullable ReflectionUtils.FieldFilter... filters) {
+		getFieldFilters().clear();
 		if (ArrayUtils.isNotEmpty(filters)) {
-			CollectionUtils.addAll(fieldFilters, filters);
+			CollectionUtils.addAll(getFieldFilters(), filters);
 		}
 	}
 }
