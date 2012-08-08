@@ -25,11 +25,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Gregor Schauer
  */
-public class NoOpEntityPersisterTest {
+public class NoOpPersisterTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public final void testNull() {
-		NoOpEntityPersister persister = NoOpEntityPersister.getInstance();
+		NoOpPersister persister = NoOpPersister.getInstance();
 		Map<Object, Object> tree = Collections.emptyMap();
 		assertEquals(null, persister.clone(null));
 		assertEquals(null, persister.merge(null));
@@ -41,7 +41,7 @@ public class NoOpEntityPersisterTest {
 
 	@Test
 	public void testString() {
-		NoOpEntityPersister<String> persister = NoOpEntityPersister.getInstance();
+		NoOpPersister<String> persister = NoOpPersister.getInstance();
 		Map<Object, Object> tree = Collections.emptyMap();
 		assertEquals("", persister.clone(""));
 		assertEquals("", persister.merge(""));

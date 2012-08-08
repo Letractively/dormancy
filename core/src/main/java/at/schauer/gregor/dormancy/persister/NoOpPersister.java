@@ -33,7 +33,7 @@ import java.util.Map;
  * return orderStatus;
  * }
  * <p/>
- * &#64;PersistenceEndpoint(type = NoOpEntityPersister.class)
+ * &#64;PersistenceEndpoint(type = NoOpPersister.class)
  * public String addCoupon(String code) {
  * // process coupon code
  * return message;
@@ -43,13 +43,13 @@ import java.util.Map;
  *
  * @author Gregor Schauer
  */
-public class NoOpEntityPersister<C> extends AbstractEntityPersister<C> {
+public class NoOpPersister<C> extends AbstractEntityPersister<C> {
 	/**
 	 * @author Gregor Schauer
 	 * @since 1.0.2
 	 */
 	protected static class NoOpEntityPersisterHolder {
-		protected static final NoOpEntityPersister instance = new NoOpEntityPersister();
+		protected static final NoOpPersister instance = new NoOpPersister();
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class NoOpEntityPersister<C> extends AbstractEntityPersister<C> {
 	 * @return the instance
 	 */
 	@SuppressWarnings("unchecked")
-	public static <C> NoOpEntityPersister<C> getInstance() {
+	public static <C> NoOpPersister<C> getInstance() {
 		return NoOpEntityPersisterHolder.instance;
 	}
 

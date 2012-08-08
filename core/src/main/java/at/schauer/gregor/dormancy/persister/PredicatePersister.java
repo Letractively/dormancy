@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * Evaluates a {@link Predicate} for determining the {@link EntityPersister} to use for processing certain objects.<br/>
- * If a {@link AbstractEntityPersister} is {@code null}, the {@link NoOpEntityPersister} is used instead.
+ * If a {@link AbstractEntityPersister} is {@code null}, the {@link NoOpPersister} is used instead.
  *
  * @author Gregor Schauer
  * @see Predicate
@@ -95,7 +95,7 @@ public class PredicatePersister<C, P extends Predicate> extends AbstractEntityPe
 	 * @return the predicate AbstractEntityPersister
 	 */
 	public AbstractEntityPersister<C> getPredicateDelegate() {
-		return predicateDelegate != null ? predicateDelegate : (predicateDelegate = NoOpEntityPersister.getInstance());
+		return predicateDelegate != null ? predicateDelegate : (predicateDelegate = NoOpPersister.getInstance());
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class PredicatePersister<C, P extends Predicate> extends AbstractEntityPe
 	 * @return the fallback AbstractEntityPersister
 	 */
 	public AbstractEntityPersister<C> getFallbackDelegate() {
-		return fallbackDelegate != null ? fallbackDelegate : (fallbackDelegate = NoOpEntityPersister.getInstance());
+		return fallbackDelegate != null ? fallbackDelegate : (fallbackDelegate = NoOpPersister.getInstance());
 	}
 
 	/**

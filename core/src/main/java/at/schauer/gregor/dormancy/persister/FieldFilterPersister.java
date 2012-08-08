@@ -33,11 +33,11 @@ import java.util.*;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class FieldFilterEntityPersister<C> extends GenericEntityPersister<C> {
+public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 	protected List<ReflectionUtils.FieldFilter> fieldFilters;
 
 	@Inject
-	public FieldFilterEntityPersister(@Nonnull Dormancy dormancy) {
+	public FieldFilterPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
 	}
 
