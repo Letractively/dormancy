@@ -15,12 +15,10 @@
  */
 package at.schauer.gregor.dormancy;
 
-import at.schauer.gregor.dormancy.persister.AbstractContainerPersister;
-import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
-import at.schauer.gregor.dormancy.persister.CollectionPersister;
-import at.schauer.gregor.dormancy.persister.MapPersister;
+import at.schauer.gregor.dormancy.persister.*;
 import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.hibernate.*;
 import org.hibernate.metadata.ClassMetadata;
@@ -45,7 +43,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -55,7 +53,7 @@ import java.util.Map;
  * @see at.schauer.gregor.dormancy.persister.EntityPersister
  */
 public class Dormancy extends AbstractEntityPersister<Object> implements ApplicationContextAware {
-	protected Map<Class, AbstractEntityPersister> persisterMap = new HashMap<Class, AbstractEntityPersister>();
+	protected Map<Class<?>, AbstractEntityPersister> persisterMap;
 	protected SessionFactory sessionFactory;
 	protected EntityPersisterConfiguration config;
 	protected AbstractDormancyUtils utils;
@@ -128,9 +126,12 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		PropertyAccessor trPropertyAccessor = utils.forBeanPropertyAccess(trObj), dbPropertyAccessor = null;
 		if (identifier == null) {
 			dbPropertyAccessor = utils.forBeanPropertyAccess(dbObj);
-			identifier = utils.getIdentifierValue(metadata, dbPropertyAccessor, dbObj, session);
-			// If the identifier is still null, an exception is thrown indicating that the entity is not persistent
 			trPropertyAccessor = utils.forBeanPropertyAccess(trObj);
+			try {
+				identifier = utils.getIdentifierValue(metadata, dbPropertyAccessor, dbObj, session);
+			} catch (PropertyValueException e) {
+				// If the identifier is still null, an exception is thrown indicating that the entity is not persistent
+			}
 		}
 
 		// Process the properties
@@ -410,7 +411,10 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @return the registered EntityPersisters
 	 */
 	@Nonnull
-	public Map<Class, AbstractEntityPersister> getPersisterMap() {
+	public Map<Class<?>, AbstractEntityPersister> getPersisterMap() {
+		if (persisterMap == null) {
+			persisterMap = new LinkedHashMap<Class<?>, AbstractEntityPersister>();
+		}
 		return persisterMap;
 	}
 
@@ -419,7 +423,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 *
 	 * @param persisterMap the entity persister mapping
 	 */
-	public void setPersisterMap(Map<Class, AbstractEntityPersister> persisterMap) {
+	public void setPersisterMap(@Nonnull Map<Class<?>, AbstractEntityPersister> persisterMap) {
 		this.persisterMap = persisterMap;
 	}
 
@@ -431,14 +435,26 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @return the EntityPersister or {@code null} if there is none available.
 	 */
 	@Nullable
-	public AbstractEntityPersister getEntityPersister(@Nullable Class clazz) {
-		AbstractEntityPersister entityPersister = persisterMap.get(clazz);
+	public AbstractEntityPersister getEntityPersister(@Nullable Class<?> clazz) {
+		AbstractEntityPersister entityPersister = getPersisterMap().get(clazz);
 		if (entityPersister == null && clazz != null) {
-			for (Map.Entry<Class, AbstractEntityPersister> entry : persisterMap.entrySet()) {
+			for (Map.Entry<Class<?>, AbstractEntityPersister> entry : getPersisterMap().entrySet()) {
 				if (entry.getKey().isAssignableFrom(clazz)) {
 					entityPersister = entry.getValue();
-					persisterMap.put(clazz, entityPersister);
+					getPersisterMap().put(clazz, entityPersister);
 					break;
+				}
+			}
+
+			if (entityPersister == null) {
+				for (Map.Entry<Class<?>, AbstractEntityPersister> entry : persisterMap.entrySet()) {
+					if (entry.getValue() instanceof DynamicEntityPersister) {
+						if (((DynamicEntityPersister) entry.getValue()).supports(clazz)) {
+							entityPersister = entry.getValue();
+							getPersisterMap().put(clazz, entityPersister);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -467,19 +483,19 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @see #addEntityPersister(Class, Class[])
 	 */
 	public void addEntityPersister(@Nonnull AbstractEntityPersister entityPersister, @Nullable Class... types) {
-		if (entityPersister.getSupportedTypes() != null) {
+		if (ArrayUtils.isNotEmpty(entityPersister.getSupportedTypes())) {
 			for (Class type : entityPersister.getSupportedTypes()) {
-				persisterMap.put(type, entityPersister);
+				getPersisterMap().put(type, entityPersister);
 			}
 		}
 		if (types != null) {
 			// Register the given types for advanced customization
 			for (Class type : types) {
-				persisterMap.put(type, entityPersister);
+				getPersisterMap().put(type, entityPersister);
 			}
 		}
 		// Register the unproxified persister itself to make it available for PersistenceEndpoint
-		persisterMap.put(AopUtils.getTargetClass(entityPersister), entityPersister);
+		getPersisterMap().put(AopUtils.getTargetClass(entityPersister), entityPersister);
 	}
 
 	/**

@@ -27,8 +27,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class NoOpEntityPersisterTest {
 	@Test
+	@SuppressWarnings("unchecked")
 	public final void testNull() {
-		NoOpEntityPersister<?> persister = NoOpEntityPersister.getInstance();
+		NoOpEntityPersister persister = NoOpEntityPersister.getInstance();
 		Map<Object, Object> tree = Collections.emptyMap();
 		assertEquals(null, persister.clone(null));
 		assertEquals(null, persister.merge(null));
