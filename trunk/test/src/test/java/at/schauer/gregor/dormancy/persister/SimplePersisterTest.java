@@ -17,7 +17,7 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
-import at.schauer.gregor.dormancy.entity.Holder;
+import at.schauer.gregor.dormancy.container.Holder;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
  * @author Gregor Schauer
  * @since 1.0.3
  */
-public class SimpleEntityPersisterTest extends PersisterTest<SimpleEntityPersister<Object>> {
+public class SimplePersisterTest extends PersisterTest<SimplePersister<Object>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override
@@ -41,7 +41,7 @@ public class SimpleEntityPersisterTest extends PersisterTest<SimpleEntityPersist
 	public void postConstruct() {
 		super.postConstruct();
 		app.setId(1L);
-		persister = new SimpleEntityPersister<Object>(dormancy);
+		persister = new SimplePersister<Object>(dormancy);
 		persister.setPackageNames("at.schauer.gregor.dormancy.");
 	}
 

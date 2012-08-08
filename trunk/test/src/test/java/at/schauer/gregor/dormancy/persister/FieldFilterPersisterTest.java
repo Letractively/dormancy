@@ -32,14 +32,14 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class FieldFilterEntityPersisterTest extends PersisterTest<FieldFilterEntityPersister<Application>> {
+public class FieldFilterPersisterTest extends PersisterTest<FieldFilterPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
-		persister = new FieldFilterEntityPersister<Application>(dormancy);
+		persister = new FieldFilterPersister<Application>(dormancy);
 		persister.setFieldFilters(new ReflectionUtils.FieldFilter() {
 			@Override
 			public boolean matches(Field field) {

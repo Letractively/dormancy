@@ -42,12 +42,12 @@ import java.util.Set;
  * @author Gregor Schauer
  * @since 1.0.3
  */
-public class SimpleEntityPersister<C> extends FieldFilterEntityPersister<C> implements DynamicEntityPersister<C> {
+public class SimplePersister<C> extends FieldFilterPersister<C> implements DynamicEntityPersister<C> {
 	protected List<String> packageNames = new ArrayList<String>();
 	protected HibernatePropertyAccessor propertyAccessor;
 
 	@Inject
-	public SimpleEntityPersister(@Nonnull Dormancy dormancy) {
+	public SimplePersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
 		setFieldFilters(new ReflectionUtils.FieldFilter() {
 			@Override
