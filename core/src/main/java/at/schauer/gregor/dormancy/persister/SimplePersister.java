@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class SimplePersister<C> extends FieldFilterPersister<C> implements DynamicEntityPersister<C> {
 	protected List<String> packageNames = new ArrayList<String>();
-	protected HibernatePropertyAccessor propertyAccessor;
+	protected PropertyAccessor propertyAccessor;
 
 	@Inject
 	public SimplePersister(@Nonnull Dormancy dormancy) {
@@ -123,7 +123,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 	 *
 	 * @param propertyAccessor the PropertyAccessor to use
 	 */
-	public void setPropertyAccessor(@Nullable HibernatePropertyAccessor propertyAccessor) {
+	public void setPropertyAccessor(@Nullable PropertyAccessor propertyAccessor) {
 		this.propertyAccessor = propertyAccessor;
 	}
 
