@@ -3,7 +3,7 @@
 
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
-	<inherits name='net.floatz.gwt.Css'/>
+	<inherits name='com.floatzcss.gwt.Css'/>
 	<source path="client"/>
 	<source path="shared"/>
 
