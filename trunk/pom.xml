@@ -452,7 +452,7 @@
 
 
 	<properties>
-		<dormancy.version>1.0.2</dormancy.version>
+		<dormancy.version>1.0.3</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>
