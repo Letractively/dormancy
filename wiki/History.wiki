@@ -2,6 +2,13 @@
 
 == Changes ==
 
+=== 1.1.0 (???) ===
+	* Removed `PropertyAccessor`s
+	* Improved overall performance significantly
+
+=== 1.0.3 (2012-08-27) ===
+	* Added `DynamicEntityPersister` and `SimplePersister` for convenient configuration
+
 === 1.0.2 (2012-08-02) ===
 	* Added `HibernatePropertyAccessor` and `LazyInitializerPropertyAccessor`
 	* `AbstractDormancyUtils` now automatically chooses the best `PropertyAccessor`
