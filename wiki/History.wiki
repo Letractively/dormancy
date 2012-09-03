@@ -2,12 +2,20 @@
 
 == Changes ==
 
-=== 1.1.0 (???) ===
-	* Removed `PropertyAccessor`s
-	* Improved overall performance significantly
 
-=== 1.0.3 (2012-08-27) ===
-	* Added `DynamicEntityPersister` and `SimplePersister` for convenient configuration
+=======
+=== 1.1.0 (???) ===
+	* Added built-in support for arrays and `Enum`s
+	* Added `EntityPersisterConfiguration` flags `autoFlushing` and `recursiveTraversal`
+	* Dormancy can now process object graphs with infinite depth automatically
+	* Improved overall performance significantly
+		* Replaced default bean property access layer (`PropertyAccessor`s) with `Introspector` (API change!)
+		* Added self-learning algorithm for faster determination of the `EntityPersister` to use
+
+=== 1.0.3 (2012-08-11) ===
+	* Added `DynamicEntityPersister` that determines dynmically if certain object types can be processed
+	* Added `SimplePersister` that processes all objects within certain packages
+	* Renamed a few `EntityPersister`s and some small fixes to ensure consistent behaviour
 
 === 1.0.2 (2012-08-02) ===
 	* Added `HibernatePropertyAccessor` and `LazyInitializerPropertyAccessor`

@@ -6,10 +6,12 @@ Every `EntityPersister` (even `Dormancy` itself) might have an `EntityPersisterC
 
 || *Option*						|| *Default Value*	|| *Description*																						||
 || `deleteRemovedEntities`		|| `false`			|| Permanently deletes removed entities from collections												||
-|| `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier											||
 || `saveAssociationsProperties`	|| `false`			|| Enables saving of dirty properties of associations (similar to JPA´s `javax.persistence.CascadeType`)||
+|| `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier											||
+|| `autoFlushing`				|| `true`			|| Automatically flushes the current session after cloning												||
+|| `skipFinal`					|| `false`			|| Skips fields declared `final`																		||
+|| `skipTransient`				|| `false`			|| Skips fields declared `transient`																	||
+|| `recursiveTraversal`			|| `true`			|| Traverses object graphs recursively without requiring `EntityPersister`s								||
 || `versionChecking`			|| `true`			|| Enables version checking for Hibernate entities														||
-|| `skipTransient`				|| `true`			|| Skips fields declared `transient`																	||
-|| `skipFinal`					|| `true`			|| Skips fields declared `final`																		||
 
 *Note that the first three options are fully supported but enabling them may lead to unexpected results and some side-effects may be difficult to discover. Use them with care!*

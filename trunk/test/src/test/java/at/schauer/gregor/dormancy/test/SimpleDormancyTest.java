@@ -17,6 +17,7 @@ package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.domain.DTO;
+import at.schauer.gregor.dormancy.domain.Stage;
 import at.schauer.gregor.dormancy.entity.*;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
@@ -133,6 +134,20 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals(describe(a), describe(b));
 		assertEquals(true, isManaged(a));
 		assertEquals(false, isManaged(b));
+	}
+
+	@Test
+	public void testEnum() {
+		Stage stage = Stage.DEV;
+
+		Stage clone = dormancy.clone(stage);
+		assertSame(stage, clone);
+
+		Stage merge = dormancy.merge(clone);
+		assertSame(stage, merge);
+
+		merge = dormancy.merge(clone, stage);
+		assertSame(stage, merge);
 	}
 
 	@Test
