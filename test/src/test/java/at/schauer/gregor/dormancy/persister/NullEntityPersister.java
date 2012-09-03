@@ -15,6 +15,8 @@
  */
 package at.schauer.gregor.dormancy.persister;
 
+import org.hibernate.proxy.LazyInitializer;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -25,7 +27,7 @@ import java.util.Map;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class NullEntityPersister<C> extends AbstractEntityPersister<C> {
+public class NullEntityPersister<C> extends AbstractEntityPersister<C> implements DynamicEntityPersister<C> {
 	protected static class NullEntityPersisterHolder {
 		protected static final NullEntityPersister instance = new NullEntityPersister();
 	}
@@ -70,5 +72,10 @@ public class NullEntityPersister<C> extends AbstractEntityPersister<C> {
 	@Override
 	public <T extends C> C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return null;
+	}
+
+	@Override
+	public boolean supports(@Nonnull Class<?> clazz) {
+		return LazyInitializer.class.isAssignableFrom(clazz);
 	}
 }

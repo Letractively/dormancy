@@ -15,18 +15,11 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import at.schauer.gregor.dormancy.beans.HibernatePropertyAccessor;
-import at.schauer.gregor.dormancy.beans.HibernatePropertyAccessorDelegate;
-import at.schauer.gregor.dormancy.beans.LazyInitializerPropertyAccessor;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
 import org.hibernate.Hibernate;
 import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.PropertyAccessor;
 
 import javax.annotation.Nonnull;
@@ -34,6 +27,7 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Common utility methods for Dormancy support code.
@@ -42,28 +36,6 @@ import java.util.Collection;
  */
 public abstract class AbstractDormancyUtils {
 	protected AbstractDormancyUtils() {
-	}
-
-	/**
-	 * Returns a {@link org.springframework.beans.PropertyAccessor} for the given object.
-	 *
-	 * @param target the object to create a property accessor for
-	 * @return the PropertyAccessor
-	 */
-	@Nonnull
-	public PropertyAccessor forBeanPropertyAccess(@Nonnull Object target) {
-		if (target instanceof HibernateProxy) {
-			HibernateProxy hibernateProxy = (HibernateProxy) target;
-			LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
-			return new LazyInitializerPropertyAccessor(lazyInitializer);
-		}
-		if (target instanceof ProxyObject) {
-			ProxyObject proxyObject = (ProxyObject) target;
-			MethodHandler methodHandler = proxyObject.getHandler();
-			return new LazyInitializerPropertyAccessor((LazyInitializer) methodHandler);
-		}
-
-		return new HibernatePropertyAccessorDelegate(HibernatePropertyAccessor.getInstance(), target);
 	}
 
 	/**
@@ -80,7 +52,7 @@ public abstract class AbstractDormancyUtils {
 	 * @param collection the collection to traverse
 	 * @param session    the Hibernate Session to use
 	 * @return the object found or {@code null} if the collection does not contain such an object
-	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)
+	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)
 	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
@@ -97,13 +69,12 @@ public abstract class AbstractDormancyUtils {
 			} else {
 				// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
 				ClassMetadata objMetadata = getClassMetadata(obj, session.getSessionFactory());
-				PropertyAccessor objPropertyAccessor = forBeanPropertyAccess(obj);
-				Object objIdentifier = objPropertyAccessor.getPropertyValue(objMetadata.getIdentifierPropertyName());
+				Object objIdentifier = getIdentifier(objMetadata, obj, session);
 
 				// For every object in the collection, check if the type matches and if the identifier is equal
 				for (Object elem : collection) {
 					if (elem != null && elem.getClass() == obj.getClass()
-							&& objIdentifier.equals(getIdentifier(objMetadata, null, elem, session))
+							&& objIdentifier.equals(getIdentifier(objMetadata, elem, session))
 							&& collection.remove(elem)) {
 						return (T) elem;
 					}
@@ -127,7 +98,7 @@ public abstract class AbstractDormancyUtils {
 	 */
 	@Nullable
 	public ClassMetadata getClassMetadata(@Nullable Object obj, @Nonnull SessionFactory sessionFactory) {
-		return obj != null ? getClassMetadata(Hibernate.getClass(obj), sessionFactory) : null;
+		return obj != null ? getClassMetadata(getClass(obj), sessionFactory) : null;
 	}
 
 	/**
@@ -138,7 +109,7 @@ public abstract class AbstractDormancyUtils {
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
 	 */
 	@Nullable
-	public ClassMetadata getClassMetadata(@Nullable Class clazz, @Nonnull SessionFactory sessionFactory) {
+	public ClassMetadata getClassMetadata(@Nullable Class<?> clazz, @Nonnull SessionFactory sessionFactory) {
 		return clazz != null ? sessionFactory.getClassMetadata(clazz) : null;
 	}
 
@@ -146,31 +117,29 @@ public abstract class AbstractDormancyUtils {
 	 * Attempts to get the identifier of the given object by using the provided {@link ClassMetadata} or
 	 * {@link PropertyAccessor}.
 	 *
-	 * @param metadata         the ClassMetadata of the object (may be null)
-	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
-	 * @param bean             the object
-	 * @param session          the Hibernate session to use
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @param session  the Hibernate session to use
 	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)
+	 * @see #getIdentifierValue(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)
 	 */
 	@Nullable
-	public abstract <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session);
+	public abstract <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean, @Nonnull Session session);
 
 	/**
 	 * Retrieves the identifier of the given object by using the provided {@link ClassMetadata} or
 	 * {@link PropertyAccessor}.
 	 * If the identifier cannot be retrieved, an {@link org.hibernate.PropertyValueException} is thrown.
 	 *
-	 * @param metadata         the ClassMetadata of the object (may be null)
-	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
-	 * @param bean             the object
-	 * @param session          the Hibernate session to use
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @param session  the Hibernate session to use
 	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)
+	 * @see #getIdentifier(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)
 	 */
 	@Nonnull
-	public <T> Serializable getIdentifierValue(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session) {
-		Serializable identifier = getIdentifier(metadata, propertyAccessor, bean, session);
+	public <T> Serializable getIdentifierValue(@Nonnull ClassMetadata metadata, @Nonnull T bean, @Nonnull Session session) {
+		Serializable identifier = getIdentifier(metadata, bean, session);
 		if (identifier == null) {
 			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
 			throw new PropertyValueException("Cannot read identifier", metadata.getEntityName(), metadata.getIdentifierPropertyName());
@@ -182,41 +151,48 @@ public abstract class AbstractDormancyUtils {
 	 * Retrieves the property of the given object by using the provided {@link ClassMetadata} or
 	 * {@link PropertyAccessor}.
 	 *
-	 * @param metadata         the ClassMetadata of the object (may be null)
-	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
-	 * @param bean             the object
-	 * @param propertyName     the name of the property
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
 	 * @return the property
 	 * @see PropertyAccessor#getPropertyValue(String)
 	 */
 	@Nullable
-	public abstract Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName);
+	public abstract Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName);
 
 	/**
 	 * Sets the property of the given object by using the provided {@link ClassMetadata} or {@link PropertyAccessor}.
 	 *
-	 * @param metadata         the ClassMetadata of the object (may be null)
-	 * @param propertyAccessor the PropertyAccessor for the object (may be null)
-	 * @param bean             the object
-	 * @param propertyName     the name of the property
-	 * @param value            the value to set
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
+	 * @param value        the value to set
 	 * @see PropertyAccessor#setPropertyValue(String, Object)
 	 */
-	public abstract void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
+	public abstract void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
 
 	/**
 	 * Gets the unproxified type of the given object.
 	 *
 	 * @param proxy a persistable object or proxy
 	 * @return the true class of the instance
-	 * @throws org.hibernate.HibernateException
 	 *
 	 * @see Hibernate#getClass(Object)
 	 */
 	@Nonnull
 	@SuppressWarnings("unchecked")
 	public <T> Class<T> getClass(@Nonnull Object proxy) {
-		return Hibernate.getClass(proxy);
+		try {
+			return Hibernate.getClass(proxy);
+		} catch (Exception ignored) {
+			// If the object is not present in the session, use the fallback solution for determining the type.
+			Class<?> clazz = proxy.getClass();
+			//
+			while (clazz.getSimpleName().contains("$$_javassist")) {
+				clazz = clazz.getSuperclass();
+			}
+			return (Class<T>) clazz;
+		}
 	}
 
 	/**
@@ -226,7 +202,7 @@ public abstract class AbstractDormancyUtils {
 	 * @return the persistent class, or {@code null}
 	 */
 	@Nullable
-	public abstract Class getMappedClass(@Nonnull ClassMetadata metadata);
+	public abstract Class<?> getMappedClass(@Nonnull ClassMetadata metadata);
 
 	/**
 	 * Checks if the given object is a {@code PersistentCollection}.
@@ -245,4 +221,14 @@ public abstract class AbstractDormancyUtils {
 	 * @see #isPersistentCollection(Object)
 	 */
 	public abstract boolean isInitializedPersistentCollection(@Nullable Object obj);
+
+	/**
+	 * Returns the property names of the given object.
+	 *
+	 * @param obj The object
+	 * @return The property names
+	 */
+	public Set<String> getPropertyNames(@Nonnull Object obj) {
+		return IntrospectorUtils.getMap(getClass(obj)).keySet();
+	}
 }

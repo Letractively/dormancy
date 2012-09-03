@@ -18,6 +18,7 @@ package at.schauer.gregor.dormancy.test;
 import at.schauer.gregor.commons.test.BeanTester;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
+import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import at.schauer.gregor.dormancy.entity.Employee;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -167,9 +169,17 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
 		Employee b = (Employee) query.setParameter("id", 2L).uniqueResult();
+		Employee c = b.getEmployees().iterator().next();
+
 		b = dormancy.clone(b);
 		b.getEmployees().clear();
 		dormancy.merge(b, query.uniqueResult());
+
+		// Manually delete the foreign key to avoid a constraint violation
+		List<Application> apps = sessionFactory.getCurrentSession().createQuery("SELECT a FROM Application a").list();
+		for (Application app : apps) {
+			app.getEmployees().remove(c);
+		}
 
 		assertEquals(true, service.load(Employee.class, 2L).getEmployees().isEmpty());
 		assertEquals(null, sessionFactory.getCurrentSession().get(Employee.class, 3L));

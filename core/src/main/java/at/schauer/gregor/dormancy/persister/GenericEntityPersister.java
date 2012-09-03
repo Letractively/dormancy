@@ -16,7 +16,6 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
-import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 
 import javax.annotation.Nonnull;
@@ -51,7 +50,7 @@ public abstract class GenericEntityPersister<C> extends AbstractEntityPersister<
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T extends C> T createObject(T trObj) {
-		return reuseObject ? trObj : BeanUtils.instantiateClass((Class<T>) Hibernate.getClass(trObj));
+		return reuseObject ? trObj : (T) BeanUtils.instantiateClass(dormancy.getUtils().getClass(trObj));
 	}
 
 	/**

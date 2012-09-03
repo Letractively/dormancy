@@ -30,5 +30,5 @@ public interface DynamicEntityPersister<C> extends EntityPersister<C> {
 	 * @param clazz the object type
 	 * @return {@code true} if the type is supported, {@code false} otherwise
 	 */
-	boolean supports(@Nonnull Class clazz);
+	boolean supports(@Nonnull Class<?> clazz);
 }
