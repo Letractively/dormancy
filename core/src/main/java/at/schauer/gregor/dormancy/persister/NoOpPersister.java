@@ -135,14 +135,14 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	}
 
 	/**
-	 * This implementation supports all types located in the following packages and its subpackages
+	 * This implementation supports primitive types, {@link Enum}s and all types located in the following packages and
+	 * its subpackages
 	 * <ul>
 	 * <li>com.sun</li>
 	 * <li>java</li>
 	 * <li>javax</li>
 	 * <li>sun</li>
 	 * </ul>
-	 * as well as primitive types.
 	 *
 	 * @param clazz the object type
 	 * @return {@code true} if the type is supported, {@code false} otherwise
@@ -155,7 +155,8 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 		String name = clazz.getName();
 		return name.startsWith("java.") || name.startsWith("javax.")
 				|| name.startsWith("com.sun.") || name.startsWith("sun.")
-				|| clazz.isPrimitive();
+				|| clazz.isPrimitive()
+				|| clazz.isEnum();
 	}
 
 	/**
