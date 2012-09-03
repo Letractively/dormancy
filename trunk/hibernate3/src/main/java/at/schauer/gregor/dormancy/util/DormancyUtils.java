@@ -19,8 +19,6 @@ import org.hibernate.EntityMode;
 import org.hibernate.Session;
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.metadata.ClassMetadata;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,31 +35,23 @@ public class DormancyUtils extends AbstractDormancyUtils {
 
 	@Nullable
 	@Override
-	public <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session) {
+	public <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean, @Nonnull Session session) {
 		Serializable identifier = metadata.getIdentifier(bean, EntityMode.POJO);
-		if (identifier == null && propertyAccessor != null) {
-			identifier = Serializable.class.cast(propertyAccessor.getPropertyValue(metadata.getIdentifierPropertyName()));
+		if (identifier == null) {
+			identifier = Serializable.class.cast(getPropertyValue(metadata, bean, metadata.getIdentifierPropertyName()));
 		}
 		return identifier;
 	}
 
 	@Nullable
 	@Override
-	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName) {
-		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
-		return propertyAccessor != null ? propertyAccessor.getPropertyValue(propertyName) : metadata.getPropertyValue(bean, propertyName, EntityMode.POJO);
+	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName) {
+		return IntrospectorUtils.getValue(bean, propertyName);
 	}
 
 	@Override
-	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
-		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
-		if (propertyAccessor != null) {
-			// Use Spring's PropertyAccessor to set the value directly
-			propertyAccessor.setPropertyValue(propertyName, value);
-		} else {
-			// If no PropertyAccessor is available, use Hibernate's ClassMetadata to set the value
-			metadata.setPropertyValue(bean, propertyName, value, EntityMode.POJO);
-		}
+	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		IntrospectorUtils.setValue(bean, propertyName, value);
 	}
 
 	/**
@@ -69,7 +59,7 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	 * @see ClassMetadata#getMappedClass(org.hibernate.EntityMode)
 	 */
 	@Override
-	public Class getMappedClass(@Nonnull ClassMetadata metadata) {
+	public Class<?> getMappedClass(@Nonnull ClassMetadata metadata) {
 		return metadata.getMappedClass(EntityMode.POJO);
 	}
 

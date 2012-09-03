@@ -21,6 +21,7 @@ import at.schauer.gregor.dormancy.persister.EntityPersister;
 import at.schauer.gregor.dormancy.service.Service;
 import at.schauer.gregor.dormancy.service.ServiceImpl;
 import org.aopalliance.aop.Advice;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -89,7 +90,7 @@ public class DormancyAdvisorTest {
 		assertEquals(true, pointcut.getClassFilter().matches(Service.class));
 		assertEquals(true, pointcut.getClassFilter().matches(Object.class));
 
-		Method method = MethodUtils.getAccessibleMethod(ServiceImpl.class, "doNothing", new Class[0]);
+		Method method = MethodUtils.getAccessibleMethod(ServiceImpl.class, "doNothing", ArrayUtils.EMPTY_CLASS_ARRAY);
 		assertEquals(false, pointcut.getMethodMatcher().matches(method, ServiceImpl.class));
 	}
 

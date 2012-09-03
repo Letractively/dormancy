@@ -15,6 +15,8 @@
  */
 package at.schauer.gregor.dormancy.persister;
 
+import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -43,7 +45,7 @@ import java.util.Map;
  *
  * @author Gregor Schauer
  */
-public class NoOpPersister<C> extends AbstractEntityPersister<C> {
+public class NoOpPersister<C> extends AbstractEntityPersister<C> implements DynamicEntityPersister<C> {
 	/**
 	 * @author Gregor Schauer
 	 * @since 1.0.2
@@ -61,6 +63,8 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> {
 	public static <C> NoOpPersister<C> getInstance() {
 		return NoOpEntityPersisterHolder.instance;
 	}
+
+	protected EntityPersisterConfiguration config;
 
 	/**
 	 * Returns the given object.
@@ -128,5 +132,51 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> {
 	@Override
 	public <T extends C> C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return trObj;
+	}
+
+	/**
+	 * This implementation supports all types located in the following packages and its subpackages
+	 * <ul>
+	 * <li>com.sun</li>
+	 * <li>java</li>
+	 * <li>javax</li>
+	 * <li>sun</li>
+	 * </ul>
+	 * as well as primitive types.
+	 *
+	 * @param clazz the object type
+	 * @return {@code true} if the type is supported, {@code false} otherwise
+	 */
+	@Override
+	public boolean supports(@Nonnull Class<?> clazz) {
+		if (getConfig().getRecursiveTraversal() != null && !getConfig().getRecursiveTraversal()) {
+			return false;
+		}
+		String name = clazz.getName();
+		return name.startsWith("java.") || name.startsWith("javax.")
+				|| name.startsWith("com.sun.") || name.startsWith("sun.")
+				|| clazz.isPrimitive();
+	}
+
+	/**
+	 * Returns the EntityPersisterConfiguration that should be used.
+	 *
+	 * @return the EntityPersisterConfiguration to use
+	 */
+	@Nonnull
+	public EntityPersisterConfiguration getConfig() {
+		if (config == null) {
+			config = new EntityPersisterConfiguration();
+		}
+		return config;
+	}
+
+	/**
+	 * Sets the EntityPersisterConfiguration that should be used.
+	 *
+	 * @param config the EntityPersisterConfiguration to use
+	 */
+	public void setConfig(@Nonnull EntityPersisterConfiguration config) {
+		this.config = config;
 	}
 }

@@ -17,6 +17,7 @@ package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Employee;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -113,7 +114,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 	protected Perform getAnnotation() {
 		String methodName = getMethodName();
-		return MethodUtils.getAccessibleMethod(this.getClass(), methodName, new Class[0]).getAnnotation(Perform.class);
+		return MethodUtils.getAccessibleMethod(getClass(), methodName, ArrayUtils.EMPTY_CLASS_ARRAY).getAnnotation(Perform.class);
 	}
 
 	protected static String getMethodName() {

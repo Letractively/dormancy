@@ -18,15 +18,19 @@ package at.schauer.gregor.dormancy.test;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.domain.DTO;
 import at.schauer.gregor.dormancy.entity.*;
+import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
+import at.schauer.gregor.dormancy.persister.NoOpPersister;
 import org.hibernate.FlushMode;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,6 +40,19 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  */
 public class SimpleDormancyTest extends AbstractDormancyTest {
+	private static Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
+
+	@Before
+	public void before() {
+		if (persisterMap == null) {
+			persisterMap = new HashMap<Class<?>, AbstractEntityPersister<?>>(dormancy.getPersisterMap());
+		} else {
+			dormancy.getPersisterMap().clear();
+			dormancy.getPersisterMap().putAll(persisterMap);
+		}
+		dormancy.addEntityPersister(NoOpPersister.getInstance(), DTO.class);
+	}
+
 	@Test
 	public void testNull() {
 		assertEquals(null, dormancy.clone(null));
@@ -156,6 +173,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	public void testUpdateReference() {
 		Session session = sessionFactory.getCurrentSession();
 		session.setFlushMode(FlushMode.MANUAL);
+		dormancy.getConfig().setAutoFlushing(false);
 
 		Query query = session.createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
 		Employee a = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());

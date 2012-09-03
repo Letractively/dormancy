@@ -21,9 +21,12 @@ import at.schauer.gregor.dormancy.container.Team;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.CollectionPersister;
+import at.schauer.gregor.dormancy.persister.NoOpPersister;
+import at.schauer.gregor.dormancy.persister.NullEntityPersister;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
 import org.hibernate.collection.PersistentSet;
 import org.junit.Test;
+import org.springframework.beans.BeanInstantiationException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -62,6 +65,8 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 	public void testCustomPersister() {
 		dormancy.getPersisterMap().clear();
 		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
+		dormancy.addEntityPersister(NoOpPersister.getInstance());
+		dormancy.addEntityPersister(NullEntityPersister.getInstance());
 		CollectionPersister<List> collectionPersister = new CollectionPersister<List>(dormancy);
 		collectionPersister.setSessionFactory(sessionFactory);
 		dormancy.addEntityPersister(collectionPersister);
@@ -91,9 +96,11 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 		assertSame(Book.class, merge.getBook().getClass());
 		assertSame(book, merge.getBook());
 
-		Box clone = dormancy.clone(merge);
-		assertSame(custom, clone);
-		assertSame(Book.class, clone.getBook().getClass());
-		assertSame(book, clone.getBook());
+		try {
+			Box clone = dormancy.clone(merge);
+			fail(BeanInstantiationException.class.getSimpleName() + " expected");
+		} catch (BeanInstantiationException e) {
+			// expected
+		}
 	}
 }

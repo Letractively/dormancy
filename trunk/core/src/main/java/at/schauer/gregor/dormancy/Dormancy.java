@@ -27,7 +27,6 @@ import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.type.Type;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.PropertyAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -45,6 +44,7 @@ import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Clones Hibernate entities and merges them into a {@link org.hibernate.Session}.<br/>
@@ -53,7 +53,7 @@ import java.util.Map;
  * @see at.schauer.gregor.dormancy.persister.EntityPersister
  */
 public class Dormancy extends AbstractEntityPersister<Object> implements ApplicationContextAware {
-	protected Map<Class<?>, AbstractEntityPersister> persisterMap;
+	protected Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
 	protected SessionFactory sessionFactory;
 	protected EntityPersisterConfiguration config;
 	protected AbstractDormancyUtils utils;
@@ -73,7 +73,6 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * If no {@link EntityPersisterConfiguration} is set, a default configuration is created.
 	 */
 	@PostConstruct
-	@SuppressWarnings("unchecked")
 	public void initialize() {
 		if (config == null) {
 			config = new EntityPersisterConfiguration();
@@ -94,19 +93,19 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	@SuppressWarnings("unchecked")
 	public <T> T clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		// Check if the object has already been processed
-		if (tree.containsKey(dbObj)) {
+		if (tree.containsKey(dbObj) || dbObj == null) {
 			return (T) tree.get(dbObj);
 		}
 
 		// Use an EntityPersister if possible
-		AbstractEntityPersister entityPersister = getEntityPersister(dbObj != null ? dbObj.getClass() : null);
+		AbstractEntityPersister<T> entityPersister = getEntityPersister((Class<T>) dbObj.getClass());
 		if (entityPersister != null) {
-			return (T) entityPersister.clone_(dbObj, tree);
+			return entityPersister.clone_(dbObj, tree);
 		}
 
 		// Verify that the given object is a non-null managed entity.
 		ClassMetadata metadata = utils.getClassMetadata(dbObj, sessionFactory);
-		if (metadata == null) {
+		if (metadata == null && !config.getRecursiveTraversal()) {
 			return dbObj;
 		}
 
@@ -116,36 +115,25 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Add the object to the adjacency list
 		tree.put(dbObj, trObj);
 
-		// Prepare the Hibernate utilities for gathering properties
-		Session session = sessionFactory.getCurrentSession();
-
-		// Retrieve the identifier of the persistent object
-		Serializable identifier = utils.getIdentifier(metadata, null, dbObj, session);
-
-		// If the identifier cannot be retrieved via getter, try to access it directly.
-		PropertyAccessor trPropertyAccessor = utils.forBeanPropertyAccess(trObj), dbPropertyAccessor = null;
-		if (identifier == null) {
-			dbPropertyAccessor = utils.forBeanPropertyAccess(dbObj);
-			trPropertyAccessor = utils.forBeanPropertyAccess(trObj);
-			try {
-				identifier = utils.getIdentifierValue(metadata, dbPropertyAccessor, dbObj, session);
-			} catch (PropertyValueException e) {
-				// If the identifier is still null, an exception is thrown indicating that the entity is not persistent
-			}
+		// If automatic flushing is enabled, flush the session to make sure that there are no pending changes
+		if (config.getAutoFlushing()) {
+			sessionFactory.getCurrentSession().flush();
 		}
 
 		// Process the properties
-		String[] propertyNames = metadata.getPropertyNames();
+		Set<String> propertyNames = utils.getPropertyNames(dbObj);
 		for (String propertyName : propertyNames) {
-			// Skipping transient and final fields, which should also be declared transient.
-			Field field = FieldUtils.getField(dbObj.getClass(), propertyName, true);
-			if (field != null
-					&& (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
-					|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers()))) {
-				continue;
+			if (config.getSkipTransient() || config.getSkipFinal()) {
+				// Skipping transient and final fields, which should also be declared transient.
+				Field field = FieldUtils.getField(dbObj.getClass(), propertyName, true);
+				if (field != null
+						&& (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
+						|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers()))) {
+					continue;
+				}
 			}
 
-			Object dbValue = utils.getPropertyValue(metadata, dbPropertyAccessor, dbObj, propertyName);
+			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyName);
 
 			// If the property (e.g., a lazy persistent collection) is not initialized, simply ignore it
 			if (!Hibernate.isInitialized(dbValue)) {
@@ -157,11 +145,11 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				dbValue = clone_((T) dbValue, tree);
 			}
 
-			utils.setPropertyValue(metadata, trPropertyAccessor, trObj, propertyName, dbValue);
+			utils.setPropertyValue(metadata, trObj, propertyName, dbValue);
 		}
 
 		// Finally, copy the identifier
-		utils.setPropertyValue(metadata, trPropertyAccessor, trObj, metadata.getIdentifierPropertyName(), identifier);
+		//utils.setPropertyValue(metadata, trObj, metadata.getIdentifierPropertyName(), identifier);
 
 		return trObj;
 	}
@@ -176,14 +164,14 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	@SuppressWarnings("unchecked")
 	public <T> T merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
 		// Check if the object has already been processed
-		if (tree.containsKey(trObj)) {
+		if (tree.containsKey(trObj) || trObj == null) {
 			return (T) tree.get(trObj);
 		}
 
 		// Use a EntityPersister if possible
-		AbstractEntityPersister entityPersister = getEntityPersister(trObj != null ? trObj.getClass() : null);
+		AbstractEntityPersister<T> entityPersister = getEntityPersister((Class<? extends T>) trObj.getClass());
 		if (entityPersister != null) {
-			return (T) entityPersister.merge_(trObj, tree);
+			return entityPersister.merge_(trObj, tree);
 		}
 
 		// Verify that the given object is a non-null managed entity.
@@ -196,21 +184,17 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		Session session = sessionFactory.getCurrentSession();
 
 		// Retrieve the identifier of the persistent object
-		Serializable identifier = utils.getIdentifier(metadata, null, trObj, session);
+		Serializable identifier = utils.getIdentifier(metadata, trObj, session);
 
 		// If the identifier cannot be retrieved via getter, try to access it directly.
 		if (identifier == null) {
-			identifier = Serializable.class.cast(utils.getIdentifier(metadata, utils.forBeanPropertyAccess(trObj), trObj, session));
-
 			// If the object has no identifier, it is considered to be new
-			if (identifier == null) {
-				if (config.getSaveNewEntities()) {
-					// If desired, try to persist the object
-					identifier = session.save(trObj);
-				} else {
-					// Otherwise throw an exception indicating that session.save() should be called
-					throwNullIdentifierException(trObj, session);
-				}
+			if (config.getSaveNewEntities()) {
+				// If desired, try to persist the object
+				identifier = session.save(trObj);
+			} else {
+				// Otherwise throw an exception indicating that session.save() should be called
+				throwNullIdentifierException(trObj, session);
 			}
 		}
 
@@ -247,14 +231,14 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	@SuppressWarnings("unchecked")
 	public <T> T merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		// Check if the object has already been processed
-		if (tree.containsKey(trObj)) {
+		if (tree.containsKey(trObj) || dbObj == null) {
 			return (T) tree.get(trObj);
 		}
 
 		// Use an EntityPersister if possible
-		AbstractEntityPersister entityPersister = getEntityPersister(trObj != null ? trObj.getClass() : null);
+		AbstractEntityPersister<T> entityPersister = getEntityPersister(trObj != null ? (Class<? extends T>) trObj.getClass() : null);
 		if (entityPersister != null) {
-			return (T) entityPersister.merge_(trObj, dbObj, tree);
+			return entityPersister.merge_(trObj, dbObj, tree);
 		}
 
 		// Verify that the given object is a non-null managed entity.
@@ -270,22 +254,19 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		Session session = sessionFactory.getCurrentSession();
 
 		// Retrieve the identifier of the persistent object
-		Serializable identifier = utils.getIdentifier(metadata, null, dbObj, session);
+		Serializable identifier = utils.getIdentifier(metadata, dbObj, session);
 
 		// If the identifier cannot be retrieved via getter, try to access it directly.
-		PropertyAccessor trPropertyAccessor = null, dbPropertyAccessor = null;
 		if (identifier == null) {
-			dbPropertyAccessor = utils.forBeanPropertyAccess(dbObj);
-			identifier = utils.getIdentifierValue(metadata, dbPropertyAccessor, dbObj, session);
+			identifier = utils.getIdentifierValue(metadata, dbObj, session);
 			// If the identifier is still null, an exception is thrown indicating that the entity is not persistent
-			trPropertyAccessor = utils.forBeanPropertyAccess(trObj);
 		}
 
 		// Compare the version property (if present and enabled)
 		String[] propertyNames = metadata.getPropertyNames();
 		if (config.getVersionChecking() && metadata.isVersioned()) {
-			Object dbValue = utils.getPropertyValue(metadata, dbPropertyAccessor, dbObj, propertyNames[metadata.getVersionProperty()]);
-			Object trValue = utils.getPropertyValue(metadata, trPropertyAccessor, trObj, propertyNames[metadata.getVersionProperty()]);
+			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyNames[metadata.getVersionProperty()]);
+			Object trValue = utils.getPropertyValue(metadata, trObj, propertyNames[metadata.getVersionProperty()]);
 			if (dbValue != null && !dbValue.equals(trValue)) {
 				throw new StaleObjectStateException(metadata.getEntityName(), identifier);
 			}
@@ -299,8 +280,8 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			}
 
 			String propertyName = propertyNames[i];
-			Object trValue = utils.getPropertyValue(metadata, trPropertyAccessor, trObj, propertyName);
-			Object dbValue = utils.getPropertyValue(metadata, dbPropertyAccessor, dbObj, propertyName);
+			Object trValue = utils.getPropertyValue(metadata, trObj, propertyName);
+			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyName);
 			Type type = metadata.getPropertyType(propertyName);
 
 			// Lazily loaded collections are not copied
@@ -333,11 +314,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				} else if (!config.getSaveAssociationsProperties()) {
 					// Get the identifier of the associated transient object
 					ClassMetadata valueMetadata = utils.getClassMetadata(dbValue, sessionFactory);
-					PropertyAccessor trValuePropertyAccessor = utils.forBeanPropertyAccess(trValue);
-					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValuePropertyAccessor, trValue, session));
+					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValue, session));
 					// Get the identifier of the associated persistent object
-					PropertyAccessor dbValuePropertyAccessor = utils.forBeanPropertyAccess(dbValue);
-					Serializable dbValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, dbValuePropertyAccessor, dbValue, session));
+					Serializable dbValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, dbValue, session));
 
 					// If the transient object is new
 					if (trValueId == null) {
@@ -359,7 +338,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				}
 			}
 
-			utils.setPropertyValue(metadata, dbPropertyAccessor, dbObj, propertyName, trValue);
+			utils.setPropertyValue(metadata, dbObj, propertyName, trValue);
 		}
 
 		return dbObj;
@@ -411,9 +390,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @return the registered EntityPersisters
 	 */
 	@Nonnull
-	public Map<Class<?>, AbstractEntityPersister> getPersisterMap() {
+	public Map<Class<?>, AbstractEntityPersister<?>> getPersisterMap() {
 		if (persisterMap == null) {
-			persisterMap = new LinkedHashMap<Class<?>, AbstractEntityPersister>();
+			persisterMap = new LinkedHashMap<Class<?>, AbstractEntityPersister<?>>();
 		}
 		return persisterMap;
 	}
@@ -423,7 +402,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 *
 	 * @param persisterMap the entity persister mapping
 	 */
-	public void setPersisterMap(@Nonnull Map<Class<?>, AbstractEntityPersister> persisterMap) {
+	public void setPersisterMap(@Nonnull Map<Class<?>, AbstractEntityPersister<?>> persisterMap) {
 		this.persisterMap = persisterMap;
 	}
 
@@ -435,28 +414,28 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @return the EntityPersister or {@code null} if there is none available.
 	 */
 	@Nullable
-	public AbstractEntityPersister getEntityPersister(@Nullable Class<?> clazz) {
-		AbstractEntityPersister entityPersister = getPersisterMap().get(clazz);
-		if (entityPersister == null && clazz != null) {
-			for (Map.Entry<Class<?>, AbstractEntityPersister> entry : getPersisterMap().entrySet()) {
+	@SuppressWarnings("unchecked")
+	public <T> AbstractEntityPersister<T> getEntityPersister(@Nullable Class<? extends T> clazz) {
+		AbstractEntityPersister<T> entityPersister = (AbstractEntityPersister<T>) getPersisterMap().get(clazz);
+		if (entityPersister == null && clazz != null && !getPersisterMap().containsKey(clazz)) {
+			for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : getPersisterMap().entrySet()) {
 				if (entry.getKey().isAssignableFrom(clazz)) {
-					entityPersister = entry.getValue();
-					getPersisterMap().put(clazz, entityPersister);
+					entityPersister = (AbstractEntityPersister<T>) entry.getValue();
 					break;
 				}
 			}
 
 			if (entityPersister == null) {
-				for (Map.Entry<Class<?>, AbstractEntityPersister> entry : persisterMap.entrySet()) {
+				for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : persisterMap.entrySet()) {
 					if (entry.getValue() instanceof DynamicEntityPersister) {
-						if (((DynamicEntityPersister) entry.getValue()).supports(clazz)) {
-							entityPersister = entry.getValue();
-							getPersisterMap().put(clazz, entityPersister);
+						if (((DynamicEntityPersister<?>) entry.getValue()).supports(clazz)) {
+							entityPersister = (AbstractEntityPersister<T>) entry.getValue();
 							break;
 						}
 					}
 				}
 			}
+			getPersisterMap().put(clazz, entityPersister);
 		}
 		return entityPersister;
 	}
@@ -466,7 +445,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		initialize();
 		// Retrieve all AbstractEntityPersisters from the application context and register them
 		Map<String, AbstractEntityPersister> map = applicationContext.getBeansOfType(AbstractEntityPersister.class);
-		for (AbstractEntityPersister entityPersister : map.values()) {
+		for (AbstractEntityPersister<?> entityPersister : map.values()) {
 			addEntityPersister(entityPersister);
 		}
 	}
@@ -482,15 +461,15 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @param types           the types of objects supported by the EntityPersister (may be {@code null})
 	 * @see #addEntityPersister(Class, Class[])
 	 */
-	public void addEntityPersister(@Nonnull AbstractEntityPersister entityPersister, @Nullable Class... types) {
+	public void addEntityPersister(@Nonnull AbstractEntityPersister<?> entityPersister, @Nullable Class<?>... types) {
 		if (ArrayUtils.isNotEmpty(entityPersister.getSupportedTypes())) {
-			for (Class type : entityPersister.getSupportedTypes()) {
+			for (Class<?> type : entityPersister.getSupportedTypes()) {
 				getPersisterMap().put(type, entityPersister);
 			}
 		}
 		if (types != null) {
 			// Register the given types for advanced customization
-			for (Class type : types) {
+			for (Class<?> type : types) {
 				getPersisterMap().put(type, entityPersister);
 			}
 		}
@@ -509,9 +488,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @param types                the types of objects supported by the EntityPersister (may be {@code null})
 	 * @see #addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, Class[])
 	 */
-	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class... types) {
+	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class<?>... types) {
 		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
-		AbstractEntityPersister entityPersister = BeanUtils.instantiateClass(constructor, this);
+		AbstractEntityPersister<?> entityPersister = BeanUtils.instantiateClass(constructor, this);
 		if (entityPersister instanceof AbstractContainerPersister) {
 			AbstractContainerPersister.class.cast(entityPersister).setSessionFactory(sessionFactory);
 		}

@@ -7,7 +7,7 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.3</version>
+	<version>1.1.0</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
@@ -239,7 +239,7 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.14</version>
+				<version>1.2.17</version>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
@@ -269,7 +269,7 @@
 			<dependency>
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.0-api</artifactId>
-				<version>1.0.0.Final</version>
+				<version>1.0.1.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hsqldb</groupId>
@@ -452,7 +452,7 @@
 
 
 	<properties>
-		<dormancy.version>1.0.3</dormancy.version>
+		<dormancy.version>1.1.0</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>

@@ -16,12 +16,8 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
-import at.schauer.gregor.dormancy.beans.HibernatePropertyAccessor;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.PropertyNotFoundException;
-import org.hibernate.property.Getter;
-import org.hibernate.property.PropertyAccessor;
-import org.hibernate.property.Setter;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -44,7 +40,6 @@ import java.util.Set;
  */
 public class SimplePersister<C> extends FieldFilterPersister<C> implements DynamicEntityPersister<C> {
 	protected List<String> packageNames = new ArrayList<String>();
-	protected PropertyAccessor propertyAccessor;
 
 	@Inject
 	public SimplePersister(@Nonnull Dormancy dormancy) {
@@ -69,14 +64,11 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 		T trObj = createObject(dbObj);
 		tree.put(dbObj, trObj);
 
-		PropertyAccessor propertyAccessor = getPropertyAccessor();
 		for (Field field : fields) {
 			try {
-				Getter getter = propertyAccessor.getGetter(dbObj.getClass(), field.getName());
-				Setter setter = propertyAccessor.getSetter(trObj.getClass(), field.getName());
-				Object dbVal = getter.get(dbObj);
+				Object dbVal = dormancy.getUtils().getPropertyValue(null, dbObj, field.getName());
 				Object trVal = dormancy.clone_(dbVal, tree);
-				setter.set(trObj, trVal, null);
+				dormancy.getUtils().setPropertyValue(null, trObj, field.getName(), trVal);
 			} catch (PropertyNotFoundException e) {
 				// Ignore properties that cannot be copied i.e., because they are added at runtime by Javassist
 			}
@@ -93,38 +85,12 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 		tree.put(trObj, dbObj);
 
 		Set<Field> fields = filter(dbObj);
-		PropertyAccessor propertyAccessor = getPropertyAccessor();
 		for (Field field : fields) {
-			Getter getter = propertyAccessor.getGetter(trObj.getClass(), field.getName());
-			Setter setter = propertyAccessor.getSetter(dbObj.getClass(), field.getName());
-			Object trVal = getter.get(trObj);
+			Object trVal = dormancy.getUtils().getPropertyValue(null, trObj, field.getName());
 			Object dbVal = dormancy.merge_(trVal, tree);
-			setter.set(dbObj, dbVal, null);
+			dormancy.getUtils().setPropertyValue(null, dbObj, field.getName(), dbVal);
 		}
 		return dbObj;
-	}
-
-	/**
-	 * Returns the PropertyAccessor used for reading and writing fields.<br/>
-	 * If no PropertyAccessor is set, a HibernatePropertyAccessor is returned.
-	 *
-	 * @return the PropertyAccessor
-	 */
-	@Nonnull
-	public PropertyAccessor getPropertyAccessor() {
-		if (propertyAccessor == null) {
-			propertyAccessor = new HibernatePropertyAccessor();
-		}
-		return propertyAccessor;
-	}
-
-	/**
-	 * Sets the PropertyAccessor to use for reading and writing fields.
-	 *
-	 * @param propertyAccessor the PropertyAccessor to use
-	 */
-	public void setPropertyAccessor(@Nullable PropertyAccessor propertyAccessor) {
-		this.propertyAccessor = propertyAccessor;
 	}
 
 	/**
@@ -138,7 +104,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 	}
 
 	@Override
-	public boolean supports(@Nonnull Class clazz) {
+	public boolean supports(@Nonnull Class<?> clazz) {
 		for (String packageName : packageNames) {
 			if (clazz.getName().startsWith(packageName)) {
 				return true;

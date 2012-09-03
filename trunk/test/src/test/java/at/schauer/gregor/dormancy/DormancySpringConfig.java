@@ -70,8 +70,6 @@ public class DormancySpringConfig {
 	public DataSource dataSource() {
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
 		return builder.setType(EmbeddedDatabaseType.HSQL).build();
-		// return new SingleConnectionDataSource("jdbc:hsqldb:mem:db_" + System.nanoTime(), true);
-		// return new SingleConnectionDataSource("jdbc:hsqldb:file:db/db;shutdown=true;hsqldb.write_delay=0", true);
 	}
 
 	@Bean
@@ -84,8 +82,8 @@ public class DormancySpringConfig {
 		Properties properties = new Properties();
 		properties.setProperty("hibernate.dialect", HSQLDialect.class.getName());
 		properties.setProperty("hibernate.show_sql", "false");
-		properties.setProperty("current_session_context_class", "thread");
 		properties.setProperty("hibernate.hbm2ddl.auto", "create");
+		properties.setProperty("current_session_context_class", "thread");
 		properties.setProperty("javax.persistence.validation.mode", "none");
 		return properties;
 	}

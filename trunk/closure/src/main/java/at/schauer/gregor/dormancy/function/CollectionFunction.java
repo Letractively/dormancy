@@ -50,7 +50,7 @@ public class CollectionFunction<E extends Collection<D>, D> extends DelegateFunc
 	 */
 	@Nonnull
 	@SuppressWarnings("unchecked")
-	public E createCollection(@Nonnull Collection src) {
+	public E createCollection(@Nonnull Collection<?> src) {
 		return (E) CollectionFactory.createApproximateCollection(src, src.size());
 	}
 }
