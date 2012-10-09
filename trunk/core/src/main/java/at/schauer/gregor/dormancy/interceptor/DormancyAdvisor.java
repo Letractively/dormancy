@@ -85,6 +85,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		this.dormancy = dormancy;
 	}
 
+	@Nullable
 	@SuppressWarnings("unchecked")
 	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable<?> callable) throws Throwable {
 		// If the method to invoke takes no parameters and does not return anything, directly invoke it
@@ -185,6 +186,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		});
 	}
 
+	@Nonnull
 	@Override
 	public Pointcut getPointcut() {
 		if (pointcut == null) {
@@ -245,7 +247,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	 *
 	 * @param annotationType the type of the annotation
 	 */
-	public void setAnnotationType(Class<? extends Annotation> annotationType) {
+	public void setAnnotationType(@Nonnull Class<? extends Annotation> annotationType) {
 		this.annotationType = annotationType;
 	}
 }

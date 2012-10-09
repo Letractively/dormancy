@@ -20,6 +20,7 @@ import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.*;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
@@ -42,21 +43,23 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.SQLException;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Clones Hibernate entities and merges them into a {@link org.hibernate.Session}.<br/>
+ * Clones Hibernate entities and merges them into a {@link Session}.<br/>
  *
  * @author Gregor Schauer
- * @see at.schauer.gregor.dormancy.persister.EntityPersister
+ * @see EntityPersister
  */
 public class Dormancy extends AbstractEntityPersister<Object> implements ApplicationContextAware {
 	protected Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
 	protected SessionFactory sessionFactory;
 	protected EntityPersisterConfiguration config;
 	protected AbstractDormancyUtils utils;
+	protected Logger logger = Logger.getLogger(Dormancy.class);
 	protected boolean registerDefaultEntityPersisters = true;
 
 	public Dormancy() {
@@ -78,6 +81,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			config = new EntityPersisterConfiguration();
 		}
 		if (registerDefaultEntityPersisters) {
+			addEntityPersister(ArrayPersister.class);
 			addEntityPersister(CollectionPersister.class);
 			addEntityPersister(MapPersister.class);
 		}
@@ -100,6 +104,16 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Use an EntityPersister if possible
 		AbstractEntityPersister<T> entityPersister = getEntityPersister((Class<T>) dbObj.getClass());
 		if (entityPersister != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("Using %s for %s", entityPersister.getClass().getSimpleName(), dbObj));
+				if (logger.isTraceEnabled()) {
+					try {
+						logger.trace(org.apache.commons.beanutils.BeanUtils.describe(dbObj));
+					} catch (Exception e) {
+						// ignore
+					}
+				}
+			}
 			return entityPersister.clone_(dbObj, tree);
 		}
 
@@ -145,11 +159,11 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				dbValue = clone_((T) dbValue, tree);
 			}
 
+			if (logger.isTraceEnabled()) {
+				logger.trace(String.format("Setting property %s of %s to %s", propertyName, trObj, dbValue));
+			}
 			utils.setPropertyValue(metadata, trObj, propertyName, dbValue);
 		}
-
-		// Finally, copy the identifier
-		//utils.setPropertyValue(metadata, trObj, metadata.getIdentifierPropertyName(), identifier);
 
 		return trObj;
 	}
@@ -171,6 +185,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Use a EntityPersister if possible
 		AbstractEntityPersister<T> entityPersister = getEntityPersister((Class<? extends T>) trObj.getClass());
 		if (entityPersister != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("Using %s for %s", entityPersister.getClass().getSimpleName(), trObj));
+			}
 			return entityPersister.merge_(trObj, tree);
 		}
 
@@ -238,6 +255,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Use an EntityPersister if possible
 		AbstractEntityPersister<T> entityPersister = getEntityPersister(trObj != null ? (Class<? extends T>) trObj.getClass() : null);
 		if (entityPersister != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("Using %s for %s", entityPersister.getClass().getSimpleName(), trObj));
+			}
 			return entityPersister.merge_(trObj, dbObj, tree);
 		}
 
@@ -338,6 +358,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				}
 			}
 
+			if (logger.isTraceEnabled()) {
+				logger.trace(String.format("Setting property %s of %s to %s", propertyName, dbObj, trValue));
+			}
 			utils.setPropertyValue(metadata, dbObj, propertyName, trValue);
 		}
 
@@ -375,7 +398,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	}
 
 	/**
-	 * Sets a flag indicating that the default {@link at.schauer.gregor.dormancy.persister.EntityPersister}s should be initialized upon initialization.
+	 * Sets a flag indicating that the default {@link EntityPersister}s should be initialized upon initialization.
 	 *
 	 * @param registerDefaultEntityPersisters
 	 *         {@code true} if the default EntityPersisters should be registered, {@code false} otherwise
@@ -407,7 +430,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	}
 
 	/**
-	 * Returns an {@link at.schauer.gregor.dormancy.persister.EntityPersister} that is capable of processing instances
+	 * Returns an {@link EntityPersister} that is capable of processing instances
 	 * of the given type.
 	 *
 	 * @param clazz the type of the object to process
@@ -418,12 +441,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	public <T> AbstractEntityPersister<T> getEntityPersister(@Nullable Class<? extends T> clazz) {
 		AbstractEntityPersister<T> entityPersister = (AbstractEntityPersister<T>) getPersisterMap().get(clazz);
 		if (entityPersister == null && clazz != null && !getPersisterMap().containsKey(clazz)) {
-			for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : getPersisterMap().entrySet()) {
-				if (entry.getKey().isAssignableFrom(clazz)) {
-					entityPersister = (AbstractEntityPersister<T>) entry.getValue();
-					break;
-				}
-			}
+			entityPersister = findEntityPersister(clazz);
 
 			if (entityPersister == null) {
 				for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : persisterMap.entrySet()) {
@@ -435,9 +453,31 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 					}
 				}
 			}
+			if (logger.isDebugEnabled()) {
+				logger.trace(String.format("Registering %s for type %s", entityPersister, clazz.getName()));
+			}
 			getPersisterMap().put(clazz, entityPersister);
 		}
 		return entityPersister;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> AbstractEntityPersister<T> findEntityPersister(Class<? extends T> clazz) {
+		try {
+			for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : getPersisterMap().entrySet()) {
+				if (entry.getKey().isAssignableFrom(clazz)) {
+					return (AbstractEntityPersister<T>) entry.getValue();
+				}
+			}
+		} catch (ConcurrentModificationException e) {
+			/*
+			 * The persister map is not synchronized because of the performance requirements.
+			 * Thus, a ConcurrentModificationException may rarely happen while iterating through it.
+			 * Therefore, the exception is ignored and Dormancy attempts to retry finding an appropriate EntityPersister.
+			 */
+			return findEntityPersister(clazz);
+		}
+		return null;
 	}
 
 	@Override
