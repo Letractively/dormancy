@@ -62,6 +62,23 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test
+	public void testPrimitive() {
+		Long l = Long.MAX_VALUE;
+		Double pi = Math.PI;
+		assertSame(true, dormancy.clone(true));
+		assertSame(5, dormancy.clone(5));
+		assertSame(pi, dormancy.clone(pi));
+		assertSame("", dormancy.clone(""));
+		assertSame(l, dormancy.clone(l));
+
+		assertSame(true, dormancy.merge(true));
+		assertSame(5, dormancy.merge(5));
+		assertSame(pi, dormancy.merge(pi));
+		assertSame("", dormancy.merge(""));
+		assertSame(l, dormancy.merge(l));
+	}
+
+	@Test
 	public void testNonEntity() throws SQLException {
 		DTO a = new DTO();
 		assertSame(a, dormancy.clone(a));

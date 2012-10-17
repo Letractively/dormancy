@@ -84,6 +84,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			addEntityPersister(ArrayPersister.class);
 			addEntityPersister(CollectionPersister.class);
 			addEntityPersister(MapPersister.class);
+			addEntityPersister(NoOpPersister.class);
 		}
 	}
 
@@ -530,7 +531,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 */
 	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class<?>... types) {
 		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
-		AbstractEntityPersister<?> entityPersister = BeanUtils.instantiateClass(constructor, this);
+		AbstractEntityPersister<?> entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : BeanUtils.instantiateClass(entityPersisterClass);
 		if (entityPersister instanceof AbstractContainerPersister) {
 			AbstractContainerPersister.class.cast(entityPersister).setSessionFactory(sessionFactory);
 		}
