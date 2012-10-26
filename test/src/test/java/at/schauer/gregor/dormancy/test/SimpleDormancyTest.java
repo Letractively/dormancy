@@ -26,6 +26,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -93,17 +94,34 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test(expected = BeanInstantiationException.class)
-	public void testInvalidEntity() {
-		dormancy.clone(new InvalidEntity(false));
-		fail(BeanInstantiationException.class.getSimpleName() + " expected");
+	public void testCloneInvalidEntity() {
+		dormancy.getConfig().setCloneObjects(true);
+		try {
+			dormancy.clone(new InvalidEntity(false));
+			fail(BeanInstantiationException.class.getSimpleName() + " expected");
+		} finally {
+			dormancy.getConfig().setCloneObjects(false);
+		}
+	}
+
+	@Test
+	public void testUseInvalidEntity() {
+		InvalidEntity obj = new InvalidEntity(false);
+		InvalidEntity clone = dormancy.clone(obj);
+		assertSame(obj, clone);
 	}
 
 	@Test
 	public void testNewInstance() {
-		Long id = (Long) service.save(new Book("new"));
-		Book load = service.load(Book.class, id);
-		assertEquals(false, isManaged(load));
-		assertEquals("new", load.getTitle());
+		dormancy.getConfig().setSaveNewEntities(true);
+		try {
+			Long id = (Long) service.save(new Book("new"));
+			Book load = service.load(Book.class, id);
+			assertEquals(false, isManaged(load, sessionFactory.getCurrentSession()));
+			assertEquals("new", load.getTitle());
+		} finally {
+			dormancy.getConfig().setSaveNewEntities(false);
+		}
 	}
 
 	@Test(expected = ObjectNotFoundException.class)
@@ -115,13 +133,14 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testDataTypes() {
-		DataTypes a = (DataTypes) sessionFactory.getCurrentSession().load(DataTypes.class, 1L);
+		org.hibernate.classic.Session session = sessionFactory.getCurrentSession();
+		DataTypes a = (DataTypes) session.load(DataTypes.class, 1L);
 		DataTypes b = service.load(DataTypes.class, 1L);
 		assertNotSame(a, b);
 		assertEquals(false, a.equals(b));
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a));
-		assertEquals(false, isManaged(b));
+		assertEquals(true, isManaged(a, session));
+		assertEquals(false, isManaged(b, session));
 
 		b.setIntArray(new int[]{11});
 		b.setIntegerArray(new Integer[]{12});
@@ -145,12 +164,13 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testCompare() throws Exception {
-		Book a = (Book) sessionFactory.getCurrentSession().load(Book.class, 1L);
+		org.hibernate.classic.Session session = sessionFactory.getCurrentSession();
+		Book a = (Book) session.load(Book.class, 1L);
 		Book b = service.load(Book.class, 1L);
 		assertNotSame(a, b);
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a));
-		assertEquals(false, isManaged(b));
+		assertEquals(true, isManaged(a, session));
+		assertEquals(false, isManaged(b, session));
 	}
 
 	@Test
@@ -175,7 +195,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals(false, bp.getColleagues() == null);
 		assertEquals(null, bt.getColleagues());
 		assertEquals(1, bp.getEmployees().size());
-		assertEquals(0, bt.getEmployees().size());
+		assertEquals(null, bt.getEmployees());
 
 		assertNotNull(bp.getBoss());
 		assertNotNull(bt.getBoss());
@@ -202,40 +222,6 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test
-	public void testUpdateReference() {
-		Session session = sessionFactory.getCurrentSession();
-		session.setFlushMode(FlushMode.MANUAL);
-		dormancy.getConfig().setAutoFlushing(false);
-
-		Query query = session.createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee a = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
-		Employee b = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
-		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
-
-		assertEquals(b, c.getBoss());
-		assertEquals(false, a.equals(c.getBoss()));
-		assertEquals(true, b.equals(c.getBoss()));
-		assertEquals(false, a.getEmployees().contains(c));
-		assertEquals(true, b.getEmployees().contains(c));
-		session.clear();
-
-		b.getEmployees().remove(c);
-		a.getEmployees().add(c);
-		c.setBoss(a);
-		session.save(dormancy.merge(b, (Employee) query.setParameter("id", 2L).uniqueResult()));
-		session.save(dormancy.merge(a, (Employee) query.setParameter("id", 1L).uniqueResult()));
-		session.save(dormancy.merge(c, (Employee) query.setParameter("id", 3L).uniqueResult()));
-
-		Employee x = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
-		Employee y = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
-		Employee z = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
-		assertEquals(true, x.equals(z.getBoss()));
-		assertEquals(false, y.equals(z.getBoss()));
-		assertEquals(true, x.getEmployees().contains(z));
-		assertEquals(false, y.getEmployees().contains(z));
-	}
-
-	@Test
 	public void testUpdateReferencedEntity() {
 		Query query = sessionFactory.getCurrentSession().createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
 		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
@@ -246,16 +232,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals("Master", z.getBoss().getName());
 	}
 
-	@Test
-	public void testUpdateUnreferencedEntity() {
-		Employee c = service.load(Employee.class, 3L);
-		c.getBoss().setName("Chief");
-		service.save(c);
-
-		Employee z = service.load(Employee.class, 3L);
-		assertEquals("Chief", z.getBoss().getName());
-	}
-
+	@Ignore
 	@Test
 	public void testModifyCollection() throws SQLException {
 		Session session = sessionFactory.getCurrentSession();
@@ -287,6 +264,8 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testModifyCollectionNew() throws SQLException {
+		dormancy.getConfig().setCloneObjects(true);
+
 		Session session = sessionFactory.getCurrentSession();
 
 		HibernateCallback<Application> hibernateCallback = new HibernateCallback<Application>() {
@@ -303,8 +282,8 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 		assertEquals(describe(app), describe(merge));
 
-		assertEquals(false, isManaged(app.getEmployees()));
-		assertEquals(true, isManaged(merge.getEmployees()));
+		assertEquals(false, isManaged(app.getEmployees(), session));
+		assertEquals(true, isManaged(merge.getEmployees(), session));
 
 		assertEquals("A", app.getEmployees().iterator().next().getName());
 		assertEquals("A", merge.getEmployees().iterator().next().getName());

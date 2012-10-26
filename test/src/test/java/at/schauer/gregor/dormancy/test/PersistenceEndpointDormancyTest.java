@@ -30,12 +30,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 
 /**
  * @author Gregor Schauer
@@ -52,7 +51,7 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.next(team);
-		assertSame(LinkedHashSet.class, pass.getEmployees().get(0).getEmployees().getClass());
+		assertEquals(null, pass.getEmployees().get(0).getEmployees());
 	}
 
 	@Test
@@ -66,7 +65,7 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.pass(team);
-		assertSame(LinkedHashSet.class, pass.getEmployees().get(0).getEmployees().getClass());
+		assertEquals(null, pass.getEmployees().get(0).getEmployees());
 		assertNotSame(team.getEmployees().get(0), pass.getEmployees().get(0));
 	}
 

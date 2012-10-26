@@ -44,39 +44,41 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 				criteria.add(Restrictions.eq("id", 2L));
 				criteria.setFetchMode("employees", FetchMode.JOIN);
 				Employee employee = (Employee) criteria.uniqueResult();
-				assertEquals(true, isManaged(employee));
+				assertEquals(true, isManaged(employee, session));
 				return employee;
 			}
 		};
 
-		Employee c = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 3L);
-		assertEquals(true, isManaged(c));
+		Session session = sessionFactory.getCurrentSession();
+		Employee c = (Employee) session.get(Employee.class, 3L);
+		assertEquals(true, isManaged(c, session));
 		c = dormancy.clone(c);
-		assertEquals(false, isManaged(c));
+		assertEquals(false, isProxy(c, session));
+		session.clear();
 
-		Employee b = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
-		assertEquals(true, isManaged(b));
+		Employee b = (Employee) session.get(Employee.class, 2L);
+		assertEquals(true, isManaged(b, session));
 		b = dormancy.clone(b);
-		assertEquals(false, isManaged(b));
-		assertNotNull(b.getEmployees());
-		assertEquals(0, b.getEmployees().size());
+		assertEquals(false, isProxy(b, session));
+		assertEquals(null, b.getEmployees());
+		session.clear();
 
-		b = callback.doInHibernate(sessionFactory.getCurrentSession());
-		assertEquals(true, isManaged(b));
+		b = callback.doInHibernate(session);
+		assertEquals(true, isManaged(b, session));
 		b = dormancy.clone(b);
-		assertEquals(false, isManaged(b));
+		assertEquals(false, isProxy(b, session));
 		assertNotNull(b.getEmployees());
 		assertEquals(1, b.getEmployees().size());
 		assertEquals(true, b.getEmployees().contains(c));
 
 		b.setName("Leader");
 		b.getEmployees().iterator().next().setName("Overseer");
-		sessionFactory.getCurrentSession().clear();
+		session.clear();
 
 		b = dormancy.merge(b, callback);
-		sessionFactory.getCurrentSession().flush();
+		session.flush();
 		assertNotNull(b);
-		assertEquals(true, isManaged(b));
+		assertEquals(true, isManaged(b, session));
 		assertEquals(1, b.getEmployees().size());
 		assertEquals(b.getName(), b.getName());
 		assertEquals("Overseer", b.getEmployees().iterator().next().getName());

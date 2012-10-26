@@ -47,10 +47,6 @@ public class DormancySpringConfig {
 	@Bean
 	public Dormancy dormancy() {
 		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
-		config.setDeleteRemovedEntities(false);
-		config.setSaveAssociationsProperties(true);
-		config.setSaveNewEntities(true);
-		config.setVersionChecking(true);
 		Dormancy dormancy = new Dormancy();
 		dormancy.setConfig(config);
 		return dormancy;

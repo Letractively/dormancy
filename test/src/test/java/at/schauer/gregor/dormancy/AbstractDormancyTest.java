@@ -93,16 +93,16 @@ public abstract class AbstractDormancyTest {
 		}
 	}
 
-	public boolean isManaged(@Nonnull Object entity) {
-		return isManaged(entity, sessionFactory.getCurrentSession());
+	public static boolean isManaged(@Nonnull Object entity, @Nonnull Session session) {
+		return isProxy(entity, session) || session.isOpen() && session.contains(entity);
 	}
 
-	public static boolean isManaged(@Nonnull Object entity, @Nonnull Session session) {
+	public static boolean isProxy(Object entity, Session session) {
 		if (entity instanceof HibernateProxy || entity instanceof PersistentCollection) {
 			return true;
 		} else if (entity instanceof Iterable) {
 			for (Object elem : (Iterable<?>) entity) {
-				if (isManaged(elem, session)) {
+				if (isProxy(elem, session)) {
 					return true;
 				}
 			}
@@ -119,7 +119,7 @@ public abstract class AbstractDormancyTest {
 				}
 			}
 		}
-		return session.isOpen() && session.contains(entity);
+		return false;
 	}
 
 	@Nonnull

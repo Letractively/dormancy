@@ -65,7 +65,7 @@ public class DormancyFunctionTest {
 		FunctionContext<Employee> context = cloneFunction.apply(new FunctionContext<Employee>(employee));
 		assertEquals(false, context.getTree().isEmpty());
 		assertEquals(true, AbstractDormancyTest.isManaged(employee, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(context.getObj(), session));
+		assertEquals(false, AbstractDormancyTest.isProxy(context.getObj(), session));
 
 		context = mergeFunction.apply(new FunctionContext<Employee>(context.getObj()));
 		assertEquals(false, context.getTree().isEmpty());
