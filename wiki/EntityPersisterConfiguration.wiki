@@ -5,13 +5,9 @@
 Every `EntityPersister` (even `Dormancy` itself) might have an `EntityPersisterConfiguration` that contains the various configuration options for changing the behaviour massively.
 
 || *Option*						|| *Default Value*	|| *Description*																						||
-|| `deleteRemovedEntities`		|| `false`			|| Permanently deletes removed entities from collections												||
-|| `saveAssociationsProperties`	|| `false`			|| Enables saving of dirty properties of associations (similar to JPA´s `javax.persistence.CascadeType`)||
 || `saveNewEntities`			|| `false`			|| Enables saving of new Hibernate entities without identifier											||
-|| `autoFlushing`				|| `true`			|| Automatically flushes the current session after cloning												||
-|| `skipFinal`					|| `false`			|| Skips fields declared `final`																		||
-|| `skipTransient`				|| `false`			|| Skips fields declared `transient`																	||
-|| `recursiveTraversal`			|| `true`			|| Traverses object graphs recursively without requiring `EntityPersister`s								||
-|| `versionChecking`			|| `true`			|| Enables version checking for Hibernate entities														||
+|| `checkVersion`				|| `true`			|| Enables version checking for Hibernate entities														||
+|| `flushAutomatically`			|| `false`			|| Automatically flushes the current session after cloning												||
+|| `cloneObjects`				|| `false`			|| Enables cloning of objects instead of modifying them													||
 
-*Note that the first three options are fully supported but enabling them may lead to unexpected results and some side-effects may be difficult to discover. Use them with care!*
+*Note that the first option is fully supported but enabling them may lead to unexpected results and some side-effects may be difficult to discover. Use them with care!*
