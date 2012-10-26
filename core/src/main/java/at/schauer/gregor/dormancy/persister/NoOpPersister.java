@@ -59,6 +59,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 *
 	 * @return the instance
 	 */
+	@Nonnull
 	@SuppressWarnings("unchecked")
 	public static <C> NoOpPersister<C> getInstance() {
 		return NoOpEntityPersisterHolder.instance;
@@ -72,6 +73,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param dbObj the object to clone
 	 * @return the given object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> T clone(@Nullable T dbObj) {
 		return dbObj;
@@ -83,6 +85,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param dbObj the object to clone
 	 * @return the given object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> C clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return dbObj;
@@ -94,6 +97,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param trObj the object to merge
 	 * @return the given object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> T merge(@Nullable T trObj) {
 		return trObj;
@@ -105,6 +109,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param trObj the object to merge
 	 * @return the given object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> C merge_(@Nullable T trObj, @Nonnull Map<Object, Object> tree) {
 		return trObj;
@@ -117,6 +122,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param dbObj the persistent object
 	 * @return the transient object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> T merge(@Nullable T trObj, @Nullable T dbObj) {
 		return trObj;
@@ -129,6 +135,7 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 * @param dbObj the persistent object
 	 * @return the transient object
 	 */
+	@Nullable
 	@Override
 	public <T extends C> C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		return trObj;
@@ -149,9 +156,6 @@ public class NoOpPersister<C> extends AbstractEntityPersister<C> implements Dyna
 	 */
 	@Override
 	public boolean supports(@Nonnull Class<?> clazz) {
-		if (getConfig().getRecursiveTraversal() != null && !getConfig().getRecursiveTraversal()) {
-			return false;
-		}
 		String name = clazz.getName();
 		return name.startsWith("java.") || name.startsWith("javax.")
 				|| name.startsWith("com.sun.") || name.startsWith("sun.")

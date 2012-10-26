@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
 import org.hibernate.Session;
-import org.hibernate.metadata.ClassMetadata;
 import org.springframework.core.CollectionFactory;
 
 import javax.annotation.Nonnull;
@@ -102,24 +101,6 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 			}
 
 			container.put(mKey, mValue);
-		}
-
-		if (getConfig().getDeleteRemovedEntities()) {
-			ClassMetadata keyMetadata = null, valueMetadata = null;
-			// For every element that is left in the map, check if it is a Hibernate managed entity and delete it
-			for (Map.Entry<?, ?> deleted : dbCopy.entrySet()) {
-				keyMetadata = keyMetadata != null && dormancy.getUtils().getMappedClass(keyMetadata) == deleted.getKey().getClass()
-						? keyMetadata : dormancy.getUtils().getClassMetadata(deleted.getKey(), sessionFactory);
-				valueMetadata = valueMetadata != null && dormancy.getUtils().getMappedClass(valueMetadata) == deleted.getValue().getClass()
-						? valueMetadata : dormancy.getUtils().getClassMetadata(deleted.getValue(), sessionFactory);
-
-				if (keyMetadata != null) {
-					sessionFactory.getCurrentSession().delete(deleted.getKey());
-				}
-				if (valueMetadata != null) {
-					sessionFactory.getCurrentSession().delete(deleted.getValue());
-				}
-			}
 		}
 
 		// Add the processed entities to the persistent collection

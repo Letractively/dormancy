@@ -19,7 +19,8 @@ import at.schauer.gregor.dormancy.persister.*;
 import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.*;
 import org.hibernate.metadata.ClassMetadata;
@@ -28,6 +29,8 @@ import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.type.Type;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -40,8 +43,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
@@ -76,6 +77,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * If no {@link EntityPersisterConfiguration} is set, a default configuration is created.
 	 */
 	@PostConstruct
+	@SuppressWarnings("unchecked")
 	public void initialize() {
 		if (config == null) {
 			config = new EntityPersisterConfiguration();
@@ -88,8 +90,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		}
 	}
 
+	@Nullable
 	@Override
-	public final <T> T clone(T dbObj) {
+	public final <T> T clone(@Nullable T dbObj) {
 		return clone_(dbObj, createAdjacencyMap());
 	}
 
@@ -118,59 +121,58 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			return entityPersister.clone_(dbObj, tree);
 		}
 
-		// Verify that the given object is a non-null managed entity.
-		ClassMetadata metadata = utils.getClassMetadata(dbObj, sessionFactory);
-		if (metadata == null && !config.getRecursiveTraversal()) {
-			return dbObj;
-		}
-
 		// Create a new instance of the same type
-		T trObj = (T) BeanUtils.instantiateClass(utils.getClass(dbObj));
+		T trObj = config.getCloneObjects() || utils.isJavassistProxy(dbObj.getClass()) ? (T) BeanUtils.instantiateClass(utils.getClass(dbObj)) : dbObj;
 
 		// Add the object to the adjacency list
 		tree.put(dbObj, trObj);
 
 		// If automatic flushing is enabled, flush the session to make sure that there are no pending changes
-		if (config.getAutoFlushing()) {
+		if (config.getFlushAutomatically()) {
 			sessionFactory.getCurrentSession().flush();
 		}
 
+		// Retrieve the Hibernate class metadata (if available)
+		ClassMetadata metadata = utils.getClassMetadata(dbObj, sessionFactory);
+
 		// Process the properties
 		Set<String> propertyNames = utils.getPropertyNames(dbObj);
+		PropertyAccessor dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
+		PropertyAccessor trPropertyAccessor = dbObj == trObj ? dbPropertyAccessor : utils.getPropertyAccessor(metadata, trObj);
 		for (String propertyName : propertyNames) {
-			if (config.getSkipTransient() || config.getSkipFinal()) {
-				// Skipping transient and final fields, which should also be declared transient.
-				Field field = FieldUtils.getField(dbObj.getClass(), propertyName, true);
-				if (field != null
-						&& (config.getSkipTransient() && Modifier.isTransient(field.getModifiers())
-						|| config.getSkipFinal() && Modifier.isFinal(field.getModifiers()))) {
-					continue;
-				}
-			}
-
-			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyName);
+			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
 
 			// If the property (e.g., a lazy persistent collection) is not initialized, simply ignore it
 			if (!Hibernate.isInitialized(dbValue)) {
-				continue;
+				dbValue = null;
 			}
 
 			// Traverse the persistent object graph recursively
-			if (dbValue != null) {
+			else if (dbValue != null) {
 				dbValue = clone_((T) dbValue, tree);
 			}
 
 			if (logger.isTraceEnabled()) {
 				logger.trace(String.format("Setting property %s of %s to %s", propertyName, trObj, dbValue));
 			}
-			utils.setPropertyValue(metadata, trObj, propertyName, dbValue);
+
+			try {
+				trPropertyAccessor.setPropertyValue(propertyName, dbValue);
+			} catch (BeansException e) {
+				if (metadata == null) {
+					throw e;
+				} else if (logger.isEnabledFor(Level.WARN)) {
+					logger.warn(ExceptionUtils.getMessage(e));
+				}
+			}
 		}
 
 		return trObj;
 	}
 
+	@Nullable
 	@Override
-	public final <T> T merge(T trObj) {
+	public final <T> T merge(@Nullable T trObj) {
 		return merge_(trObj, createAdjacencyMap());
 	}
 
@@ -239,8 +241,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		return merge(trObj, trObj != null ? callback.doInHibernate(sessionFactory.getCurrentSession()) : null);
 	}
 
+	@Nullable
 	@Override
-	public final <T> T merge(T trObj, T dbObj) {
+	public final <T> T merge(@Nullable T trObj, @Nullable T dbObj) {
 		return merge_(trObj, dbObj, createAdjacencyMap());
 	}
 
@@ -284,10 +287,12 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		}
 
 		// Compare the version property (if present and enabled)
+		PropertyAccessor dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
+		PropertyAccessor trPropertyAccessor = utils.getPropertyAccessor(metadata, trObj);
 		String[] propertyNames = metadata.getPropertyNames();
-		if (config.getVersionChecking() && metadata.isVersioned()) {
-			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyNames[metadata.getVersionProperty()]);
-			Object trValue = utils.getPropertyValue(metadata, trObj, propertyNames[metadata.getVersionProperty()]);
+		if (config.getCheckVersion() && metadata.isVersioned()) {
+			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyNames[metadata.getVersionProperty()]);
+			Object trValue = trPropertyAccessor.getPropertyValue(propertyNames[metadata.getVersionProperty()]);
 			if (dbValue != null && !dbValue.equals(trValue)) {
 				throw new StaleObjectStateException(metadata.getEntityName(), identifier);
 			}
@@ -296,20 +301,20 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Process the properties
 		for (int i = 0; i < propertyNames.length; i++) {
 			// Do not apply the version property if version checking is enabled
-			if (metadata.getVersionProperty() == i && config.getVersionChecking()) {
+			if (metadata.getVersionProperty() == i && config.getCheckVersion()) {
 				continue;
 			}
 
 			String propertyName = propertyNames[i];
-			Object trValue = utils.getPropertyValue(metadata, trObj, propertyName);
-			Object dbValue = utils.getPropertyValue(metadata, dbObj, propertyName);
+			Object trValue = trPropertyAccessor.getPropertyValue(propertyName);
+			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
 			Type type = metadata.getPropertyType(propertyName);
 
 			// Lazily loaded collections are not copied
 			if (type.isCollectionType() && utils.isPersistentCollection(dbValue)) {
 				if (!utils.isInitializedPersistentCollection(dbValue)) {
 					// If property is loaded lazily, the value of the given object must be null or empty
-					if (trValue != null && CollectionUtils.size(trValue) > 0) {
+					if (trValue != null && trValue != dbValue && CollectionUtils.size(trValue) > 0) {
 						throw new PropertyValueException("Property is loaded lazily. Therefore it must be null but was: " + trValue, metadata.getEntityName(), propertyName);
 					}
 					continue;
@@ -332,7 +337,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 					}
 				} else if (trValue == dbValue) {
 					continue;
-				} else if (!config.getSaveAssociationsProperties()) {
+				} else {
 					// Get the identifier of the associated transient object
 					ClassMetadata valueMetadata = utils.getClassMetadata(dbValue, sessionFactory);
 					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValue, session));
@@ -362,7 +367,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			if (logger.isTraceEnabled()) {
 				logger.trace(String.format("Setting property %s of %s to %s", propertyName, dbObj, trValue));
 			}
-			utils.setPropertyValue(metadata, dbObj, propertyName, trValue);
+			dbPropertyAccessor.setPropertyValue(propertyName, trValue);
 		}
 
 		return dbObj;

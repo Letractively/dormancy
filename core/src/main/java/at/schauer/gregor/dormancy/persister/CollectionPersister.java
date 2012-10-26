@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
 import org.hibernate.Session;
-import org.hibernate.metadata.ClassMetadata;
 import org.springframework.core.CollectionFactory;
 
 import javax.annotation.Nonnull;
@@ -94,18 +93,6 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 				container.add(dormancy.merge_(trElem, tree));
 			} else {
 				container.add(dormancy.merge_(trElem, dbElem, tree));
-			}
-		}
-
-		if (getConfig().getDeleteRemovedEntities()) {
-			ClassMetadata metadata = null;
-			// For every element that is left in the collection, check if it is a Hibernate managed entity and delete it
-			for (Object deleted : dbCopy) {
-				metadata = metadata != null && dormancy.getUtils().getMappedClass(metadata) == deleted.getClass()
-						? metadata : dormancy.getUtils().getClassMetadata(deleted, sessionFactory);
-				if (metadata != null) {
-					sessionFactory.getCurrentSession().delete(deleted);
-				}
 			}
 		}
 
