@@ -18,6 +18,8 @@ package at.schauer.gregor.dormancy.persister;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import org.hibernate.Session;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +36,16 @@ public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new ArrayPersister(dormancy);
+	}
+
+	@Before
+	public void before() {
+		dormancy.getConfig().setCloneObjects(true);
+	}
+
+	@After
+	public void after() {
+		dormancy.getConfig().setCloneObjects(false);
 	}
 
 	@Test

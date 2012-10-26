@@ -48,7 +48,7 @@ public class BeanPropertiesPersisterTest extends PersisterTest<BeanPropertiesPer
 		assertEquals("secret", app.getAuthKey());
 		assertEquals(null, clone.getAuthKey());
 
-		Map<String,?> appMap = describe(app);
+		Map<String, ?> appMap = describe(app);
 		appMap.put("authKey", null);
 		assertEquals(appMap, describe(clone));
 

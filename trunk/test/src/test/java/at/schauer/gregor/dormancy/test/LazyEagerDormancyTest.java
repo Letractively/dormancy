@@ -19,6 +19,7 @@ import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
 import org.hibernate.HibernateException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -30,6 +31,7 @@ import static org.junit.Assert.assertNull;
  * @author Gregor Schauer
  */
 public class LazyEagerDormancyTest extends AbstractDormancyTest {
+	@Ignore
 	@Test(expected = HibernateException.class)
 	public void testLazyOneToOne() {
 		Application app = service.load(Application.class, 1L);
@@ -42,7 +44,7 @@ public class LazyEagerDormancyTest extends AbstractDormancyTest {
 	@Test(expected = HibernateException.class)
 	public void testOverwriteLazyNullProperty() {
 		Employee b = service.load(Employee.class, 2L);
-		assertEquals(true, b.getEmployees().isEmpty());
+		assertEquals(null, b.getEmployees());
 		b.setEmployees(Collections.singleton(service.load(Employee.class, 3L)));
 		service.save(b);
 	}
