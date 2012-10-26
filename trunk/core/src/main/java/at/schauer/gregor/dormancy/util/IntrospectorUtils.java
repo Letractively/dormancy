@@ -18,6 +18,8 @@ package at.schauer.gregor.dormancy.util;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -60,8 +62,9 @@ public class IntrospectorUtils {
 	 * @see #getFieldValue(Object, String)
 	 * @see java.beans.PropertyDescriptor#getReadMethod()
 	 */
-	public static Object getValue(Object bean, String propertyName) {
-		PropertyDescriptor descriptor = getMap(bean.getClass()).get(propertyName);
+	@Nullable
+	public static Object getValue(@Nonnull Object bean, @Nonnull String propertyName) {
+		PropertyDescriptor descriptor = getDescriptorMap(bean.getClass()).get(propertyName);
 		Method readMethod = descriptor != null ? descriptor.getReadMethod() : null;
 		if (readMethod != null) {
 			return ReflectionUtils.invokeMethod(readMethod, bean);
@@ -78,7 +81,8 @@ public class IntrospectorUtils {
 	 * @return the value of the property
 	 * @see ReflectionTestUtils#getField(Object, String)
 	 */
-	protected static Object getFieldValue(Object bean, String propertyName) {
+	@Nonnull
+	protected static Object getFieldValue(@Nonnull Object bean, @Nonnull String propertyName) {
 		return ReflectionTestUtils.getField(bean, propertyName);
 	}
 
@@ -91,8 +95,8 @@ public class IntrospectorUtils {
 	 * @see #setFieldValue(Object, String, Object)
 	 * @see java.beans.PropertyDescriptor#getWriteMethod()
 	 */
-	public static void setValue(Object bean, String propertyName, Object value) {
-		PropertyDescriptor descriptor = getMap(bean.getClass()).get(propertyName);
+	public static void setValue(@Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		PropertyDescriptor descriptor = getDescriptorMap(bean.getClass()).get(propertyName);
 		Method writeMethod = descriptor != null ? descriptor.getWriteMethod() : null;
 		if (writeMethod != null) {
 			ReflectionUtils.invokeMethod(writeMethod, bean, value);
@@ -109,7 +113,7 @@ public class IntrospectorUtils {
 	 * @param value        the new value
 	 * @see ReflectionTestUtils#setField(Object, String, Object)
 	 */
-	protected static void setFieldValue(Object bean, String propertyName, Object value) {
+	protected static void setFieldValue(@Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
 		ReflectionTestUtils.setField(bean, propertyName, value);
 	}
 
@@ -124,7 +128,8 @@ public class IntrospectorUtils {
 	 * @return the property descriptors of the class
 	 * @see #getDescriptors(Class)
 	 */
-	protected static Map<String, PropertyDescriptor> getMap(Class<?> clazz) {
+	@Nonnull
+	protected static Map<String, PropertyDescriptor> getDescriptorMap(@Nonnull Class<?> clazz) {
 		Map<String, PropertyDescriptor> descriptorMap = beanInfoMap.get(clazz);
 		if (descriptorMap == null) {
 			descriptorMap = new HashMap<String, PropertyDescriptor>();
@@ -150,7 +155,8 @@ public class IntrospectorUtils {
 	 * @see Introspector#getBeanInfo(Class)
 	 * @see java.beans.BeanInfo#getPropertyDescriptors()
 	 */
-	private static PropertyDescriptor[] getDescriptors(Class<?> clazz) {
+	@Nonnull
+	private static PropertyDescriptor[] getDescriptors(@Nonnull Class<?> clazz) {
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
 			return beanInfo.getPropertyDescriptors();

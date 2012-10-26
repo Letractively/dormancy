@@ -46,11 +46,13 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	@Nullable
 	@Override
 	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName) {
+		IntrospectorUtils.getDescriptorMap(getClass(bean));
 		return IntrospectorUtils.getValue(bean, propertyName);
 	}
 
 	@Override
 	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		IntrospectorUtils.getDescriptorMap(getClass(bean));
 		IntrospectorUtils.setValue(bean, propertyName, value);
 	}
 

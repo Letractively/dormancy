@@ -19,19 +19,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The configuration for {@link at.schauer.gregor.dormancy.persister.EntityPersister}s.
+ * The configuration for {@link at.schauer.gregor.dormancy.persister.EntityPersister EntityPersister}s.
  *
  * @author Gregor Schauer
  */
 public class EntityPersisterConfiguration {
-	/**
-	 * Permanently deletes removed entities from collections
-	 */
-	private Boolean deleteRemovedEntities;
-	/**
-	 * Enables saving of dirty properties of associations (similar to {@link javax.persistence.CascadeType})
-	 */
-	private Boolean saveAssociationsProperties;
 	/**
 	 * Enables saving of new Hibernate entities without identifier
 	 */
@@ -39,83 +31,29 @@ public class EntityPersisterConfiguration {
 	/**
 	 * Enables version checking for Hibernate entities
 	 */
-	private Boolean versionChecking;
-	/**
-	 * Skips fields declared {@code transient}
-	 */
-	private Boolean skipTransient;
-	/**
-	 * Skips fields declared {@code final}
-	 */
-	private Boolean skipFinal;
+	private Boolean checkVersion;
 	/**
 	 * Automatically flushes the current session after cloning
 	 */
-	private Boolean autoFlushing;
+	private Boolean flushAutomatically;
 	/**
-	 * Traverses object graphs recursively without requiring {@link at.schauer.gregor.dormancy.persister.EntityPersister}s.
+	 * Enables cloning of objects instead of modifying them
 	 */
-	private Boolean recursiveTraversal;
+	private Boolean cloneObjects;
 	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
 
 	public EntityPersisterConfiguration() {
-		deleteRemovedEntities = false;
-		saveAssociationsProperties = false;
 		saveNewEntities = false;
-		versionChecking = true;
-		skipTransient = false;
-		skipFinal = false;
-		autoFlushing = true;
-		recursiveTraversal = true;
+		checkVersion = true;
+		flushAutomatically = false;
+		cloneObjects = false;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
 		this.parent = parent;
-	}
-
-	/**
-	 * Returns whether entities of deleted associated should be deleted permanently.
-	 *
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if the removed entities should be deleted, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getDeleteRemovedEntities() {
-		return deleteRemovedEntities == null ? parent.getDeleteRemovedEntities() : deleteRemovedEntities;
-	}
-
-	/**
-	 * Sets whether entities of deleted associated should be deleted permanently.
-	 *
-	 * @param deleteRemovedEntities {@code true} if the removed entities should be deleted, {@code false} otherwise
-	 */
-	public void setDeleteRemovedEntities(@Nullable Boolean deleteRemovedEntities) {
-		this.deleteRemovedEntities = deleteRemovedEntities;
-	}
-
-	/**
-	 * Returns whether properties of associated entities should be processed.
-	 *
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if the properties of associated entities should be processed, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getSaveAssociationsProperties() {
-		return saveAssociationsProperties == null ? parent.getSaveAssociationsProperties() : saveAssociationsProperties;
-	}
-
-	/**
-	 * Sets whether properties of associated entities should be processed.
-	 *
-	 * @param saveAssociationsProperties {@code true} if the properties of associated entities should be processed, {@code false} otherwise
-	 */
-	public void setSaveAssociationsProperties(@Nullable Boolean saveAssociationsProperties) {
-		this.saveAssociationsProperties = saveAssociationsProperties;
 	}
 
 	/**
@@ -147,100 +85,57 @@ public class EntityPersisterConfiguration {
 	 * @return {@code true} if a version checking is enabled, {@code false} otherwise
 	 */
 	@Nonnull
-	public Boolean getVersionChecking() {
-		return versionChecking == null ? parent.getVersionChecking() : versionChecking;
+	public Boolean getCheckVersion() {
+		return checkVersion == null ? parent.getCheckVersion() : checkVersion;
 	}
 
 	/**
 	 * Sets whether a version check should be performed before processing the properties.
 	 *
-	 * @param versionChecking {@code true} if a version checking is enabled, {@code false} otherwise
+	 * @param checkVersion {@code true} if a version checking is enabled, {@code false} otherwise
 	 */
-	public void setVersionChecking(@Nullable Boolean versionChecking) {
-		this.versionChecking = versionChecking;
-	}
-
-	/**
-	 * Returns whether {@code transient} fields should be skipped.
-	 *
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if {@code transient} fields should be skipped, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getSkipTransient() {
-		return skipTransient == null ? parent.getSkipTransient() : skipTransient;
-	}
-
-	/**
-	 * Sets whether {@code transient} fields should be skipped.
-	 *
-	 * @param skipTransient {@code true} if {@code transient} fields should be skipped, {@code false} otherwise
-	 */
-	public void setSkipTransient(@Nullable Boolean skipTransient) {
-		this.skipTransient = skipTransient;
-	}
-
-	/**
-	 * Returns whether {@code final} fields should be skipped.
-	 *
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if {@code final} fields should be skipped, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getSkipFinal() {
-		return skipFinal == null ? parent.getSkipFinal() : skipFinal;
-	}
-
-	/**
-	 * Sets whether {@code final} fields should be skipped.
-	 *
-	 * @param skipFinal {@code true} if {@code final} fields should be skipped, {@code false} otherwise
-	 */
-	public void setSkipFinal(@Nullable Boolean skipFinal) {
-		this.skipFinal = skipFinal;
+	public void setCheckVersion(@Nullable Boolean checkVersion) {
+		this.checkVersion = checkVersion;
 	}
 
 	/**
 	 * Returns whether automatic flushing is done upon cloning objects.
 	 *
-	 * <p>Default is {@code true}.</p>
+	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if automatic flushing is enabled, {@code false} otherwise
 	 */
 	@Nonnull
-	public Boolean getAutoFlushing() {
-		return autoFlushing == null ? parent.getAutoFlushing() : autoFlushing;
+	public Boolean getFlushAutomatically() {
+		return flushAutomatically == null ? parent.getFlushAutomatically() : flushAutomatically;
 	}
 
 	/**
 	 * Sets whether automatic flushing should be done upon cloning objects.
 	 *
-	 * @param autoFlushing {@code true} if automatic flushing should be enabled, {@code false} otherwise
+	 * @param flushAutomatically {@code true} if automatic flushing should be enabled, {@code false} otherwise
 	 */
-	public void setAutoFlushing(@Nullable Boolean autoFlushing) {
-		this.autoFlushing = autoFlushing;
+	public void setFlushAutomatically(@Nullable Boolean flushAutomatically) {
+		this.flushAutomatically = flushAutomatically;
 	}
 
 	/**
-	 * Returns whether recursive traversal of object graphs is enabled.
+	 * Returns whether objects are cloned instead of reused.
 	 *
-	 * <p>Default is {@code true}.</p>
+	 * <p>Default is {@code false}.</p>
 	 *
-	 * @return {@code true} if recursive traversal is enabled, {@code false} otherwise
+	 * @return {@code true} if cloning is enabled, {@code false} otherwise
 	 */
-	public Boolean getRecursiveTraversal() {
-		return recursiveTraversal;
+	public Boolean getCloneObjects() {
+		return cloneObjects;
 	}
 
 	/**
-	 * Sets whether object graphs should be traversed recursively if no
-	 * {@link at.schauer.gregor.dormancy.persister.EntityPersister} is specified.
+	 * Sets whether objects should be cloned instead of reused.
 	 *
-	 * @param recursiveTraversal {@code true} if recursive traversal should be enabled, {@code false} otherwise
+	 * @param cloneObjects {@code true} if objects should be cloned, {@code false} otherwise
 	 */
-	public void setRecursiveTraversal(Boolean recursiveTraversal) {
-		this.recursiveTraversal = recursiveTraversal;
+	public void setCloneObjects(Boolean cloneObjects) {
+		this.cloneObjects = cloneObjects;
 	}
 }
