@@ -15,6 +15,7 @@
  */
 package at.schauer.gregor.dormancy.function;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class FunctionContext<T> {
 		this(obj, new IdentityHashMap<Object, Object>());
 	}
 
-	public FunctionContext(@Nullable T obj, @Nullable Map<Object, Object> tree) {
+	public FunctionContext(@Nullable T obj, @Nonnull Map<Object, Object> tree) {
 		this.obj = obj;
 		this.tree = tree;
 	}
@@ -71,7 +72,7 @@ public class FunctionContext<T> {
 	 *
 	 * @return the adjacency stack
 	 */
-	@Nullable
+	@Nonnull
 	public Map<Object, Object> getTree() {
 		return tree;
 	}

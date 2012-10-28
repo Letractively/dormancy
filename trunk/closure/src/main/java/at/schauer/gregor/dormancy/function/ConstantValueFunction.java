@@ -37,7 +37,9 @@ public class ConstantValueFunction<E> implements ContextFunction<E> {
 	@Nullable
 	@Override
 	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
-		input.setObj(value);
+		if (input != null) {
+			input.setObj(value);
+		}
 		return input;
 	}
 }

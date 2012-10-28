@@ -28,7 +28,9 @@ public class DormancyMergeFunction<E> extends DormancyFunction<E> {
 	@Nullable
 	@Override
 	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
-		input.setObj(dormancy.merge_(input.getObj(), input.getTree()));
+		if (input != null) {
+			input.setObj(dormancy.merge_(input.getObj(), input.getTree()));
+		}
 		return input;
 	}
 }

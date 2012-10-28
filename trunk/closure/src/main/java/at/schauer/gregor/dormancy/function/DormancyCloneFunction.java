@@ -28,7 +28,9 @@ public class DormancyCloneFunction<E> extends DormancyFunction<E> {
 	@Nullable
 	@Override
 	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
-		input.setObj(dormancy.clone_(input.getObj(), input.getTree()));
+		if (input != null) {
+			input.setObj(dormancy.clone_(input.getObj(), input.getTree()));
+		}
 		return input;
 	}
 }
