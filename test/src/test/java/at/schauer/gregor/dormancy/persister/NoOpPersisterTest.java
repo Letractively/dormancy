@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Gregor Schauer
@@ -49,5 +50,12 @@ public class NoOpPersisterTest {
 		assertEquals("", persister.clone_("", tree));
 		assertEquals("", persister.merge_("", tree));
 		assertEquals("", persister.merge_("", " ", tree));
+	}
+
+	@Test
+	public void testGetConfig() {
+		NoOpPersister<?> persister = new NoOpPersister<Object>();
+		persister.setConfig(null);
+		assertNotNull(persister.getConfig());
 	}
 }

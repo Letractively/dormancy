@@ -31,6 +31,10 @@ public class CollectionFunction<E extends Collection<D>, D> extends DelegateFunc
 	@Nullable
 	@Override
 	public FunctionContext<E> apply(@Nullable FunctionContext<E> input) {
+		if (input == null || input.getObj() == null) {
+			return input;
+		}
+
 		E result = createCollection(input.getObj());
 		FunctionContext<D> elemContext = new FunctionContext<D>(null, input.getTree());
 		for (D elem : input.getObj()) {
