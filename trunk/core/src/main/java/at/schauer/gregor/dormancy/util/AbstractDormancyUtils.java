@@ -15,7 +15,6 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import org.hibernate.Hibernate;
 import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -178,25 +177,21 @@ public abstract class AbstractDormancyUtils {
 
 	/**
 	 * Gets the unproxified type of the given object.
+	 * <p/>
+	 * Note that this method does not use {@link org.hibernate.Hibernate#getClass(Object) Hibernate.getClass(Object)}
+	 * to avoid the initialization of the proxy.
 	 *
 	 * @param proxy a persistable object or proxy
 	 * @return the true class of the instance
-	 *
-	 * @see Hibernate#getClass(Object)
 	 */
 	@Nonnull
 	@SuppressWarnings("unchecked")
 	public <T> Class<T> getClass(@Nonnull Object proxy) {
-		try {
-			return Hibernate.getClass(proxy);
-		} catch (Exception ignored) {
-			// If the object is not present in the session, use the fallback solution for determining the type.
-			Class<?> clazz = proxy.getClass();
-			while (isJavassistProxy(clazz)) {
-				clazz = clazz.getSuperclass();
-			}
-			return (Class<T>) clazz;
+		Class<?> clazz = proxy.getClass();
+		while (isJavassistProxy(clazz)) {
+			clazz = clazz.getSuperclass();
 		}
+		return (Class<T>) clazz;
 	}
 
 	/**
@@ -248,13 +243,13 @@ public abstract class AbstractDormancyUtils {
 
 	/**
 	 * Returns a {@link PropertyAccessor} for accessing the objects properties.
-	 *
+	 * <p/>
 	 * If the given objects is a Hibernate proxy modified by Javassist or the {@link Id} annotation is found on
 	 * method level, a {@link org.springframework.beans.BeanWrapper BeanWrapper} is returned. Otherwise a
 	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor} is returned.
 	 *
 	 * @param metadata the class metadata
-	 * @param obj the object
+	 * @param obj      the object
 	 * @return the property accessor
 	 */
 	@Nonnull

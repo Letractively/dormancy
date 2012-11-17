@@ -156,12 +156,20 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				logger.trace(String.format("Setting property %s of %s to %s", propertyName, trObj, dbValue));
 			}
 
+			// Attempt to set the property value
 			try {
 				trPropertyAccessor.setPropertyValue(propertyName, dbValue);
 			} catch (BeansException e) {
-				if (metadata == null) {
+				if (metadata != null) {
+					/**
+					 * If the property value cannot bet set and the object is a Hibernate entity, throw an exception.
+					 * Note that this is a security mechanism to ensure database consistency.
+					 * Otherwise it would be possible that references, which are not initialized properly,
+					 * cause constraint violations or even delete associations.
+					 */
 					throw e;
 				} else if (logger.isEnabledFor(Level.WARN)) {
+					// If the property value of a non entity cannot be set, write a warning to the log.
 					logger.warn(ExceptionUtils.getMessage(e));
 				}
 			}
@@ -278,13 +286,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		Session session = sessionFactory.getCurrentSession();
 
 		// Retrieve the identifier of the persistent object
-		Serializable identifier = utils.getIdentifier(metadata, dbObj, session);
-
-		// If the identifier cannot be retrieved via getter, try to access it directly.
-		if (identifier == null) {
-			identifier = utils.getIdentifierValue(metadata, dbObj, session);
-			// If the identifier is still null, an exception is thrown indicating that the entity is not persistent
-		}
+		Serializable identifier = utils.getIdentifierValue(metadata, dbObj, session);
 
 		// Compare the version property (if present and enabled)
 		PropertyAccessor dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
@@ -305,6 +307,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				continue;
 			}
 
+			// Read the property values
 			String propertyName = propertyNames[i];
 			Object trValue = trPropertyAccessor.getPropertyValue(propertyName);
 			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
