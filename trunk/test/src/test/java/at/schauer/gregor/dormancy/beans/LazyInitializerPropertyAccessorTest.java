@@ -18,7 +18,7 @@ package at.schauer.gregor.dormancy.beans;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.type.LongType;

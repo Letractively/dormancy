@@ -22,7 +22,7 @@ import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.CollectionPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
-import at.schauer.gregor.dormancy.persister.NullEntityPersister;
+import at.schauer.gregor.dormancy.persister.NullPersister;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
 import org.hibernate.classic.Session;
 import org.hibernate.collection.PersistentSet;
@@ -64,7 +64,7 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 		dormancy.getPersisterMap().clear();
 		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
-		dormancy.addEntityPersister(NullEntityPersister.getInstance());
+		dormancy.addEntityPersister(NullPersister.getInstance());
 		CollectionPersister<List> collectionPersister = new CollectionPersister<List>(dormancy);
 		collectionPersister.setSessionFactory(sessionFactory);
 		dormancy.addEntityPersister(collectionPersister);
