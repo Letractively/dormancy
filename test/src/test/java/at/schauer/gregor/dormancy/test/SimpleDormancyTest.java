@@ -133,7 +133,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testDataTypes() {
-		org.hibernate.classic.Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		DataTypes a = (DataTypes) session.load(DataTypes.class, 1L);
 		DataTypes b = service.load(DataTypes.class, 1L);
 		assertNotSame(a, b);
@@ -164,7 +164,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testCompare() throws Exception {
-		org.hibernate.classic.Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		Book a = (Book) session.load(Book.class, 1L);
 		Book b = service.load(Book.class, 1L);
 		assertNotSame(a, b);

@@ -27,14 +27,14 @@ import java.util.Map;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class NullEntityPersister<C> extends AbstractEntityPersister<C> implements DynamicEntityPersister<C> {
-	protected static class NullEntityPersisterHolder {
-		protected static final NullEntityPersister instance = new NullEntityPersister();
+public class NullPersister<C> extends AbstractEntityPersister<C> implements DynamicEntityPersister<C> {
+	protected static class NullPersisterHolder {
+		protected static final NullPersister instance = new NullPersister();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <C> NullEntityPersister<C> getInstance() {
-		return NullEntityPersisterHolder.instance;
+	public static <C> NullPersister<C> getInstance() {
+		return NullPersisterHolder.instance;
 	}
 
 	/**

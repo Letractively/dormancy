@@ -44,7 +44,7 @@ public class PredicatePersisterTest extends PersisterTest<PredicatePersister<App
 	@Test
 	public void test() {
 		persister.setPredicateDelegate(NoOpPersister.<Application>getInstance());
-		persister.setFallbackDelegate(NullEntityPersister.<Application>getInstance());
+		persister.setFallbackDelegate(NullPersister.<Application>getInstance());
 
 		persister.setPredicate(PredicateUtils.truePredicate());
 		Application clone = persister.clone(app);
