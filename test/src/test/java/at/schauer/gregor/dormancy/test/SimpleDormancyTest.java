@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  */
 public class SimpleDormancyTest extends AbstractDormancyTest {
-	private static Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
+	Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
 
 	@Before
 	public void before() {

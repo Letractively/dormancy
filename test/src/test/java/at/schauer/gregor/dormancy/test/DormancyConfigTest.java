@@ -60,9 +60,7 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 	@Test
 	public void testConfigWithoutParent() throws Exception {
-		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
-		assertNotNull(config);
-		BeanTester.getInstance().test(config);
+		BeanTester.getInstance().instantiate(EntityPersisterConfiguration.class);
 	}
 
 	@Test

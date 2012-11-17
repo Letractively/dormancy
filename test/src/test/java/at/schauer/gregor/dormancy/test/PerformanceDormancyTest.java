@@ -16,10 +16,15 @@
 package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
+import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.entity.Employee;
+import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.annotation.*;
@@ -31,6 +36,19 @@ import static org.junit.Assert.assertNotNull;
  */
 public class PerformanceDormancyTest extends AbstractDormancyTest {
 	protected static final Logger logger = Logger.getLogger(PerformanceDormancyTest.class);
+	protected Level level = Logger.getLogger(Dormancy.class).getLevel();
+
+	@Before
+	public void beforeClass() {
+		Logger.getLogger(Dormancy.class).setLevel(Level.WARN);
+		Logger.getLogger(DormancyAdvisor.class).setLevel(Level.WARN);
+	}
+
+	@After
+	public void after() {
+		Logger.getLogger(Dormancy.class).setLevel(level);
+		Logger.getLogger(DormancyAdvisor.class).setLevel(level);
+	}
 
 	@Perform(name = "Session.get(Object, Serializable)", n = 100)
 	@Test(timeout = 200)

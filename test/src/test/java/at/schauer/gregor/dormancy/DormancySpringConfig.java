@@ -21,6 +21,8 @@ import at.schauer.gregor.dormancy.persister.EntityPersister;
 import at.schauer.gregor.dormancy.service.Service;
 import at.schauer.gregor.dormancy.service.ServiceImpl;
 import org.aopalliance.aop.Advice;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.hibernate.dialect.HSQLDialect;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -46,6 +48,7 @@ import java.util.Properties;
 public class DormancySpringConfig {
 	@Bean
 	public Dormancy dormancy() {
+		Logger.getLogger(Dormancy.class).setLevel(Level.TRACE);
 		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
 		Dormancy dormancy = new Dormancy();
 		dormancy.setConfig(config);
@@ -100,6 +103,7 @@ public class DormancySpringConfig {
 
 	@Bean
 	public Advice dormancyAdvisor() {
+		Logger.getLogger(DormancyAdvisor.class).setLevel(Level.TRACE);
 		DormancyAdvisor support = new DormancyAdvisor(dormancy());
 		support.setMode(DormancyAdvisor.Mode.BOTH);
 		return support;
