@@ -9,10 +9,13 @@
 	* Added `EntityPersisterConfiguration` flags `flushAutomatically` and `cloneObjects`
 	* Removed experimental configuration flags `deleteRemovedEntities`, `saveAssociationsProperties`, `skipTransient` and `skipFinal`
 	* Dormancy can now process object graphs with infinite depth automatically
+	* Enhanced closure-like `ContextFunction`s to improve the extensibility of Dormancy
 	* Improved overall performance significantly
 		* Replaced default bean property access layer (`PropertyAccessor`s) with `Introspector` (API change!)
 		* Added self-learning algorithm for faster determination of the `EntityPersister` to use
 	* Reduced memory usage by reusing objects instead of cloning them (see `cloneObjects`)
+	* Restructured project and dependencies by adding Maven profiles for switching the Hibernate version more easily
+	* All classes (including tests) support Hibernate 3 and Hibernate 4 simultaneously
 	* Updated libraries:
 		* AspectJ to version 1.7.1
 		* HSQLDB to version 2.2.9

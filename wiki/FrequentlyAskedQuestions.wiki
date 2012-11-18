@@ -6,9 +6,10 @@
 
 === Which JARs do I need? ===
 You can simply download `dormancy-core-<version>-dist.zip` and `dormancy-hibernate3-<version>-dist.zip` or `dormancy-hibernate4-<version>-dist.zip` from the [http://code.google.com/p/dormancy/downloads/list Downloads] section (use either `hibernate3` or `hibernate4`).
+Furthermore, you can download `dormancy-closure-<version>-dist.zip`, which contains closure like functions for building extensions fast and easily.
 They contain all dependencies required for Dormancy including Hibernate. However, you can of course replace the shipped JARs with the desired version.
 
-The file `dormancy-<version>.zip` contains all Dormancy modules (including `hibernate3` and `hibernate4`) but contains no dependencies.
+The file `dormancy-<version>.zip` contains all Dormancy modules (including `closure`, `hibernate3` and `hibernate4`) but contains no dependencies.
 Please also refer to the next question.
 
 === I maintain the libraries myself. Which third-party JARs do I need? ===
@@ -17,7 +18,8 @@ Basically, this depends on the Hibernate version an the features you want to use
 || aopalliance							|| aopalliance							|| 1.0				||
 || asm									|| asm									|| 3.3.1			||
 || cglib								|| cglib								|| 2.2.2			||
-|| com.google.code.findbugs				|| jsr305								|| 2.0.0			||
+|| com.google.code.findbugs				|| jsr305								|| 2.0.1			||
+|| commons-beanutils					|| commons-beanutils					|| 1.8.3			||
 || commons-collections					|| commons-collections					|| 3.2.1			||
 || commons-lang							|| commons-lang							|| 2.6				||
 || commons-logging						|| commons-logging						|| 1.1.1			||
@@ -25,15 +27,15 @@ Basically, this depends on the Hibernate version an the features you want to use
 || javax.inject							|| javax.inject							|| 1				||
 || javax.persistence					|| persistence-api						|| 1.0.2			||
 || javax.transaction					|| jta									|| 1.1				||
-|| log4j								|| log4j								|| 1.2.14			||
-|| org.aspectj							|| aspectjrt							|| 1.6.12			||
-|| org.aspectj							|| aspectjweaver						|| 1.6.12			||
+|| log4j								|| log4j								|| 1.2.17			||
+|| org.aspectj							|| aspectjrt							|| 1.7.1			||
+|| org.aspectj							|| aspectjweaver						|| 1.7.1			||
 || org.hibernate.common					|| hibernate-commons-annotations		|| 4.0.1.Final		||
 || org.hibernate						|| ejb3-persistence						|| 1.0.2.GA			||
 || org.hibernate						|| hibernate-annotations				|| 3.4.0.GA			||
 || org.hibernate						|| hibernate-commons-annotations		|| 3.1.0.GA			||
 || org.hibernate						|| hibernate-core						|| 3.3.2.GA			||
-|| org.hibernate						|| hibernate-core						|| 4.1.0.Final		||
+|| org.hibernate						|| hibernate-core						|| 4.1.8.Final		||
 || org.hibernate.javax.persistence		|| hibernate-jpa-2.0-api				|| 1.0.0.Final		||
 || org.javassist						|| javassist							|| 3.16.1-GA		||
 || org.jboss.logging					|| jboss-logging						|| 3.1.0.CR2		||
@@ -75,7 +77,7 @@ Therefore, the appropriate dependency has to be added to the `pom.xml`:
 <dependency>
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy-hibernate3</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 </dependency>
 }}}
 or
@@ -83,7 +85,7 @@ or
 <dependency>
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy-hibernate4</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 </dependency>
 }}}
 The `core` module and all required dependencies are included automatically.
