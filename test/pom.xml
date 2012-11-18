@@ -22,22 +22,24 @@
 			<groupId>at.schauer.gregor.dormancy</groupId>
 			<artifactId>dormancy-dev</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>dormancy-hibernate3</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -51,10 +53,32 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 		</dependency>
 	</dependencies>
 
+
+	<profiles>
+		<profile>
+			<id>hibernate3</id>
+			<dependencies>
+				<dependency>
+					<groupId>at.schauer.gregor.dormancy</groupId>
+					<artifactId>dormancy-hibernate3</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>hibernate4</id>
+			<dependencies>
+				<dependency>
+					<groupId>at.schauer.gregor.dormancy</groupId>
+					<artifactId>dormancy-hibernate4</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

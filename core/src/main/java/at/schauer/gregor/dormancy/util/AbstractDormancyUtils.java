@@ -26,8 +26,8 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Id;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -39,6 +39,17 @@ import java.util.Set;
  * @author Gregor Schauer
  */
 public abstract class AbstractDormancyUtils {
+	protected static final String JAVAX_PERSISTENCE_ID = "javax.persistence.Id";
+	protected static final Class<? extends Annotation> idClass;
+
+	static {
+		try {
+			idClass = (Class<? extends Annotation>) Class.forName(JAVAX_PERSISTENCE_ID);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Cannot find class: " + JAVAX_PERSISTENCE_ID, e);
+		}
+	}
+
 	protected AbstractDormancyUtils() {
 	}
 
@@ -244,7 +255,7 @@ public abstract class AbstractDormancyUtils {
 	/**
 	 * Returns a {@link PropertyAccessor} for accessing the objects properties.
 	 * <p/>
-	 * If the given objects is a Hibernate proxy modified by Javassist or the {@link Id} annotation is found on
+	 * If the given objects is a Hibernate proxy modified by Javassist or the {@code javax.persistence.Id} annotation is found on
 	 * method level, a {@link org.springframework.beans.BeanWrapper BeanWrapper} is returned. Otherwise a
 	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor} is returned.
 	 *
@@ -259,7 +270,7 @@ public abstract class AbstractDormancyUtils {
 				return PropertyAccessorFactory.forBeanPropertyAccess(obj);
 			}
 			Field idField = ReflectionUtils.findField(obj.getClass(), metadata.getIdentifierPropertyName());
-			if (AnnotationUtils.getAnnotation(idField, Id.class) == null) {
+			if (AnnotationUtils.getAnnotation(idField, idClass) == null) {
 				return PropertyAccessorFactory.forBeanPropertyAccess(obj);
 			}
 		}

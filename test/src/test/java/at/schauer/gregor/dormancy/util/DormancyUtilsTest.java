@@ -17,8 +17,6 @@ import static org.junit.Assert.assertTrue;
 public class DormancyUtilsTest extends AbstractDormancyTest {
 	@Test
 	public void testGetPropertyAccessor() {
-		AbstractDormancyUtils utils = dormancy.getUtils();
-
 		checkPropertyAccessor(new Object(), DirectFieldAccessor.class);
 
 		// If class metadata is available, Dormancy uses the same access strategy as Hibernate.
