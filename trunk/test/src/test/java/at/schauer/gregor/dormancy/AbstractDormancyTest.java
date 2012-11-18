@@ -23,7 +23,6 @@ import at.schauer.gregor.dormancy.service.Service;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.collection.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -39,6 +38,8 @@ import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.*;
+
+import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateCollectionClass;
 
 /**
  * @author Gregor Schauer
@@ -97,8 +98,8 @@ public abstract class AbstractDormancyTest {
 		return isProxy(entity, session) || session.isOpen() && session.contains(entity);
 	}
 
-	public static boolean isProxy(Object entity, Session session) {
-		if (entity instanceof HibernateProxy || entity instanceof PersistentCollection) {
+	public static boolean isProxy(@Nonnull Object entity, @Nonnull Session session) {
+		if (entity instanceof HibernateProxy || getHibernateCollectionClass().isAssignableFrom(entity.getClass())) {
 			return true;
 		} else if (entity instanceof Iterable) {
 			for (Object elem : (Iterable<?>) entity) {
@@ -110,7 +111,7 @@ public abstract class AbstractDormancyTest {
 			for (Field field : listFields(entity.getClass())) {
 				try {
 					Object value = field.get(entity);
-					if (value instanceof PersistentCollection) {
+					if (value != null && getHibernateCollectionClass().isAssignableFrom(value.getClass())) {
 						return true;
 					}
 				} catch (IllegalAccessException e) {

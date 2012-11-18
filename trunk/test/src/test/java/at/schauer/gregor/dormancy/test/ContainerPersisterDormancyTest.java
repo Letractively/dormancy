@@ -24,14 +24,14 @@ import at.schauer.gregor.dormancy.persister.CollectionPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
 import at.schauer.gregor.dormancy.persister.NullPersister;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
-import org.hibernate.classic.Session;
-import org.hibernate.collection.PersistentSet;
+import org.hibernate.Session;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateSetClass;
 import static org.junit.Assert.*;
 
 /**
@@ -42,7 +42,7 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 	@SuppressWarnings("unchecked")
 	public void testListPersister() {
 		List<Employee> list = sessionFactory.getCurrentSession().createCriteria(Employee.class).list();
-		assertSame(PersistentSet.class, list.get(0).getEmployees().getClass());
+		assertSame(getHibernateSetClass(), list.get(0).getEmployees().getClass());
 		assertEquals(false, list.get(0).getColleagues() == null);
 
 		List<Employee> clone = dormancy.clone(new ArrayList<Employee>(list));
@@ -53,7 +53,7 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 		sessionFactory.getCurrentSession().clear();
 		List<Employee> merge = dormancy.merge(new ArrayList<Employee>(clone));
 		assertEquals(clone.get(0), merge.get(0));
-		assertSame(PersistentSet.class, merge.get(0).getEmployees().getClass());
+		assertSame(getHibernateSetClass(), merge.get(0).getEmployees().getClass());
 		assertEquals(false, merge.get(0).getColleagues() == null);
 	}
 

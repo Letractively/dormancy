@@ -28,7 +28,8 @@ import java.util.Date;
  */
 @Entity
 public class Clock implements Serializable {
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	public Long id;
 	public Date date;
 	public java.sql.Date sqlDate;
