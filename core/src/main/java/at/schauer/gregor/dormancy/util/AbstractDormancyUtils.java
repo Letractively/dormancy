@@ -15,13 +15,17 @@
  */
 package at.schauer.gregor.dormancy.util;
 
+import org.apache.log4j.Logger;
 import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
@@ -40,6 +44,7 @@ import java.util.Set;
  */
 public abstract class AbstractDormancyUtils {
 	protected static final String JAVAX_PERSISTENCE_ID = "javax.persistence.Id";
+	@Nonnull
 	protected static final Class<? extends Annotation> idClass;
 
 	static {
@@ -248,6 +253,7 @@ public abstract class AbstractDormancyUtils {
 	 * @param obj The object
 	 * @return The property names
 	 */
+	@Nonnull
 	public Set<String> getPropertyNames(@Nonnull Object obj) {
 		return IntrospectorUtils.getDescriptorMap(getClass(obj)).keySet();
 	}
@@ -255,9 +261,22 @@ public abstract class AbstractDormancyUtils {
 	/**
 	 * Returns a {@link PropertyAccessor} for accessing the objects properties.
 	 * <p/>
-	 * If the given objects is a Hibernate proxy modified by Javassist or the {@code javax.persistence.Id} annotation is found on
-	 * method level, a {@link org.springframework.beans.BeanWrapper BeanWrapper} is returned. Otherwise a
-	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor} is returned.
+	 * This method automatically detects the best strategy for accessing field values, which is either field access
+	 * (by using {@link org.springframework.beans.BeanWrapper BeanWrapper} or property access if necessary (by using
+	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor}.
+	 * <p/>
+	 * The decision is made by applying the following algorithm:<br/>
+	 * If there is Hibernate class metadata available and
+	 * <ul>
+	 * <li>if the {@code javax.persistence.Id} annotation was found on a getter method or</li>
+	 * <li>if the object is a proxy modified by Javassist and its {@link LazyInitializer} is not accessible</li>
+	 * </ul>
+	 * the properties are access via getter and setter methods.<br/>
+	 * Otherwise the fields are accessed directly via reflection.
+	 * <p/>
+	 * <b>Note that if the given object is an uninitialized Javassist proxy, the object becomes initialized immediately
+	 * if the direct field access strategy is chosen.<br/>
+	 * Otherwise Hibernate will trigger the initialization automatically upon getter invocation as usual.</b>
 	 *
 	 * @param metadata the class metadata
 	 * @param obj      the object
@@ -266,12 +285,26 @@ public abstract class AbstractDormancyUtils {
 	@Nonnull
 	public PropertyAccessor getPropertyAccessor(@Nullable ClassMetadata metadata, @Nonnull Object obj) {
 		if (metadata != null) {
-			if (isJavassistProxy(obj.getClass())) {
-				return PropertyAccessorFactory.forBeanPropertyAccess(obj);
-			}
 			Field idField = ReflectionUtils.findField(obj.getClass(), metadata.getIdentifierPropertyName());
 			if (AnnotationUtils.getAnnotation(idField, idClass) == null) {
 				return PropertyAccessorFactory.forBeanPropertyAccess(obj);
+			}
+			if (isJavassistProxy(obj.getClass())) {
+				// If the object is a proxy, attempt to find its LazyInitializer
+				Field handlerField = ReflectionUtils.findField(obj.getClass(), "handler");
+				if (handlerField != null) {
+					// If the LazyInitializer is available, obtain the underlying object
+					LazyInitializer lazyInitializer = (LazyInitializer) ReflectionTestUtils.getField(obj, "handler");
+					// Initialize it if necessary and return a DirectFieldAccessor for the nested object
+					return PropertyAccessorFactory.forDirectFieldAccess(lazyInitializer.getImplementation());
+				} else {
+					/*
+					 * Otherwise log a warning message because this is very unlikely to happen or even impossible.
+					 * However, instead of throwing an exception, property access is used as a fallback solution.
+					 */
+					Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
+					return PropertyAccessorFactory.forBeanPropertyAccess(obj);
+				}
 			}
 		}
 		return PropertyAccessorFactory.forDirectFieldAccess(obj);
