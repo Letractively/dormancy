@@ -470,6 +470,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		return entityPersister;
 	}
 
+	@Nullable
 	@SuppressWarnings("unchecked")
 	private <T> AbstractEntityPersister<T> findEntityPersister(Class<? extends T> clazz) {
 		try {
@@ -552,7 +553,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @param object  the object
 	 * @param session the session used for accessing the object
 	 */
-	protected static void throwNullIdentifierException(Object object, Session session) {
+	protected static void throwNullIdentifierException(@Nonnull Object object, @Nonnull Session session) {
 		throw new TransientObjectException("The given object has a null identifier: " + session.getEntityName(object));
 	}
 
@@ -562,7 +563,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @param object  the object
 	 * @param session the session used for accessing the object
 	 */
-	protected static void throwUnsavedTransientInstanceException(Object object, Session session) {
+	protected static void throwUnsavedTransientInstanceException(@Nonnull Object object, @Nonnull Session session) {
 		throw new TransientObjectException(
 				"object references an unsaved transient instance - save the transient instance before flushing: " +
 						session.getEntityName(object)

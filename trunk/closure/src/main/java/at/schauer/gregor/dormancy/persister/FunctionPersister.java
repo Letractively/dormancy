@@ -78,6 +78,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		return container;
 	}
 
+	@Nonnull
 	public <T extends Iterable<E>> Function<E, E> getCloneFunction(@Nonnull T dbObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
@@ -87,6 +88,7 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		};
 	}
 
+	@Nonnull
 	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
@@ -96,7 +98,8 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		};
 	}
 
-	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, T dbObj, @Nonnull final Map<Object, Object> tree) {
+	@Nonnull
+	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, @Nonnull T dbObj, @Nonnull final Map<Object, Object> tree) {
 		final Iterator<E> iterator = dbObj.iterator();
 		return new Function<E, E>() {
 			@Override
