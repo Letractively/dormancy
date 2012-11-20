@@ -55,7 +55,7 @@ public class BeanPropertyAccessorPersister<C> extends AbstractPropertyAccessorPe
 	 */
 	@Nonnull
 	@Override
-	protected String[] getPropertyNames(BeanWrapper propertyAccessor) {
+	protected String[] getPropertyNames(@Nonnull BeanWrapper propertyAccessor) {
 		PropertyDescriptor[] descriptors = propertyAccessor.getPropertyDescriptors();
 		String[] names = new String[descriptors.length];
 		for (int i = 0; i < descriptors.length; i++) {

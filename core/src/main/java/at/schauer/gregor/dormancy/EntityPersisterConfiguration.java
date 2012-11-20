@@ -58,7 +58,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether new entities should be persisted automatically.
-	 *
+	 * <p/>
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if new entities should be processed, {@code false} otherwise
@@ -79,7 +79,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether a version check should be performed before processing the properties.
-	 *
+	 * <p/>
 	 * <p>Default is {@code true}.</p>
 	 *
 	 * @return {@code true} if a version checking is enabled, {@code false} otherwise
@@ -100,7 +100,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether automatic flushing is done upon cloning objects.
-	 *
+	 * <p/>
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if automatic flushing is enabled, {@code false} otherwise
@@ -121,13 +121,14 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether objects are cloned instead of reused.
-	 *
+	 * <p/>
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if cloning is enabled, {@code false} otherwise
 	 */
+	@Nonnull
 	public Boolean getCloneObjects() {
-		return cloneObjects;
+		return cloneObjects == null ? parent.getCloneObjects() : cloneObjects;
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class EntityPersisterConfiguration {
 	 *
 	 * @param cloneObjects {@code true} if objects should be cloned, {@code false} otherwise
 	 */
-	public void setCloneObjects(Boolean cloneObjects) {
+	public void setCloneObjects(@Nullable Boolean cloneObjects) {
 		this.cloneObjects = cloneObjects;
 	}
 }

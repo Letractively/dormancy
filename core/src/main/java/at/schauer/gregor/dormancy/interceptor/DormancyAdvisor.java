@@ -191,6 +191,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	public Pointcut getPointcut() {
 		if (pointcut == null) {
 			pointcut = new AnnotationMatchingPointcut(null, annotationType) {
+				@Nonnull
 				@Override
 				public MethodMatcher getMethodMatcher() {
 					return new AnnotationMethodMatcher(annotationType) {
@@ -206,6 +207,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		return pointcut;
 	}
 
+	@Nonnull
 	@Override
 	public Advice getAdvice() {
 		return this;

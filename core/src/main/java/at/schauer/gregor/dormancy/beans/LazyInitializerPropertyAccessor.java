@@ -25,6 +25,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -36,7 +37,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	protected LazyInitializer lazyInitializer;
 	protected ClassMetadata metadata;
 
-	public LazyInitializerPropertyAccessor(LazyInitializer lazyInitializer) {
+	public LazyInitializerPropertyAccessor(@Nonnull LazyInitializer lazyInitializer) {
 		this.lazyInitializer = lazyInitializer;
 	}
 
@@ -47,7 +48,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#isReadable(Object, String)
 	 */
 	@Override
-	public boolean isReadableProperty(String propertyName) {
+	public boolean isReadableProperty(@Nonnull String propertyName) {
 		return isIdentifierName(propertyName) || PropertyUtils.isReadable(getTarget(), propertyName);
 	}
 
@@ -58,7 +59,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#isWriteable(Object, String)
 	 */
 	@Override
-	public boolean isWritableProperty(String propertyName) {
+	public boolean isWritableProperty(@Nonnull String propertyName) {
 		return isIdentifierName(propertyName) || PropertyUtils.isWriteable(getTarget(), propertyName);
 	}
 
@@ -71,7 +72,8 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#getPropertyType(Object, String)
 	 */
 	@Override
-	public TypeDescriptor getPropertyTypeDescriptor(String propertyName) {
+	@Nonnull
+	public TypeDescriptor getPropertyTypeDescriptor(@Nonnull String propertyName) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				return TypeDescriptor.forObject(metadata.getIdentifierType());
@@ -91,8 +93,9 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#getProperty(Object, String)
 	 * @see FieldUtils#readField(Object, String, boolean)
 	 */
+	@Nullable
 	@Override
-	public Object getPropertyValue(String propertyName) {
+	public Object getPropertyValue(@Nonnull String propertyName) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				return lazyInitializer.getIdentifier();
@@ -117,7 +120,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see FieldUtils#writeField(Object, String, Object, boolean)
 	 */
 	@Override
-	public void setPropertyValue(String propertyName, Object value) {
+	public void setPropertyValue(@Nonnull String propertyName, @Nullable Object value) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				lazyInitializer.setIdentifier((Serializable) value);
@@ -133,8 +136,9 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 		}
 	}
 
+	@Nullable
 	@Override
-	public <T> T convertIfNecessary(Object value, Class<T> requiredType, MethodParameter methodParam) {
+	public <T> T convertIfNecessary(@Nullable Object value, @Nonnull Class<T> requiredType, @Nullable MethodParameter methodParam) {
 		return requiredType.cast(value);
 	}
 
@@ -144,7 +148,8 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @param propertyName the offending property
 	 * @param e            the root cause
 	 */
-	protected InvalidPropertyException throwException(String propertyName, Exception e) {
+	@Nonnull
+	protected InvalidPropertyException throwException(@Nonnull String propertyName, @Nullable Exception e) {
 		return new InvalidPropertyException(lazyInitializer.getPersistentClass(), propertyName, e != null ? e.getMessage() : "", e);
 	}
 
@@ -154,6 +159,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @return The underlying target entity.
 	 * @see LazyInitializer#getImplementation()
 	 */
+	@Nonnull
 	protected Object getTarget() {
 		return lazyInitializer.getImplementation();
 	}
@@ -161,6 +167,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	/**
 	 * Get the {@link ClassMetadata} associated with the given entity class
 	 */
+	@Nonnull
 	protected ClassMetadata getMetadata() {
 		if (metadata == null) {
 			metadata = lazyInitializer.getSession().getFactory().getClassMetadata(lazyInitializer.getPersistentClass());

@@ -32,6 +32,7 @@ public class NullPersister<C> extends AbstractEntityPersister<C> implements Dyna
 		protected static final NullPersister instance = new NullPersister();
 	}
 
+	@Nonnull
 	@SuppressWarnings("unchecked")
 	public static <C> NullPersister<C> getInstance() {
 		return NullPersisterHolder.instance;
