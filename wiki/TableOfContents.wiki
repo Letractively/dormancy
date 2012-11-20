@@ -2,6 +2,7 @@
 	* User's Guide
 		* [Motivation Motivation]
 		* [GettingStarted Getting Started]
+		* [GettingDormancy Getting Dormancy]
 		* [Architecture Architecture]
 		* [UsingSpring Using Spring]
 		* [ComplexQueries Complex Queries]
