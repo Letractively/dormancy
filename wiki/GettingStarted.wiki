@@ -2,9 +2,13 @@
 #labels Featured
 
 = Getting Started =
+=== Using Dormancy in your project ===
+Please refer to the following page for [UsingDormancyInYourProject using Dormancy in your project].
 
-It is recommended to have a look at the [Architecture architecture] of Dormancy.
+=== Getting more information ===
+To get a deeper understand of how Dormancy works, it is recommended to have a look at the [Architecture architecture].
 
+=== Starting to Code ===
 At the very first a `Dormancy` instance has to be created.
 This can be done manually by creating a new instance or using a dependency injection framework like Spring.
 For further information about using Dormancy in Spring-based applications see [UsingSpring using Spring].

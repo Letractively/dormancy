@@ -71,7 +71,7 @@ All modules are hosted on Google Code. To use the repository in your project, si
 }}}
 
 === Which modules do I need? ===
-You basically need `hibernate3` or `hibernate4` depending on the Hibernate version you use.
+You basically need `dormancy-hibernate3` or `dormancy-hibernate4` depending on the Hibernate version you use.
 Therefore, the appropriate dependency has to be added to the `pom.xml`:
 {{{
 <dependency>
@@ -88,7 +88,7 @@ or
 	<version>1.1.0</version>
 </dependency>
 }}}
-The `core` module and all required dependencies are included automatically.
+The `dormancy-core` module and all required dependencies are included automatically.
 
 == Spring ==
 
