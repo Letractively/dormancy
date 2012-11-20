@@ -472,7 +472,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	private <T> AbstractEntityPersister<T> findEntityPersister(Class<? extends T> clazz) {
+	private <T> AbstractEntityPersister<T> findEntityPersister(@Nonnull Class<? extends T> clazz) {
 		try {
 			for (Map.Entry<Class<?>, AbstractEntityPersister<?>> entry : getPersisterMap().entrySet()) {
 				if (entry.getKey().isAssignableFrom(clazz)) {
@@ -575,6 +575,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 *
 	 * @return the Dormancy utilities to use
 	 */
+	@Nonnull
 	public AbstractDormancyUtils getUtils() {
 		return utils;
 	}
