@@ -1,4 +1,5 @@
-#summary  How to get Dormancy
+#summary  How to download the Dormancy and used it in your project
+#labels Featured
 
 = Getting Dormancy =
 Depending on the build system used by the project, there are several possibilities of how to integrate Dormancy.
@@ -19,7 +20,7 @@ Therefore, the the following repository definition has to be added to the `pom.x
 }}}
 
 Dormancy supports Hibernate 3.X and Hibernate 4.X.
-Depending on the used Hibernate version, the appropriate dependency has toe be added to the `pom.xml`:
+Depending on the used Hibernate version, the appropriate dependency has to be added to the `pom.xml`:
 {{{
 <dependencies>
 	...
@@ -41,10 +42,10 @@ Depending on the used Hibernate version, the appropriate dependency has toe be a
 	</dependency>
 </dependencies>
 }}}
-Even if Hibernate 4 is not fully compatible to Hibernate 3, those modules can simply become exchanged by replacing `dormancy-hibernate3` by `dormancy-hibernate4` or the other way round.
+Even if Hibernate 4 is not fully compatible to Hibernate 3, those modules can simply be exchanged by replacing `dormancy-hibernate3` by `dormancy-hibernate4` or the other way round.
 The `dormancy-core` module and all required dependencies are included automatically.
 
-However, a project contains several complex Hibernate entities that require custom serialization logic, it is recommended to add the `dormancy-closure` module, which contains `ContextFunction` and other helpful classes supporting quick extensions.
+However, a project contains several complex Hibernate entities that require custom logic for serialization/deserialization, it is recommended to add the `dormancy-closure` module, which contains `ContextFunction` and other helpful classes supporting quick extensions.
 Further information about how to customize Dormancy can be found in the chapters [ContextFunction Using ContextFunctions] and [CustomEntityPersisters Custom EntityPersisters].
 {{{
 <dependency>
@@ -56,19 +57,26 @@ Further information about how to customize Dormancy can be found in the chapters
 
 == Building Dormancy from scratch ==
 The latest source code of Dormancy can be downloaded from the SVN repository by invoking the following command:
-{{{svn checkout http://dormancy.googlecode.com/svn/trunk/ dormancy-read-only}}}
+
+`svn checkout http://dormancy.googlecode.com/svn/trunk/ dormancy-read-only`
+
 Please refer to the following page for further information about [https://code.google.com/p/dormancy/source/checkout checking out the source code].
 
 The project can be built with Maven by typing the following command:
-{{{mvn -P hibernate3 install}}}
+
+`mvn -P hibernate3 install`
+
 or
-{{{mvn -P hibernate4 install}}}
+
+`mvn -P hibernate4 install`
 
 For executing the supplied JUnit tests, the `test` Maven profile has to be activated in addition to the `hibernate*` profile:
-{{{mvn -P hibernate3,test install}}}
+
+`mvn -P hibernate3,test install`
 
 Optionally, JAR files containing the source code and the Javadoc can be built by invoking the appropriate Maven plugins:
-{{{mvn -P hibernate3 source:jar javadoc:jar install}}}
+
+`mvn -P hibernate3 source:jar javadoc:jar install`
 
 == Downloading a Dormancy release build ==
 The official release builds can be downloaded from the [https://code.google.com/p/dormancy/downloads/list Downloads] page.
