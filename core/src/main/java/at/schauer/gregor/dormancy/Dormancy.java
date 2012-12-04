@@ -140,7 +140,24 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		PropertyAccessor dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
 		PropertyAccessor trPropertyAccessor = dbObj == trObj ? dbPropertyAccessor : utils.getPropertyAccessor(metadata, trObj);
 		for (String propertyName : propertyNames) {
-			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
+			Object dbValue;
+			try {
+				dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
+			} catch (BeansException e) {
+				if (metadata != null) {
+					/**
+					 * If the property value cannot bet read and the object is a Hibernate entity, throw an exception.
+					 * Note that this is a security mechanism to ensure database consistency.
+					 * Otherwise it would be possible that references, which are not initialized properly,
+					 * cause constraint violations or even delete associations.
+					 */
+					throw e;
+				} else if (logger.isDebugEnabled()) {
+					// If the property value of a non entity cannot be read, write a debug message to the log.
+					logger.debug(ExceptionUtils.getMessage(e));
+				}
+				continue;
+			}
 
 			// If the property (e.g., a lazy persistent collection) is not initialized, simply ignore it
 			if (!Hibernate.isInitialized(dbValue)) {
