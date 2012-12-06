@@ -159,23 +159,19 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				continue;
 			}
 
-			// If the property (e.g., a lazy persistent collection) is not initialized, simply ignore it
-			if (!Hibernate.isInitialized(dbValue)) {
-				dbValue = null;
-			}
-
-			// Traverse the persistent object graph recursively
-			else if (dbValue != null) {
-				dbValue = clone_((T) dbValue, tree);
+			Object trValue = null;
+			// If the property (e.g., a lazy persistent collection) is initialized traverse the object graph recursively
+			if (dbValue != null && Hibernate.isInitialized(dbValue)) {
+				trValue = clone_((T) dbValue, tree);
 			}
 
 			if (logger.isTraceEnabled()) {
-				logger.trace(String.format("Setting property %s of %s to %s", propertyName, trObj, dbValue));
+				logger.trace(String.format("Setting property %s of %s to %s", propertyName, trObj, trValue));
 			}
 
 			// Attempt to set the property value
 			try {
-				trPropertyAccessor.setPropertyValue(propertyName, dbValue);
+				trPropertyAccessor.setPropertyValue(propertyName, trValue);
 			} catch (BeansException e) {
 				if (metadata != null) {
 					/**
@@ -355,9 +351,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 						}
 						continue;
 					}
-				} else if (trValue == dbValue) {
-					continue;
-				} else {
+				} else if (trValue != dbValue) {
 					// Get the identifier of the associated transient object
 					ClassMetadata valueMetadata = utils.getClassMetadata(dbValue, sessionFactory);
 					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValue, session));
@@ -384,10 +378,12 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				}
 			}
 
-			if (logger.isTraceEnabled()) {
-				logger.trace(String.format("Setting property %s of %s to %s", propertyName, dbObj, trValue));
+			if (trValue != dbValue) {
+				if (logger.isTraceEnabled()) {
+					logger.trace(String.format("Setting property %s of %s to %s", propertyName, dbObj, trValue));
+				}
+				dbPropertyAccessor.setPropertyValue(propertyName, trValue);
 			}
-			dbPropertyAccessor.setPropertyValue(propertyName, trValue);
 		}
 
 		return dbObj;
@@ -534,7 +530,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				getPersisterMap().put(type, entityPersister);
 			}
 		}
-		if (types != null) {
+		if (ArrayUtils.isNotEmpty(types)) {
 			// Register the given types for advanced customization
 			for (Class<?> type : types) {
 				getPersisterMap().put(type, entityPersister);
