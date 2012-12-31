@@ -23,7 +23,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.*;
-import org.hibernate.collection.PersistentMap;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
@@ -167,7 +166,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				if (Hibernate.isInitialized(dbValue)) {
 					trValue = clone_((T) dbValue, tree);
 				} else if (utils.isPersistentCollection(dbValue) && config.getCreateEmptyCollections()) {
-					trValue = dbValue instanceof PersistentMap
+					trValue = dbValue instanceof Map
 							? CollectionFactory.createApproximateMap(dbValue, 0)
 							: CollectionFactory.createApproximateCollection(dbValue, 0);
 				}

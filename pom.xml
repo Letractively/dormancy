@@ -449,16 +449,16 @@
 								</goals>
 							</execution>
 						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>jaxen</groupId>
+								<artifactId>jaxen</artifactId>
+								<version>1.1.1</version>
+							</dependency>
+						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
-			<dependencies>
-				<dependency>
-					<groupId>jaxen</groupId>
-					<artifactId>jaxen</artifactId>
-					<version>1.1.1</version>
-				</dependency>
-			</dependencies>
 		</profile>
 		<profile>
 			<id>shade</id>
