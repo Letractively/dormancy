@@ -17,7 +17,9 @@ package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.domain.DTO;
+import at.schauer.gregor.dormancy.domain.ReadOnlyDTO;
 import at.schauer.gregor.dormancy.domain.Stage;
+import at.schauer.gregor.dormancy.domain.WriteOnlyDTO;
 import at.schauer.gregor.dormancy.entity.*;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
@@ -29,9 +31,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.MethodInvocationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -109,6 +114,58 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		InvalidEntity obj = new InvalidEntity(false);
 		InvalidEntity clone = dormancy.clone(obj);
 		assertSame(obj, clone);
+	}
+
+	@Test(expected = MethodInvocationException.class)
+	public void testCloneEntityWithoutSetter() {
+		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
+		dormancy.clone(obj);
+	}
+
+	@Test(expected = MethodInvocationException.class)
+	public void testMergeEntityWithoutSetter() {
+		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
+		ReadOnlyEntity modified = new ReadOnlyEntity(1L, "read");
+		dormancy.merge(modified, obj);
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testCloneEntityWithoutGetter() {
+		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
+		dormancy.clone(obj);
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testMergeEntityWithoutGetter() {
+		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
+		WriteOnlyEntity modified = new WriteOnlyEntity(1L, "write");
+		dormancy.merge(modified, obj);
+	}
+
+	@Test
+	public void testCloneDTOWithoutSetter() {
+		ReadOnlyDTO obj = new ReadOnlyDTO(1L, "readOnly");
+		dormancy.clone(obj);
+	}
+
+	@Test
+	public void testMergeDTOWithoutSetter() {
+		ReadOnlyDTO obj = new ReadOnlyDTO(1L, "readOnly");
+		ReadOnlyDTO modified = new ReadOnlyDTO(1L, "read");
+		dormancy.merge(modified, obj);
+	}
+
+	@Test
+	public void testCloneDTOWithoutGetter() {
+		WriteOnlyDTO obj = new WriteOnlyDTO(1L, "writeOnly");
+		dormancy.clone(obj);
+	}
+
+	@Test
+	public void testMergeDTOWithoutGetter() {
+		WriteOnlyDTO obj = new WriteOnlyDTO(1L, "writeOnly");
+		WriteOnlyDTO modified = new WriteOnlyDTO(1L, "write");
+		dormancy.merge(modified, obj);
 	}
 
 	@Test
@@ -193,9 +250,9 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		Employee bt = service.load(Employee.class, 2L);
 
 		assertEquals(false, bp.getColleagues() == null);
-		assertEquals(null, bt.getColleagues());
+		assertEquals(Collections.<Employee>emptySet(), bt.getColleagues());
 		assertEquals(1, bp.getEmployees().size());
-		assertEquals(null, bt.getEmployees());
+		assertEquals(Collections.<Employee>emptySet(), bt.getEmployees());
 
 		assertNotNull(bp.getBoss());
 		assertNotNull(bt.getBoss());

@@ -98,8 +98,8 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Perform(name = "Dormancy.merge(Object, Object)", n = 100)
-	@Test(timeout = 100)
-	public void testMergeTogether() {
+	@Test(timeout = 1000)
+	public void nbtestMergeTogether() {
 		Perform perform = getAnnotation();
 		Employee bp = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
 		Employee bt = service.load(Employee.class, 2L);

@@ -44,7 +44,7 @@ public class LazyEagerDormancyTest extends AbstractDormancyTest {
 	@Test(expected = HibernateException.class)
 	public void testOverwriteLazyNullProperty() {
 		Employee b = service.load(Employee.class, 2L);
-		assertEquals(null, b.getEmployees());
+		assertEquals(Collections.<Employee>emptySet(), b.getEmployees());
 		b.setEmployees(Collections.singleton(service.load(Employee.class, 3L)));
 		service.save(b);
 	}
@@ -52,7 +52,7 @@ public class LazyEagerDormancyTest extends AbstractDormancyTest {
 	@Test(expected = HibernateException.class)
 	public void testOverwriteLazyInitializedProperty() {
 		Employee b = service.load(Employee.class, 2L);
-		assertEquals(null, b.getColleagues());
+		assertEquals(Collections.<Employee>emptySet(), b.getColleagues());
 		b.setColleagues(Collections.singleton(service.load(Employee.class, 3L)));
 		service.save(b);
 	}

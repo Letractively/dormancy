@@ -15,9 +15,9 @@
  */
 package at.schauer.gregor.dormancy.persister;
 
+import at.schauer.gregor.dormancy.container.Holder;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
-import at.schauer.gregor.dormancy.container.Holder;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.next(team);
-		assertEquals(null, pass.getEmployees().get(0).getEmployees());
+		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
 	}
 
 	@Test
@@ -65,7 +66,7 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.pass(team);
-		assertEquals(null, pass.getEmployees().get(0).getEmployees());
+		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
 		assertNotSame(team.getEmployees().get(0), pass.getEmployees().get(0));
 	}
 

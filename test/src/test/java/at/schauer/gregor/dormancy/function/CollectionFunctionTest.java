@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Gregor Schauer
@@ -50,5 +50,16 @@ public class CollectionFunctionTest {
 
 		List<Employee> list = Collections.singletonList(clone);
 		assertEquals(Collections.singletonList(clone), function.apply(new FunctionContext<List<Employee>>(list)).getObj());
+	}
+
+	@Test
+	public void testEmpty() {
+		CollectionFunction<List<Number>, Number> function = new CollectionFunction<List<Number>, Number>();
+		assertNull(function.apply(null));
+
+		FunctionContext<List<Number>> context = function.apply(new FunctionContext<List<Number>>());
+		assertNotNull(context);
+		assertNotNull(context.getTree());
+		assertNull(context.getObj());
 	}
 }

@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateSetClass;
@@ -47,8 +48,8 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 
 		List<Employee> clone = dormancy.clone(new ArrayList<Employee>(list));
 		assertEquals(list.get(0), clone.get(0));
-		assertEquals(null, clone.get(0).getEmployees());
-		assertEquals(null, clone.get(0).getColleagues());
+		assertEquals(Collections.<Employee>emptySet(), clone.get(0).getEmployees());
+		assertEquals(Collections.<Employee>emptySet(), clone.get(0).getColleagues());
 
 		sessionFactory.getCurrentSession().clear();
 		List<Employee> merge = dormancy.merge(new ArrayList<Employee>(clone));
