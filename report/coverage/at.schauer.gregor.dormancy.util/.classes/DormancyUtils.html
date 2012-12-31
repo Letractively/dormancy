@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    93.8%
+    92.9%
   </span>
   <span class="absValue">
-    (15/ 16)
+    (13/ 14)
   </span>
 </td>
 </tr>
@@ -89,84 +89,76 @@
 <i>15</i>&nbsp; */
 <i>16</i>&nbsp;package at.schauer.gregor.dormancy.util;
 <i>17</i>&nbsp;
-<i>18</i>&nbsp;import org.hibernate.Session;
-<i>19</i>&nbsp;import org.hibernate.collection.spi.PersistentCollection;
-<i>20</i>&nbsp;import org.hibernate.internal.AbstractSessionImpl;
+<i>18</i>&nbsp;import org.hibernate.EntityMode;
+<i>19</i>&nbsp;import org.hibernate.Session;
+<i>20</i>&nbsp;import org.hibernate.collection.PersistentCollection;
 <i>21</i>&nbsp;import org.hibernate.metadata.ClassMetadata;
-<i>22</i>&nbsp;import org.springframework.beans.PropertyAccessor;
-<i>23</i>&nbsp;import org.springframework.util.Assert;
-<i>24</i>&nbsp;
-<i>25</i>&nbsp;import javax.annotation.Nonnull;
-<i>26</i>&nbsp;import javax.annotation.Nullable;
-<i>27</i>&nbsp;import java.io.Serializable;
-<i>28</i>&nbsp;
-<i>29</i>&nbsp;/**
-<i>30</i>&nbsp; * Utility methods for Dormancy support code.
-<i>31</i>&nbsp; *
-<i>32</i>&nbsp; * @author Gregor Schauer
-<i>33</i>&nbsp; */
-<i>34</i>&nbsp;public class DormancyUtils extends AbstractDormancyUtils {
-<b class="fc"><i>35</i>&nbsp;	protected DormancyUtils() {</b>
-<b class="fc"><i>36</i>&nbsp;	}</b>
-<i>37</i>&nbsp;
-<i>38</i>&nbsp;	@Override
-<i>39</i>&nbsp;	@Nullable
-<i>40</i>&nbsp;	public &lt;T&gt; Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session) {
-<b class="fc"><i>41</i>&nbsp;		Serializable identifier = metadata.getIdentifier(bean, AbstractSessionImpl.class.cast(session));</b>
-<b class="fc"><i>42</i>&nbsp;		if (identifier == null &amp;&amp; propertyAccessor != null) {</b>
-<b class="fc"><i>43</i>&nbsp;			identifier = Serializable.class.cast(propertyAccessor.getPropertyValue(metadata.getIdentifierPropertyName()));</b>
-<i>44</i>&nbsp;		}
-<b class="fc"><i>45</i>&nbsp;		return identifier;</b>
-<i>46</i>&nbsp;	}
-<i>47</i>&nbsp;
-<i>48</i>&nbsp;	@Override
-<i>49</i>&nbsp;	@Nullable
-<i>50</i>&nbsp;	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName) {
-<b class="fc"><i>51</i>&nbsp;		Assert.isTrue(metadata != null || propertyAccessor != null, &quot;ClassMetadata and PropertyAccessor cannot both be null&quot;);</b>
-<b class="fc"><i>52</i>&nbsp;		return propertyAccessor != null ? propertyAccessor.getPropertyValue(propertyName) : metadata.getPropertyValue(bean, propertyName);</b>
-<i>53</i>&nbsp;	}
-<i>54</i>&nbsp;
-<i>55</i>&nbsp;	@Override
-<i>56</i>&nbsp;	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
-<b class="fc"><i>57</i>&nbsp;		Assert.isTrue(metadata != null || propertyAccessor != null, &quot;ClassMetadata and PropertyAccessor cannot both be null&quot;);</b>
-<b class="fc"><i>58</i>&nbsp;		if (propertyAccessor != null) {</b>
-<i>59</i>&nbsp;			// Use Spring&#39;s PropertyAccessor to set the value directly
-<b class="fc"><i>60</i>&nbsp;			propertyAccessor.setPropertyValue(propertyName, value);</b>
-<i>61</i>&nbsp;		} else {
-<i>62</i>&nbsp;			// If no PropertyAccessor is available, use Hibernate&#39;s ClassMetadata to set the value
-<b class="fc"><i>63</i>&nbsp;			metadata.setPropertyValue(bean, propertyName, value);</b>
-<i>64</i>&nbsp;		}
-<b class="fc"><i>65</i>&nbsp;	}</b>
-<i>66</i>&nbsp;
-<i>67</i>&nbsp;	/**
-<i>68</i>&nbsp;	 * @inheritDoc
-<i>69</i>&nbsp;	 * @see org.hibernate.metadata.ClassMetadata#getMappedClass()
-<i>70</i>&nbsp;	 */
-<i>71</i>&nbsp;	@Override
-<i>72</i>&nbsp;	public Class getMappedClass(@Nonnull ClassMetadata metadata) {
-<b class="nc"><i>73</i>&nbsp;		return metadata.getMappedClass();</b>
-<i>74</i>&nbsp;	}
-<i>75</i>&nbsp;
-<i>76</i>&nbsp;	@Override
-<i>77</i>&nbsp;	public boolean isPersistentCollection(Object obj) {
-<b class="fc"><i>78</i>&nbsp;		return obj instanceof PersistentCollection;</b>
-<i>79</i>&nbsp;	}
-<i>80</i>&nbsp;
-<i>81</i>&nbsp;	/**
-<i>82</i>&nbsp;	 * @inheritDoc
-<i>83</i>&nbsp;	 * @see org.hibernate.collection.spi.PersistentCollection#wasInitialized()
-<i>84</i>&nbsp;	 */
-<i>85</i>&nbsp;	@Override
-<i>86</i>&nbsp;	public boolean isInitializedPersistentCollection(Object obj) {
-<b class="fc"><i>87</i>&nbsp;		return isPersistentCollection(obj) &amp;&amp; PersistentCollection.class.cast(obj).wasInitialized();</b>
-<i>88</i>&nbsp;	}
-<i>89</i>&nbsp;}
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import javax.annotation.Nonnull;
+<i>24</i>&nbsp;import javax.annotation.Nullable;
+<i>25</i>&nbsp;import java.io.Serializable;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;/**
+<i>28</i>&nbsp; * Utility methods for Dormancy support code.
+<i>29</i>&nbsp; *
+<i>30</i>&nbsp; * @author Gregor Schauer
+<i>31</i>&nbsp; */
+<i>32</i>&nbsp;public class DormancyUtils extends AbstractDormancyUtils {
+<b class="fc"><i>33</i>&nbsp;	protected DormancyUtils() {</b>
+<b class="fc"><i>34</i>&nbsp;	}</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;	@Nullable
+<i>37</i>&nbsp;	@Override
+<i>38</i>&nbsp;	public &lt;T&gt; Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean, @Nonnull Session session) {
+<b class="fc"><i>39</i>&nbsp;		Serializable identifier = metadata.getIdentifier(bean, EntityMode.POJO);</b>
+<b class="fc"><i>40</i>&nbsp;		if (identifier == null) {</b>
+<b class="fc"><i>41</i>&nbsp;			identifier = Serializable.class.cast(getPropertyValue(metadata, bean, metadata.getIdentifierPropertyName()));</b>
+<i>42</i>&nbsp;		}
+<b class="fc"><i>43</i>&nbsp;		return identifier;</b>
+<i>44</i>&nbsp;	}
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;	@Nullable
+<i>47</i>&nbsp;	@Override
+<i>48</i>&nbsp;	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName) {
+<b class="fc"><i>49</i>&nbsp;		IntrospectorUtils.getDescriptorMap(getClass(bean));</b>
+<b class="fc"><i>50</i>&nbsp;		return IntrospectorUtils.getValue(bean, propertyName);</b>
+<i>51</i>&nbsp;	}
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;	@Override
+<i>54</i>&nbsp;	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+<b class="fc"><i>55</i>&nbsp;		IntrospectorUtils.getDescriptorMap(getClass(bean));</b>
+<b class="fc"><i>56</i>&nbsp;		IntrospectorUtils.setValue(bean, propertyName, value);</b>
+<b class="fc"><i>57</i>&nbsp;	}</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;	/**
+<i>60</i>&nbsp;	 * @inheritDoc
+<i>61</i>&nbsp;	 * @see ClassMetadata#getMappedClass(org.hibernate.EntityMode)
+<i>62</i>&nbsp;	 */
+<i>63</i>&nbsp;	@Override
+<i>64</i>&nbsp;	public Class&lt;?&gt; getMappedClass(@Nonnull ClassMetadata metadata) {
+<b class="nc"><i>65</i>&nbsp;		return metadata.getMappedClass(EntityMode.POJO);</b>
+<i>66</i>&nbsp;	}
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;	@Override
+<i>69</i>&nbsp;	public boolean isPersistentCollection(Object obj) {
+<b class="fc"><i>70</i>&nbsp;		return obj instanceof PersistentCollection;</b>
+<i>71</i>&nbsp;	}
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;	/**
+<i>74</i>&nbsp;	 * @inheritDoc
+<i>75</i>&nbsp;	 * @see org.hibernate.collection.PersistentCollection#wasInitialized()
+<i>76</i>&nbsp;	 */
+<i>77</i>&nbsp;	@Override
+<i>78</i>&nbsp;	public boolean isInitializedPersistentCollection(Object obj) {
+<b class="fc"><i>79</i>&nbsp;		return isPersistentCollection(obj) &amp;&amp; PersistentCollection.class.cast(obj).wasInitialized();</b>
+<i>80</i>&nbsp;	}
+<i>81</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

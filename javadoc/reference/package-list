@@ -1,6 +1,8 @@
 at.schauer.gregor.dormancy
-at.schauer.gregor.dormancy.closure
+at.schauer.gregor.dormancy.beans
+at.schauer.gregor.dormancy.function
 at.schauer.gregor.dormancy.interceptor
 at.schauer.gregor.dormancy.persister
+at.schauer.gregor.dormancy.persister.predicate
 at.schauer.gregor.dormancy.util
 

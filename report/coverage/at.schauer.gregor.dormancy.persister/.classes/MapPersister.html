@@ -53,15 +53,15 @@
     100%
   </span>
   <span class="absValue">
-    (7/ 7)
+    (6/ 6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    98.1%
+    100%
   </span>
   <span class="absValue">
-    (53/ 54)
+    (44/ 44)
   </span>
 </td>
 </tr>
@@ -91,135 +91,116 @@
 <i>17</i>&nbsp;
 <i>18</i>&nbsp;import at.schauer.gregor.dormancy.Dormancy;
 <i>19</i>&nbsp;import org.hibernate.Session;
-<i>20</i>&nbsp;import org.hibernate.metadata.ClassMetadata;
-<i>21</i>&nbsp;import org.springframework.core.CollectionFactory;
-<i>22</i>&nbsp;
-<i>23</i>&nbsp;import javax.annotation.Nonnull;
-<i>24</i>&nbsp;import javax.annotation.Nullable;
-<i>25</i>&nbsp;import javax.inject.Inject;
-<i>26</i>&nbsp;import java.util.Map;
-<i>27</i>&nbsp;
-<i>28</i>&nbsp;/**
-<i>29</i>&nbsp; * Processes all types of {@link java.util.Map}s by traversing them and invoking the desired operation of the
-<i>30</i>&nbsp; * appropriate {@link EntityPersister} for all keys and values.
-<i>31</i>&nbsp; *
-<i>32</i>&nbsp; * @author Gregor Schauer
-<i>33</i>&nbsp; */
-<b class="fc"><i>34</i>&nbsp;public class MapPersister extends AbstractContainerPersister&lt;Map&lt;?, ?&gt;&gt; {</b>
-<i>35</i>&nbsp;	@Inject
-<i>36</i>&nbsp;	public MapPersister(@Nonnull Dormancy dormancy) {
-<b class="fc"><i>37</i>&nbsp;		super(dormancy);</b>
-<b class="fc"><i>38</i>&nbsp;	}</b>
-<i>39</i>&nbsp;
-<i>40</i>&nbsp;	@Nullable
-<i>41</i>&nbsp;	@Override
-<i>42</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map clone_(@Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
-<b class="fc"><i>43</i>&nbsp;		if (dbObj == null || tree.containsKey(dbObj)) {</b>
-<b class="fc"><i>44</i>&nbsp;			return (Map) tree.get(dbObj);</b>
-<i>45</i>&nbsp;		}
-<b class="fc"><i>46</i>&nbsp;		Map&lt;Object, Object&gt; map = createContainer(dbObj);</b>
-<b class="fc"><i>47</i>&nbsp;		tree.put(dbObj, map);</b>
-<i>48</i>&nbsp;
-<b class="fc"><i>49</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; entry : dbObj.entrySet()) {</b>
-<b class="fc"><i>50</i>&nbsp;			Object key = dormancy.clone_(entry.getKey(), tree);</b>
-<b class="fc"><i>51</i>&nbsp;			Object value = dormancy.clone_(entry.getValue(), tree);</b>
-<b class="fc"><i>52</i>&nbsp;			map.put(key, value);</b>
-<b class="fc"><i>53</i>&nbsp;		}</b>
-<b class="fc"><i>54</i>&nbsp;		return map;</b>
-<i>55</i>&nbsp;	}
-<i>56</i>&nbsp;
-<i>57</i>&nbsp;	@Nullable
-<i>58</i>&nbsp;	@Override
-<i>59</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map&lt;?, ?&gt; merge_(@Nullable T trObj, @Nonnull Map&lt;Object, Object&gt; tree) {
-<b class="fc"><i>60</i>&nbsp;		if (trObj == null || tree.containsKey(trObj)) {</b>
-<b class="fc"><i>61</i>&nbsp;			return (Map&lt;?, ?&gt;) tree.get(trObj);</b>
-<i>62</i>&nbsp;		}
-<b class="fc"><i>63</i>&nbsp;		Map&lt;Object, Object&gt; map = createContainer(trObj);</b>
-<b class="fc"><i>64</i>&nbsp;		tree.put(trObj, map);</b>
-<i>65</i>&nbsp;
-<b class="fc"><i>66</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; entry : trObj.entrySet()) {</b>
-<b class="fc"><i>67</i>&nbsp;			Object key = dormancy.merge_(entry.getKey(), tree);</b>
-<b class="fc"><i>68</i>&nbsp;			Object value = dormancy.merge_(entry.getValue(), tree);</b>
-<b class="fc"><i>69</i>&nbsp;			map.put(key, value);</b>
-<b class="fc"><i>70</i>&nbsp;		}</b>
-<b class="fc"><i>71</i>&nbsp;		return map;</b>
-<i>72</i>&nbsp;	}
-<i>73</i>&nbsp;
-<i>74</i>&nbsp;	@Nullable
-<i>75</i>&nbsp;	@Override
-<i>76</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
-<i>77</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map&lt;?, ?&gt; merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
-<b class="fc"><i>78</i>&nbsp;		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {</b>
-<b class="fc"><i>79</i>&nbsp;			return (Map&lt;?, ?&gt;) tree.get(trObj);</b>
-<i>80</i>&nbsp;		}
-<b class="fc"><i>81</i>&nbsp;		Map container = createContainer(dbObj);</b>
-<b class="fc"><i>82</i>&nbsp;		tree.put(trObj, container);</b>
-<i>83</i>&nbsp;
-<i>84</i>&nbsp;		// Create a modifiable copy of the persistent map
-<b class="fc"><i>85</i>&nbsp;		Map&lt;Object, Object&gt; dbCopy = createContainer(dbObj);</b>
-<b class="fc"><i>86</i>&nbsp;		dbCopy.putAll(dbObj);</b>
-<i>87</i>&nbsp;
-<b class="fc"><i>88</i>&nbsp;		Session session = sessionFactory.getCurrentSession();</b>
-<i>89</i>&nbsp;
-<b class="fc"><i>90</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; trEntry : trObj.entrySet()) {</b>
-<i>91</i>&nbsp;			// For every transient key, find a persistent element and the associated value
-<b class="fc"><i>92</i>&nbsp;			Object dbKey = trEntry.getKey() != null ? dormancy.getUtils().findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;</b>
-<b class="fc"><i>93</i>&nbsp;			Object dbValue = dbKey != null ? dbObj.get(dbKey) : null;</b>
-<i>94</i>&nbsp;
-<i>95</i>&nbsp;			// Merge the retrieved keys and values (if possible)
-<b class="fc"><i>96</i>&nbsp;			Object mKey = null, mValue = null;</b>
-<b class="fc"><i>97</i>&nbsp;			if (trEntry.getKey() != null) {</b>
-<b class="fc"><i>98</i>&nbsp;				mKey = dbKey != null ? dormancy.merge_(trEntry.getKey(), dbKey, tree) : dormancy.merge_(trEntry.getKey(), tree);</b>
-<i>99</i>&nbsp;			}
-<b class="fc"><i>100</i>&nbsp;			if (trEntry.getValue() != null) {</b>
-<b class="fc"><i>101</i>&nbsp;				mValue = dbValue != null ? dormancy.merge_(trEntry.getValue(), dbValue, tree) : dormancy.merge_(trEntry.getValue(), tree);</b>
-<i>102</i>&nbsp;			}
-<i>103</i>&nbsp;
-<b class="fc"><i>104</i>&nbsp;			container.put(mKey, mValue);</b>
-<b class="fc"><i>105</i>&nbsp;		}</b>
-<i>106</i>&nbsp;
-<b class="fc"><i>107</i>&nbsp;		if (getConfig().getDeleteRemovedEntities()) {</b>
-<b class="fc"><i>108</i>&nbsp;			ClassMetadata keyMetadata = null, valueMetadata = null;</b>
-<i>109</i>&nbsp;			// For every element that is left in the map, check if it is a Hibernate managed entity and delete it
-<b class="fc"><i>110</i>&nbsp;			for (Map.Entry&lt;?, ?&gt; deleted : dbCopy.entrySet()) {</b>
-<b class="fc"><i>111</i>&nbsp;				keyMetadata = keyMetadata != null &amp;&amp; dormancy.getUtils().getMappedClass(keyMetadata) == deleted.getKey().getClass()</b>
-<i>112</i>&nbsp;						? keyMetadata : dormancy.getUtils().getClassMetadata(deleted.getKey(), sessionFactory);
-<b class="fc"><i>113</i>&nbsp;				valueMetadata = valueMetadata != null &amp;&amp; dormancy.getUtils().getMappedClass(valueMetadata) == deleted.getValue().getClass()</b>
-<i>114</i>&nbsp;						? valueMetadata : dormancy.getUtils().getClassMetadata(deleted.getValue(), sessionFactory);
-<i>115</i>&nbsp;
-<b class="fc"><i>116</i>&nbsp;				if (keyMetadata != null) {</b>
-<b class="nc"><i>117</i>&nbsp;					sessionFactory.getCurrentSession().delete(deleted.getKey());</b>
-<i>118</i>&nbsp;				}
-<b class="fc"><i>119</i>&nbsp;				if (valueMetadata != null) {</b>
-<b class="fc"><i>120</i>&nbsp;					sessionFactory.getCurrentSession().delete(deleted.getValue());</b>
-<i>121</i>&nbsp;				}
-<i>122</i>&nbsp;			}
-<i>123</i>&nbsp;		}
-<i>124</i>&nbsp;
-<i>125</i>&nbsp;		// Add the processed entities to the persistent collection
-<b class="fc"><i>126</i>&nbsp;		dbObj.clear();</b>
-<b class="fc"><i>127</i>&nbsp;		dbObj.putAll(container);</b>
-<b class="fc"><i>128</i>&nbsp;		return dbObj;</b>
-<i>129</i>&nbsp;	}
-<i>130</i>&nbsp;
-<i>131</i>&nbsp;	@Nonnull
-<i>132</i>&nbsp;	@Override
-<i>133</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
-<i>134</i>&nbsp;	protected Map&lt;Object, Object&gt; createContainer(@Nonnull Map&lt;?, ?&gt; map) {
-<b class="fc"><i>135</i>&nbsp;		return CollectionFactory.createApproximateMap(map, map.size());</b>
-<i>136</i>&nbsp;	}
-<i>137</i>&nbsp;
-<i>138</i>&nbsp;	@Override
-<i>139</i>&nbsp;	public Class&lt;?&gt;[] getSupportedTypes() {
-<b class="fc"><i>140</i>&nbsp;		return new Class[]{Map.class};</b>
-<i>141</i>&nbsp;	}
-<i>142</i>&nbsp;}
+<i>20</i>&nbsp;import org.springframework.core.CollectionFactory;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import javax.annotation.Nonnull;
+<i>23</i>&nbsp;import javax.annotation.Nullable;
+<i>24</i>&nbsp;import javax.inject.Inject;
+<i>25</i>&nbsp;import java.util.Map;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;/**
+<i>28</i>&nbsp; * Processes all types of {@link java.util.Map}s by traversing them and invoking the desired operation of the
+<i>29</i>&nbsp; * appropriate {@link EntityPersister} for all keys and values.
+<i>30</i>&nbsp; *
+<i>31</i>&nbsp; * @author Gregor Schauer
+<i>32</i>&nbsp; */
+<i>33</i>&nbsp;public class MapPersister extends AbstractContainerPersister&lt;Map&lt;?, ?&gt;&gt; {
+<i>34</i>&nbsp;	@Inject
+<i>35</i>&nbsp;	public MapPersister(@Nonnull Dormancy dormancy) {
+<b class="fc"><i>36</i>&nbsp;		super(dormancy);</b>
+<b class="fc"><i>37</i>&nbsp;	}</b>
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;	@Nullable
+<i>40</i>&nbsp;	@Override
+<i>41</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map clone_(@Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>42</i>&nbsp;		if (dbObj == null || tree.containsKey(dbObj)) {</b>
+<b class="fc"><i>43</i>&nbsp;			return (Map) tree.get(dbObj);</b>
+<i>44</i>&nbsp;		}
+<b class="fc"><i>45</i>&nbsp;		Map&lt;Object, Object&gt; map = createContainer(dbObj);</b>
+<b class="fc"><i>46</i>&nbsp;		tree.put(dbObj, map);</b>
+<i>47</i>&nbsp;
+<b class="fc"><i>48</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; entry : dbObj.entrySet()) {</b>
+<b class="fc"><i>49</i>&nbsp;			Object key = dormancy.clone_(entry.getKey(), tree);</b>
+<b class="fc"><i>50</i>&nbsp;			Object value = dormancy.clone_(entry.getValue(), tree);</b>
+<b class="fc"><i>51</i>&nbsp;			map.put(key, value);</b>
+<b class="fc"><i>52</i>&nbsp;		}</b>
+<b class="fc"><i>53</i>&nbsp;		return map;</b>
+<i>54</i>&nbsp;	}
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;	@Nullable
+<i>57</i>&nbsp;	@Override
+<i>58</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map&lt;?, ?&gt; merge_(@Nullable T trObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>59</i>&nbsp;		if (trObj == null || tree.containsKey(trObj)) {</b>
+<b class="fc"><i>60</i>&nbsp;			return (Map&lt;?, ?&gt;) tree.get(trObj);</b>
+<i>61</i>&nbsp;		}
+<b class="fc"><i>62</i>&nbsp;		Map&lt;Object, Object&gt; map = createContainer(trObj);</b>
+<b class="fc"><i>63</i>&nbsp;		tree.put(trObj, map);</b>
+<i>64</i>&nbsp;
+<b class="fc"><i>65</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; entry : trObj.entrySet()) {</b>
+<b class="fc"><i>66</i>&nbsp;			Object key = dormancy.merge_(entry.getKey(), tree);</b>
+<b class="fc"><i>67</i>&nbsp;			Object value = dormancy.merge_(entry.getValue(), tree);</b>
+<b class="fc"><i>68</i>&nbsp;			map.put(key, value);</b>
+<b class="fc"><i>69</i>&nbsp;		}</b>
+<b class="fc"><i>70</i>&nbsp;		return map;</b>
+<i>71</i>&nbsp;	}
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;	@Nullable
+<i>74</i>&nbsp;	@Override
+<i>75</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>76</i>&nbsp;	public &lt;T extends Map&lt;?, ?&gt;&gt; Map&lt;?, ?&gt; merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>77</i>&nbsp;		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {</b>
+<b class="fc"><i>78</i>&nbsp;			return (Map&lt;?, ?&gt;) tree.get(trObj);</b>
+<i>79</i>&nbsp;		}
+<b class="fc"><i>80</i>&nbsp;		Map container = createContainer(dbObj);</b>
+<b class="fc"><i>81</i>&nbsp;		tree.put(trObj, container);</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;		// Create a modifiable copy of the persistent map
+<b class="fc"><i>84</i>&nbsp;		Map&lt;Object, Object&gt; dbCopy = createContainer(dbObj);</b>
+<b class="fc"><i>85</i>&nbsp;		dbCopy.putAll(dbObj);</b>
+<i>86</i>&nbsp;
+<b class="fc"><i>87</i>&nbsp;		Session session = sessionFactory.getCurrentSession();</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;		for (Map.Entry&lt;?, ?&gt; trEntry : trObj.entrySet()) {</b>
+<i>90</i>&nbsp;			// For every transient key, find a persistent element and the associated value
+<b class="fc"><i>91</i>&nbsp;			Object dbKey = trEntry.getKey() != null ? dormancy.getUtils().findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;</b>
+<b class="fc"><i>92</i>&nbsp;			Object dbValue = dbKey != null ? dbObj.get(dbKey) : null;</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;			// Merge the retrieved keys and values (if possible)
+<b class="fc"><i>95</i>&nbsp;			Object mKey = null, mValue = null;</b>
+<b class="fc"><i>96</i>&nbsp;			if (trEntry.getKey() != null) {</b>
+<b class="fc"><i>97</i>&nbsp;				mKey = dbKey != null ? dormancy.merge_(trEntry.getKey(), dbKey, tree) : dormancy.merge_(trEntry.getKey(), tree);</b>
+<i>98</i>&nbsp;			}
+<b class="fc"><i>99</i>&nbsp;			if (trEntry.getValue() != null) {</b>
+<b class="fc"><i>100</i>&nbsp;				mValue = dbValue != null ? dormancy.merge_(trEntry.getValue(), dbValue, tree) : dormancy.merge_(trEntry.getValue(), tree);</b>
+<i>101</i>&nbsp;			}
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;			container.put(mKey, mValue);</b>
+<b class="fc"><i>104</i>&nbsp;		}</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;		// Add the processed entities to the persistent collection
+<b class="fc"><i>107</i>&nbsp;		dbObj.clear();</b>
+<b class="fc"><i>108</i>&nbsp;		dbObj.putAll(container);</b>
+<b class="fc"><i>109</i>&nbsp;		return dbObj;</b>
+<i>110</i>&nbsp;	}
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;	@Nonnull
+<i>113</i>&nbsp;	@Override
+<i>114</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>115</i>&nbsp;	protected Map&lt;Object, Object&gt; createContainer(@Nonnull Map&lt;?, ?&gt; container) {
+<b class="fc"><i>116</i>&nbsp;		return CollectionFactory.createApproximateMap(container, container.size());</b>
+<i>117</i>&nbsp;	}
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;	@Override
+<i>120</i>&nbsp;	public Class&lt;?&gt;[] getSupportedTypes() {
+<b class="fc"><i>121</i>&nbsp;		return new Class[]{Map.class};</b>
+<i>122</i>&nbsp;	}
+<i>123</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

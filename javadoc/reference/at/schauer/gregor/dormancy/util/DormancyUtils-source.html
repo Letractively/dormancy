@@ -147,11 +147,15 @@
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -165,8 +169,7 @@
       <ul>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html">AbstractDormancyUtils</a></li>
           <li class="selected api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/DormancyUtils.html">DormancyUtils</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/HibernatePropertyAccessor.html">HibernatePropertyAccessor</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/SpringPropertyAccessor.html">SpringPropertyAccessor</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/IntrospectorUtils.html">IntrospectorUtils</a></li>
       </ul>
     </li>
               
@@ -214,6 +217,10 @@
    
   
   
+   
+  
+  
+   
   
   
 
@@ -295,8 +302,6 @@ import org.hibernate.EntityMode;
 import org.hibernate.Session;
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.metadata.ClassMetadata;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -313,31 +318,25 @@ public class DormancyUtils extends AbstractDormancyUtils {
 
 	@Nullable
 	@Override
-	public &lt;T&gt; Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session) {
+	public &lt;T&gt; Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean, @Nonnull Session session) {
 		Serializable identifier = metadata.getIdentifier(bean, EntityMode.POJO);
-		if (identifier == null &amp;&amp; propertyAccessor != null) {
-			identifier = Serializable.class.cast(propertyAccessor.getPropertyValue(metadata.getIdentifierPropertyName()));
+		if (identifier == null) {
+			identifier = Serializable.class.cast(getPropertyValue(metadata, bean, metadata.getIdentifierPropertyName()));
 		}
 		return identifier;
 	}
 
 	@Nullable
 	@Override
-	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName) {
-		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
-		return propertyAccessor != null ? propertyAccessor.getPropertyValue(propertyName) : metadata.getPropertyValue(bean, propertyName, EntityMode.POJO);
+	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName) {
+		IntrospectorUtils.getDescriptorMap(getClass(bean));
+		return IntrospectorUtils.getValue(bean, propertyName);
 	}
 
 	@Override
-	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
-		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
-		if (propertyAccessor != null) {
-			// Use Spring's PropertyAccessor to set the value directly
-			propertyAccessor.setPropertyValue(propertyName, value);
-		} else {
-			// If no PropertyAccessor is available, use Hibernate's ClassMetadata to set the value
-			metadata.setPropertyValue(bean, propertyName, value, EntityMode.POJO);
-		}
+	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		IntrospectorUtils.getDescriptorMap(getClass(bean));
+		IntrospectorUtils.setValue(bean, propertyName, value);
 	}
 
 	/**
@@ -345,7 +344,7 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	 * @see ClassMetadata#getMappedClass(org.hibernate.EntityMode)
 	 */
 	@Override
-	public Class getMappedClass(@Nonnull ClassMetadata metadata) {
+	public Class&lt;?&gt; getMappedClass(@Nonnull ClassMetadata metadata) {
 		return metadata.getMappedClass(EntityMode.POJO);
 	}
 

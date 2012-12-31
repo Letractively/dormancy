@@ -50,18 +50,18 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    75%
   </span>
   <span class="absValue">
-    (4/ 4)
+    (3/ 4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    88.9%
   </span>
   <span class="absValue">
-    (9/ 9)
+    (8/ 9)
   </span>
 </td>
 </tr>
@@ -107,7 +107,7 @@
 <i>33</i>&nbsp;	protected EntityPersisterConfiguration config;
 <i>34</i>&nbsp;
 <i>35</i>&nbsp;	@Inject
-<b class="fc"><i>36</i>&nbsp;	public AbstractContainerPersister(@Nonnull Dormancy dormancy) {</b>
+<b class="fc"><i>36</i>&nbsp;	protected AbstractContainerPersister(@Nonnull Dormancy dormancy) {</b>
 <b class="fc"><i>37</i>&nbsp;		this.dormancy = dormancy;</b>
 <b class="fc"><i>38</i>&nbsp;		this.config = new EntityPersisterConfiguration(dormancy.getConfig());</b>
 <b class="fc"><i>39</i>&nbsp;	}</b>
@@ -129,7 +129,7 @@
 <i>55</i>&nbsp;	 */
 <i>56</i>&nbsp;	@Nonnull
 <i>57</i>&nbsp;	public EntityPersisterConfiguration getConfig() {
-<b class="fc"><i>58</i>&nbsp;		return config;</b>
+<b class="nc"><i>58</i>&nbsp;		return config;</b>
 <i>59</i>&nbsp;	}
 <i>60</i>&nbsp;
 <i>61</i>&nbsp;	/**
@@ -155,7 +155,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

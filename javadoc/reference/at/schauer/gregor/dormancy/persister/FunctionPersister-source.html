@@ -147,11 +147,15 @@
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -162,6 +166,7 @@
               
     <li><h2>Interfaces</h2>
       <ul>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</li>
       </ul>
     </li>
@@ -170,10 +175,22 @@
       <ul>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractContainerPersister.html">AbstractContainerPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</li>
           <li class="selected api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpEntityPersister.html">NoOpEntityPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</li>
       </ul>
     </li>
               
@@ -230,6 +247,8 @@
    
   
   
+  
+   
   
   
 
@@ -342,7 +361,7 @@ public class FunctionPersister&lt;E&gt; extends AbstractContainerPersister&lt;It
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; clone_(@Nullable T dbObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
+	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; clone_(@Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
 		if (dbObj == null || tree.containsKey(dbObj)) {
 			return (Iterable&lt;E&gt;) tree.get(dbObj);
 		}
@@ -356,7 +375,7 @@ public class FunctionPersister&lt;E&gt; extends AbstractContainerPersister&lt;It
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; merge_(@Nullable T trObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
+	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; merge_(@Nullable T trObj, @Nonnull Map&lt;Object, Object&gt; tree) {
 		if (trObj == null || tree.containsKey(trObj)) {
 			return (Iterable&lt;E&gt;) tree.get(trObj);
 		}
@@ -370,7 +389,7 @@ public class FunctionPersister&lt;E&gt; extends AbstractContainerPersister&lt;It
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
-	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
+	public &lt;T extends Iterable&lt;E&gt;&gt; Iterable&lt;E&gt; merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
 		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
 			return (Iterable&lt;E&gt;) tree.get(trObj);
 		}
@@ -381,39 +400,44 @@ public class FunctionPersister&lt;E&gt; extends AbstractContainerPersister&lt;It
 		return container;
 	}
 
+	@Nonnull
 	public &lt;T extends Iterable&lt;E&gt;&gt; Function&lt;E, E&gt; getCloneFunction(@Nonnull T dbObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
 		return new Function&lt;E, E&gt;() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.clone_(input, tree);
 			}
 		};
 	}
 
+	@Nonnull
 	public &lt;T extends Iterable&lt;E&gt;&gt; Function&lt;E, E&gt; getMergeFunction(@Nonnull T trObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
 		return new Function&lt;E, E&gt;() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.clone_(input, tree);
 			}
 		};
 	}
 
-	public &lt;T extends Iterable&lt;E&gt;&gt; Function&lt;E, E&gt; getMergeFunction(@Nonnull T trObj, T dbObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
+	@Nonnull
+	public &lt;T extends Iterable&lt;E&gt;&gt; Function&lt;E, E&gt; getMergeFunction(@Nonnull T trObj, @Nonnull T dbObj, @Nonnull final Map&lt;Object, Object&gt; tree) {
 		final Iterator&lt;E&gt; iterator = dbObj.iterator();
 		return new Function&lt;E, E&gt;() {
 			@Override
-			public E apply(@javax.annotation.Nullable E input) {
+			public E apply(@Nullable E input) {
 				return dormancy.merge_(input, iterator.next(), tree);
 			}
 		};
 	}
 
-	@Inject
-	public void setDormancy(@Nonnull Dormancy dormancy) {
-		this.dormancy = dormancy;
-	}
-
+	/**
+	 * Creates an empty container of the given type.
+	 *
+	 * @param container the original container
+	 * @return the new container
+	 * @see CollectionFactory#createApproximateCollection(Object, int)
+	 */
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")

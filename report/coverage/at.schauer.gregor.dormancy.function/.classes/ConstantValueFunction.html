@@ -50,18 +50,18 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    75%
+    100%
   </span>
   <span class="absValue">
-    (3/ 4)
+    (3/ 3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    87.5%
+    100%
   </span>
   <span class="absValue">
-    (7/ 8)
+    (8/ 8)
   </span>
 </td>
 </tr>
@@ -97,7 +97,7 @@
 <i>23</i>&nbsp; * @author Gregor Schauer
 <i>24</i>&nbsp; * @since 1.0.1
 <i>25</i>&nbsp; */
-<b class="nc"><i>26</i>&nbsp;public class ConstantValueFunction&lt;E&gt; implements ContextFunction&lt;E&gt; {</b>
+<i>26</i>&nbsp;public class ConstantValueFunction&lt;E&gt; implements ContextFunction&lt;E&gt; {
 <i>27</i>&nbsp;	protected E value;
 <i>28</i>&nbsp;
 <i>29</i>&nbsp;	public ConstantValueFunction() {
@@ -111,16 +111,18 @@
 <i>37</i>&nbsp;	@Nullable
 <i>38</i>&nbsp;	@Override
 <i>39</i>&nbsp;	public FunctionContext&lt;E&gt; apply(@Nullable FunctionContext&lt;E&gt; input) {
-<b class="fc"><i>40</i>&nbsp;		input.setObj(value);</b>
-<b class="fc"><i>41</i>&nbsp;		return input;</b>
-<i>42</i>&nbsp;	}
-<i>43</i>&nbsp;}
+<b class="fc"><i>40</i>&nbsp;		if (input != null) {</b>
+<b class="fc"><i>41</i>&nbsp;			input.setObj(value);</b>
+<i>42</i>&nbsp;		}
+<b class="fc"><i>43</i>&nbsp;		return input;</b>
+<i>44</i>&nbsp;	}
+<i>45</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

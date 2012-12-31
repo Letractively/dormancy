@@ -96,7 +96,7 @@
 <i>22</i>&nbsp;import javax.inject.Inject;
 <i>23</i>&nbsp;
 <i>24</i>&nbsp;/**
-<i>25</i>&nbsp; * Determines dynamically the properties to process.
+<i>25</i>&nbsp; * Determines the properties to process dynamically.
 <i>26</i>&nbsp; *
 <i>27</i>&nbsp; * @author Gregor Schauer
 <i>28</i>&nbsp; * @since 1.0.1
@@ -106,7 +106,7 @@
 <i>32</i>&nbsp;	protected Dormancy dormancy;
 <i>33</i>&nbsp;
 <i>34</i>&nbsp;	@Inject
-<b class="fc"><i>35</i>&nbsp;	public GenericEntityPersister(@Nonnull Dormancy dormancy) {</b>
+<b class="fc"><i>35</i>&nbsp;	protected GenericEntityPersister(@Nonnull Dormancy dormancy) {</b>
 <b class="fc"><i>36</i>&nbsp;		this.dormancy = dormancy;</b>
 <b class="fc"><i>37</i>&nbsp;	}</b>
 <i>38</i>&nbsp;
@@ -122,26 +122,27 @@
 <i>48</i>&nbsp;	 * @return the instance
 <i>49</i>&nbsp;	 * @see org.springframework.beans.BeanUtils#instantiateClass(Class)
 <i>50</i>&nbsp;	 */
-<i>51</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
-<i>52</i>&nbsp;	protected &lt;T extends C&gt; T createObject(T trObj) {
-<b class="fc"><i>53</i>&nbsp;		return reuseObject ? trObj : BeanUtils.instantiateClass((Class&lt;T&gt;) trObj.getClass());</b>
-<i>54</i>&nbsp;	}
-<i>55</i>&nbsp;
-<i>56</i>&nbsp;	/**
-<i>57</i>&nbsp;	 * Sets whether the results should be written to the given objects directly or if a new instance has to be created.
-<i>58</i>&nbsp;	 *
-<i>59</i>&nbsp;	 * @param reuseObject {@code true} if the given objects should be reused, {@code false} otherwise
-<i>60</i>&nbsp;	 */
-<i>61</i>&nbsp;	public void setReuseObject(boolean reuseObject) {
-<b class="fc"><i>62</i>&nbsp;		this.reuseObject = reuseObject;</b>
-<b class="fc"><i>63</i>&nbsp;	}</b>
-<i>64</i>&nbsp;}
+<i>51</i>&nbsp;	@Nonnull
+<i>52</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>53</i>&nbsp;	protected &lt;T extends C&gt; T createObject(@Nonnull T trObj) {
+<b class="fc"><i>54</i>&nbsp;		return reuseObject ? trObj : (T) BeanUtils.instantiateClass(dormancy.getUtils().getClass(trObj));</b>
+<i>55</i>&nbsp;	}
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;	/**
+<i>58</i>&nbsp;	 * Sets whether the results should be written to the given objects directly or if a new instance has to be created.
+<i>59</i>&nbsp;	 *
+<i>60</i>&nbsp;	 * @param reuseObject {@code true} if the given objects should be reused, {@code false} otherwise
+<i>61</i>&nbsp;	 */
+<i>62</i>&nbsp;	public void setReuseObject(boolean reuseObject) {
+<b class="fc"><i>63</i>&nbsp;		this.reuseObject = reuseObject;</b>
+<b class="fc"><i>64</i>&nbsp;	}</b>
+<i>65</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

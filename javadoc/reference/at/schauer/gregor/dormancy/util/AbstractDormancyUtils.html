@@ -147,11 +147,15 @@
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -165,8 +169,7 @@
       <ul>
           <li class="selected api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html">AbstractDormancyUtils</a></li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/DormancyUtils.html">DormancyUtils</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/HibernatePropertyAccessor.html">HibernatePropertyAccessor</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/SpringPropertyAccessor.html">SpringPropertyAccessor</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/util/IntrospectorUtils.html">IntrospectorUtils</a></li>
       </ul>
     </li>
               
@@ -231,12 +234,18 @@ Summary:
 
 
 
+  <a href="#constants">Constants</a>
+  
+
+
+
+  &#124; <a href="#lfields">Fields</a>
+  
 
 
 
 
-
-  <a href="#proctors">Protected Ctors</a>
+  &#124; <a href="#proctors">Protected Ctors</a>
   
 
 
@@ -389,9 +398,45 @@ Summary:
 
 
 
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<table id="constants" class="jd-sumtable"><tr><th colspan="12">Constants</th></tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a></td>
+        <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#JAVAX_PERSISTENCE_ID">JAVAX_PERSISTENCE_ID</a></td>
+        <td class="jd-descrcol" width="100%"></td>
+    </tr>
+    
+    
+
+</table>
 
 
 
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="lfields" class="jd-sumtable"><tr><th colspan="12">Fields</th></tr>
+
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol"><nobr>
+          protected
+          static
+          final
+          <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/annotation/Annotation.html">Annotation</a>&gt;</nobr></td>
+          <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#idClass">idClass</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+
+</table>
 
 
 
@@ -444,7 +489,7 @@ Summary:
             T</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#findPendant(T, java.util.Collection, org.hibernate.Session)">findPendant</a></span>(T obj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a> collection, Session session)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#findPendant(T, java.util.Collection<?>, org.hibernate.Session)">findPendant</a></span>(T obj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&lt;?&gt; collection, Session session)</nobr>
         
         <div class="jd-descrdiv">Iterates over the given collection, looking for an object which is semantically equal to a certain object.</div>
   
@@ -453,24 +498,6 @@ Summary:
 
 	 
     <tr class=" api apilevel-" >
-        <td class="jd-typecol"><nobr>
-            
-            
-            
-            
-            
-            PropertyAccessor</nobr>
-        </td>
-        <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#forBeanPropertyAccess(java.lang.Object)">forBeanPropertyAccess</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> target)</nobr>
-        
-        <div class="jd-descrdiv">Returns a org.springframework.beans.PropertyAccessor for the given object.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -488,7 +515,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -498,7 +525,7 @@ Summary:
             ClassMetadata</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClassMetadata(java.lang.Class, org.hibernate.SessionFactory)">getClassMetadata</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a> clazz, SessionFactory sessionFactory)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClassMetadata(java.lang.Class<?>, org.hibernate.SessionFactory)">getClassMetadata</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt; clazz, SessionFactory sessionFactory)</nobr>
         
         <div class="jd-descrdiv">Gets the ClassMetadata associated with the given entity class.</div>
   
@@ -506,7 +533,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -524,7 +551,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -534,7 +561,7 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/io/Serializable.html">Serializable</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)">getIdentifier</a></span>(ClassMetadata metadata, PropertyAccessor propertyAccessor, T bean, Session session)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifier(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)">getIdentifier</a></span>(ClassMetadata metadata, T bean, Session session)</nobr>
         
         <div class="jd-descrdiv">Attempts to get the identifier of the given object by using the provided ClassMetadata or
  PropertyAccessor.</div>
@@ -543,7 +570,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -553,7 +580,7 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/io/Serializable.html">Serializable</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)">getIdentifierValue</a></span>(ClassMetadata metadata, PropertyAccessor propertyAccessor, T bean, Session session)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)">getIdentifierValue</a></span>(ClassMetadata metadata, T bean, Session session)</nobr>
         
         <div class="jd-descrdiv">Retrieves the identifier of the given object by using the provided ClassMetadata or
  PropertyAccessor.</div>
@@ -562,14 +589,14 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             abstract
             
             
             
             
-            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a></nobr>
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getMappedClass(org.hibernate.metadata.ClassMetadata)">getMappedClass</a></span>(ClassMetadata metadata)</nobr>
@@ -580,7 +607,43 @@ Summary:
 
 
 	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            PropertyAccessor</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getPropertyAccessor(org.hibernate.metadata.ClassMetadata, java.lang.Object)">getPropertyAccessor</a></span>(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> obj)</nobr>
+        
+        <div class="jd-descrdiv">Returns a PropertyAccessor for accessing the objects properties.</div>
+  
+  </td></tr>
+
+
+	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Set.html">Set</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a>&gt;</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getPropertyNames(java.lang.Object)">getPropertyNames</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> obj)</nobr>
+        
+        <div class="jd-descrdiv">Returns the property names of the given object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -590,7 +653,7 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getPropertyValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, java.lang.Object, java.lang.String)">getPropertyValue</a></span>(ClassMetadata metadata, PropertyAccessor propertyAccessor, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getPropertyValue(org.hibernate.metadata.ClassMetadata, java.lang.Object, java.lang.String)">getPropertyValue</a></span>(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName)</nobr>
         
         <div class="jd-descrdiv">Retrieves the property of the given object by using the provided ClassMetadata or
  PropertyAccessor.</div>
@@ -599,7 +662,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             abstract
             
@@ -612,6 +675,24 @@ Summary:
         <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#isInitializedPersistentCollection(java.lang.Object)">isInitializedPersistentCollection</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> obj)</nobr>
         
         <div class="jd-descrdiv">Checks if the given object is an initialized <code>PersistentCollection</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            boolean</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#isJavassistProxy(java.lang.Class<?>)">isJavassistProxy</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt; clazz)</nobr>
+        
+        <div class="jd-descrdiv">Checks if the given class is a Hibernate proxy that has been generated by using Javassist.</div>
   
   </td></tr>
 
@@ -645,7 +726,7 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#setPropertyValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, java.lang.Object, java.lang.String, java.lang.Object)">setPropertyValue</a></span>(ClassMetadata metadata, PropertyAccessor propertyAccessor, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> value)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#setPropertyValue(org.hibernate.metadata.ClassMetadata, java.lang.Object, java.lang.String, java.lang.Object)">setPropertyValue</a></span>(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> value)</nobr>
         
         <div class="jd-descrdiv">Sets the property of the given object by using the provided ClassMetadata or PropertyAccessor.</div>
   
@@ -891,7 +972,90 @@ From class
 <!-- Constants -->
 
 
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<h2>Constants</h2>
+
+
+
+
+<A NAME="JAVAX_PERSISTENCE_ID"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected 
+        static 
+        final 
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a>
+      </span>
+        JAVAX_PERSISTENCE_ID
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                "javax.persistence.Id"
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+
 <!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<h2>Fields</h2>
+
+
+
+
+<A NAME="idClass"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected 
+        static 
+        final 
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/annotation/Annotation.html">Annotation</a>&gt;
+      </span>
+        idClass
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
 
 
 <!-- Public ctors -->
@@ -946,7 +1110,7 @@ From class
 
 
 
-<A NAME="findPendant(T, java.util.Collection, org.hibernate.Session)"></A>
+<A NAME="findPendant(T, java.util.Collection<?>, org.hibernate.Session)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -959,7 +1123,7 @@ From class
         T
       </span>
       <span class="sympad">findPendant</span>
-      <span class="normal">(T obj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a> collection, Session session)</span>
+      <span class="normal">(T obj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&lt;?&gt; collection, Session session)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1002,53 +1166,8 @@ From class
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)">getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)">getIdentifierValue(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)</a></code></li>
       </ul>
-  </div>
-
-    </div>
-</div>
-
-
-<A NAME="forBeanPropertyAccess(java.lang.Object)"></A>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        PropertyAccessor
-      </span>
-      <span class="sympad">forBeanPropertyAccess</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> target)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a org.springframework.beans.PropertyAccessor for the given object.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>target</td>
-          <td>the object to create a PropertyAccessor for</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the PropertyAccessor
-</li></ul>
   </div>
 
     </div>
@@ -1080,7 +1199,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the unproxified type of the given object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the unproxified type of the given object.
+ <p/>
+ Note that this method does not use <code><a href="null#getClass(java.lang.Object)">Hibernate.getClass(Object)</a></code>
+ to avoid the initialization of the proxy.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1092,28 +1214,15 @@ From class
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the true class of the instance</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">  
-        <tr>
-            <th></td>
-            <td>org.hibernate.HibernateException</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../../null#getClass(java.lang.Object)">getClass(Object)</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the true class of the instance
+</li></ul>
   </div>
 
     </div>
 </div>
 
 
-<A NAME="getClassMetadata(java.lang.Class, org.hibernate.SessionFactory)"></A>
+<A NAME="getClassMetadata(java.lang.Class<?>, org.hibernate.SessionFactory)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1126,7 +1235,7 @@ From class
         ClassMetadata
       </span>
       <span class="sympad">getClassMetadata</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a> clazz, SessionFactory sessionFactory)</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt; clazz, SessionFactory sessionFactory)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1207,7 +1316,7 @@ From class
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClassMetadata(java.lang.Class, org.hibernate.SessionFactory)">getClassMetadata(Class, org.hibernate.SessionFactory)</a></code></li><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClass(java.lang.Object)">getClass(Object)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClassMetadata(java.lang.Class<?>, org.hibernate.SessionFactory)">getClassMetadata(Class, org.hibernate.SessionFactory)</a></code></li><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getClass(java.lang.Object)">getClass(Object)</a></code></li>
       </ul>
   </div>
 
@@ -1215,7 +1324,7 @@ From class
 </div>
 
 
-<A NAME="getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)"></A>
+<A NAME="getIdentifier(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1228,7 +1337,7 @@ From class
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/io/Serializable.html">Serializable</a>
       </span>
       <span class="sympad">getIdentifier</span>
-      <span class="normal">(ClassMetadata metadata, PropertyAccessor propertyAccessor, T bean, Session session)</span>
+      <span class="normal">(ClassMetadata metadata, T bean, Session session)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1250,10 +1359,6 @@ From class
           <td>the ClassMetadata of the object (may be null)</td>
         </tr>
         <tr>
-          <th>propertyAccessor</td>
-          <td>the PropertyAccessor for the object (may be null)</td>
-        </tr>
-        <tr>
           <th>bean</td>
           <td>the object</td>
         </tr>
@@ -1269,7 +1374,7 @@ From class
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)">getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifierValue(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)">getIdentifierValue(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)</a></code></li>
       </ul>
   </div>
 
@@ -1277,7 +1382,7 @@ From class
 </div>
 
 
-<A NAME="getIdentifierValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)"></A>
+<A NAME="getIdentifierValue(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1290,7 +1395,7 @@ From class
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/io/Serializable.html">Serializable</a>
       </span>
       <span class="sympad">getIdentifierValue</span>
-      <span class="normal">(ClassMetadata metadata, PropertyAccessor propertyAccessor, T bean, Session session)</span>
+      <span class="normal">(ClassMetadata metadata, T bean, Session session)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1313,10 +1418,6 @@ From class
           <td>the ClassMetadata of the object (may be null)</td>
         </tr>
         <tr>
-          <th>propertyAccessor</td>
-          <td>the PropertyAccessor for the object (may be null)</td>
-        </tr>
-        <tr>
           <th>bean</td>
           <td>the object</td>
         </tr>
@@ -1332,7 +1433,7 @@ From class
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, T, org.hibernate.Session)">getIdentifier(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, Object, org.hibernate.Session)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../../at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html#getIdentifier(org.hibernate.metadata.ClassMetadata, T, org.hibernate.Session)">getIdentifier(org.hibernate.metadata.ClassMetadata, Object, org.hibernate.Session)</a></code></li>
       </ul>
   </div>
 
@@ -1350,7 +1451,7 @@ From class
          
         abstract 
          
-        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;
       </span>
       <span class="sympad">getMappedClass</span>
       <span class="normal">(ClassMetadata metadata)</span>
@@ -1385,7 +1486,118 @@ From class
 </div>
 
 
-<A NAME="getPropertyValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, java.lang.Object, java.lang.String)"></A>
+<A NAME="getPropertyAccessor(org.hibernate.metadata.ClassMetadata, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        PropertyAccessor
+      </span>
+      <span class="sympad">getPropertyAccessor</span>
+      <span class="normal">(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> obj)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a PropertyAccessor for accessing the objects properties.
+ <p/>
+ This method automatically detects the best strategy for accessing field values, which is either field access
+ (by using org.springframework.beans.BeanWrapper BeanWrapper or property access if necessary (by using
+ org.springframework.beans.DirectFieldAccessor DirectFieldAccessor.
+ <p/>
+ The decision is made by applying the following algorithm:<br/>
+ If there is Hibernate class metadata available and
+ <ul>
+ <li>if the <code>javax.persistence.Id</code> annotation was found on a getter method or</li>
+ <li>if the object is a proxy modified by Javassist and its LazyInitializer is not accessible</li>
+ </ul>
+ the properties are access via getter and setter methods.<br/>
+ Otherwise the fields are accessed directly via reflection.
+ <p/>
+ <b>Note that if the given object is an uninitialized Javassist proxy, the object becomes initialized immediately
+ if the direct field access strategy is chosen.<br/>
+ Otherwise Hibernate will trigger the initialization automatically upon getter invocation as usual.</b></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>metadata</td>
+          <td>the class metadata</td>
+        </tr>
+        <tr>
+          <th>obj</td>
+          <td>the object</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the property accessor
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPropertyNames(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Set.html">Set</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a>&gt;
+      </span>
+      <span class="sympad">getPropertyNames</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> obj)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the property names of the given object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</td>
+          <td>The object</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The property names
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPropertyValue(org.hibernate.metadata.ClassMetadata, java.lang.Object, java.lang.String)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1398,7 +1610,7 @@ From class
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>
       </span>
       <span class="sympad">getPropertyValue</span>
-      <span class="normal">(ClassMetadata metadata, PropertyAccessor propertyAccessor, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName)</span>
+      <span class="normal">(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1418,10 +1630,6 @@ From class
         <tr>
           <th>metadata</td>
           <td>the ClassMetadata of the object (may be null)</td>
-        </tr>
-        <tr>
-          <th>propertyAccessor</td>
-          <td>the PropertyAccessor for the object (may be null)</td>
         </tr>
         <tr>
           <th>bean</td>
@@ -1496,6 +1704,51 @@ From class
 </div>
 
 
+<A NAME="isJavassistProxy(java.lang.Class<?>)"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        boolean
+      </span>
+      <span class="sympad">isJavassistProxy</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt; clazz)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks if the given class is a Hibernate proxy that has been generated by using Javassist.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>clazz</td>
+          <td>the class to check</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the given class is a Javassist proxy.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
 <A NAME="isPersistentCollection(java.lang.Object)"></A>
 
 <div class="jd-details api apilevel-"> 
@@ -1545,7 +1798,7 @@ From class
 </div>
 
 
-<A NAME="setPropertyValue(org.hibernate.metadata.ClassMetadata, org.springframework.beans.PropertyAccessor, java.lang.Object, java.lang.String, java.lang.Object)"></A>
+<A NAME="setPropertyValue(org.hibernate.metadata.ClassMetadata, java.lang.Object, java.lang.String, java.lang.Object)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1558,7 +1811,7 @@ From class
         void
       </span>
       <span class="sympad">setPropertyValue</span>
-      <span class="normal">(ClassMetadata metadata, PropertyAccessor propertyAccessor, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> value)</span>
+      <span class="normal">(ClassMetadata metadata, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> bean, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/String.html">String</a> propertyName, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a> value)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1577,10 +1830,6 @@ From class
         <tr>
           <th>metadata</td>
           <td>the ClassMetadata of the object (may be null)</td>
-        </tr>
-        <tr>
-          <th>propertyAccessor</td>
-          <td>the PropertyAccessor for the object (may be null)</td>
         </tr>
         <tr>
           <th>bean</td>

@@ -61,7 +61,7 @@
     100%
   </span>
   <span class="absValue">
-    (10/ 10)
+    (12/ 12)
   </span>
 </td>
 </tr>
@@ -105,35 +105,39 @@
 <i>31</i>&nbsp;	@Nullable
 <i>32</i>&nbsp;	@Override
 <i>33</i>&nbsp;	public FunctionContext&lt;E&gt; apply(@Nullable FunctionContext&lt;E&gt; input) {
-<b class="fc"><i>34</i>&nbsp;		E result = createCollection(input.getObj());</b>
-<b class="fc"><i>35</i>&nbsp;		FunctionContext&lt;D&gt; elemContext = new FunctionContext&lt;D&gt;(null, input.getTree());</b>
-<b class="fc"><i>36</i>&nbsp;		for (D elem : input.getObj()) {</b>
-<b class="fc"><i>37</i>&nbsp;			elemContext.setObj(elem);</b>
-<b class="fc"><i>38</i>&nbsp;			elemContext = delegate.apply(elemContext);</b>
-<b class="fc"><i>39</i>&nbsp;			result.add(elemContext.getObj());</b>
-<i>40</i>&nbsp;		}
-<b class="fc"><i>41</i>&nbsp;		input.setObj(result);</b>
-<b class="fc"><i>42</i>&nbsp;		return input;</b>
-<i>43</i>&nbsp;	}
-<i>44</i>&nbsp;
-<i>45</i>&nbsp;	/**
-<i>46</i>&nbsp;	 * Creates an empty collection of the given type.
-<i>47</i>&nbsp;	 *
-<i>48</i>&nbsp;	 * @param src the original collection
-<i>49</i>&nbsp;	 * @return the new collection
-<i>50</i>&nbsp;	 */
-<i>51</i>&nbsp;	@Nonnull
-<i>52</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
-<i>53</i>&nbsp;	public E createCollection(@Nonnull Collection src) {
-<b class="fc"><i>54</i>&nbsp;		return (E) CollectionFactory.createApproximateCollection(src, src.size());</b>
-<i>55</i>&nbsp;	}
-<i>56</i>&nbsp;}
+<b class="fc"><i>34</i>&nbsp;		if (input == null || input.getObj() == null) {</b>
+<b class="fc"><i>35</i>&nbsp;			return input;</b>
+<i>36</i>&nbsp;		}
+<i>37</i>&nbsp;
+<b class="fc"><i>38</i>&nbsp;		E result = createCollection(input.getObj());</b>
+<b class="fc"><i>39</i>&nbsp;		FunctionContext&lt;D&gt; elemContext = new FunctionContext&lt;D&gt;(null, input.getTree());</b>
+<b class="fc"><i>40</i>&nbsp;		for (D elem : input.getObj()) {</b>
+<b class="fc"><i>41</i>&nbsp;			elemContext.setObj(elem);</b>
+<b class="fc"><i>42</i>&nbsp;			elemContext = delegate.apply(elemContext);</b>
+<b class="fc"><i>43</i>&nbsp;			result.add(elemContext.getObj());</b>
+<i>44</i>&nbsp;		}
+<b class="fc"><i>45</i>&nbsp;		input.setObj(result);</b>
+<b class="fc"><i>46</i>&nbsp;		return input;</b>
+<i>47</i>&nbsp;	}
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;	/**
+<i>50</i>&nbsp;	 * Creates an empty collection of the given type.
+<i>51</i>&nbsp;	 *
+<i>52</i>&nbsp;	 * @param src the original collection
+<i>53</i>&nbsp;	 * @return the new collection
+<i>54</i>&nbsp;	 */
+<i>55</i>&nbsp;	@Nonnull
+<i>56</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>57</i>&nbsp;	public E createCollection(@Nonnull Collection&lt;?&gt; src) {
+<b class="fc"><i>58</i>&nbsp;		return (E) CollectionFactory.createApproximateCollection(src, src.size());</b>
+<i>59</i>&nbsp;	}
+<i>60</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

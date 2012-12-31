@@ -147,11 +147,15 @@
     <li class="selected api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -427,9 +431,9 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getDeleteRemovedEntities()">getDeleteRemovedEntities</a></span>()</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getCheckVersion()">getCheckVersion</a></span>()</nobr>
         
-        <div class="jd-descrdiv">Returns whether entities of deleted associated should be deleted permanently.</div>
+        <div class="jd-descrdiv">Returns whether a version check should be performed before processing the properties.</div>
   
   </td></tr>
 
@@ -445,9 +449,46 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a></nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getSaveAssociationsProperties()">getSaveAssociationsProperties</a></span>()</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getCloneObjects()">getCloneObjects</a></span>()</nobr>
         
-        <div class="jd-descrdiv">Returns whether properties of associated entities should be processed.</div>
+        <div class="jd-descrdiv">Returns whether objects are cloned instead of reused.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a></nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getCreateEmptyCollections()">getCreateEmptyCollections</a></span>()</nobr>
+        
+        <div class="jd-descrdiv">Returns whether org.hibernate.collection.PersistentCollection PersistentCollections are replaced with
+ empty collections or maps or with <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a></nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getFlushAutomatically()">getFlushAutomatically</a></span>()</nobr>
+        
+        <div class="jd-descrdiv">Returns whether automatic flushing is done upon cloning objects.</div>
   
   </td></tr>
 
@@ -478,12 +519,12 @@ Summary:
             
             
             
-            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a></nobr>
+            void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#getVersionChecking()">getVersionChecking</a></span>()</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setCheckVersion(java.lang.Boolean)">setCheckVersion</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> checkVersion)</nobr>
         
-        <div class="jd-descrdiv">Returns whether a version check should be performed before processing the properties.</div>
+        <div class="jd-descrdiv">Sets whether a version check should be performed before processing the properties.</div>
   
   </td></tr>
 
@@ -499,9 +540,9 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setDeleteRemovedEntities(java.lang.Boolean)">setDeleteRemovedEntities</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> deleteRemovedEntities)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setCloneObjects(java.lang.Boolean)">setCloneObjects</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> cloneObjects)</nobr>
         
-        <div class="jd-descrdiv">Sets whether entities of deleted associated should be deleted permanently.</div>
+        <div class="jd-descrdiv">Sets whether objects should be cloned instead of reused.</div>
   
   </td></tr>
 
@@ -517,15 +558,34 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setSaveAssociationsProperties(java.lang.Boolean)">setSaveAssociationsProperties</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> saveAssociationsProperties)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setCreateEmptyCollections(java.lang.Boolean)">setCreateEmptyCollections</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> createEmptyCollections)</nobr>
         
-        <div class="jd-descrdiv">Sets whether properties of associated entities should be processed.</div>
+        <div class="jd-descrdiv">Sets whether org.hibernate.collection.PersistentCollection PersistentCollections should be replaced with
+ empty collections or maps or with <code>null</code>.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setFlushAutomatically(java.lang.Boolean)">setFlushAutomatically</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> flushAutomatically)</nobr>
+        
+        <div class="jd-descrdiv">Sets whether automatic flushing should be done upon cloning objects.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -538,24 +598,6 @@ Summary:
         <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setSaveNewEntities(java.lang.Boolean)">setSaveNewEntities</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> saveNewEntities)</nobr>
         
         <div class="jd-descrdiv">Sets whether new entities should be persisted automatically.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol"><nobr>
-            
-            
-            
-            
-            
-            void</nobr>
-        </td>
-        <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/EntityPersisterConfiguration.html#setVersionChecking(java.lang.Boolean)">setVersionChecking</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> versionChecking)</nobr>
-        
-        <div class="jd-descrdiv">Sets whether a version check should be performed before processing the properties.</div>
   
   </td></tr>
 
@@ -887,7 +929,7 @@ From class
 
 
 
-<A NAME="getDeleteRemovedEntities()"></A>
+<A NAME="getCheckVersion()"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -899,7 +941,7 @@ From class
          
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a>
       </span>
-      <span class="sympad">getDeleteRemovedEntities</span>
+      <span class="sympad">getCheckVersion</span>
       <span class="normal">()</span>
     </h4>
       <div class="api-level">
@@ -912,10 +954,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether entities of deleted associated should be deleted permanently.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether a version check should be performed before processing the properties.
+ <p/>
+ <p>Default is <code>true</code>.</p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the removed entities should be deleted, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if a version checking is enabled, <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -923,7 +967,7 @@ From class
 </div>
 
 
-<A NAME="getSaveAssociationsProperties()"></A>
+<A NAME="getCloneObjects()"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -935,7 +979,7 @@ From class
          
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a>
       </span>
-      <span class="sympad">getSaveAssociationsProperties</span>
+      <span class="sympad">getCloneObjects</span>
       <span class="normal">()</span>
     </h4>
       <div class="api-level">
@@ -948,10 +992,87 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether properties of associated entities should be processed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether objects are cloned instead of reused.
+ <p/>
+ <p>Default is <code>false</code>.</p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the properties of associated entities should be processed, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if cloning is enabled, <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getCreateEmptyCollections()"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a>
+      </span>
+      <span class="sympad">getCreateEmptyCollections</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether org.hibernate.collection.PersistentCollection PersistentCollections are replaced with
+ empty collections or maps or with <code>null</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if empty collections should be created, <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFlushAutomatically()"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a>
+      </span>
+      <span class="sympad">getFlushAutomatically</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether automatic flushing is done upon cloning objects.
+ <p/>
+ <p>Default is <code>false</code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if automatic flushing is enabled, <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -984,7 +1105,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether new entities should be persisted automatically.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether new entities should be persisted automatically.
+ <p/>
+ <p>Default is <code>false</code>.</p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li><code>true</code> if new entities should be processed, <code>false</code> otherwise
@@ -995,43 +1118,7 @@ From class
 </div>
 
 
-<A NAME="getVersionChecking()"></A>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a>
-      </span>
-      <span class="sympad">getVersionChecking</span>
-      <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether a version check should be performed before processing the properties.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if a version checking is enabled, <code>false</code> otherwise
-</li></ul>
-  </div>
-
-    </div>
-</div>
-
-
-<A NAME="setDeleteRemovedEntities(java.lang.Boolean)"></A>
+<A NAME="setCheckVersion(java.lang.Boolean)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1043,8 +1130,8 @@ From class
          
         void
       </span>
-      <span class="sympad">setDeleteRemovedEntities</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> deleteRemovedEntities)</span>
+      <span class="sympad">setCheckVersion</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> checkVersion)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1056,13 +1143,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets whether entities of deleted associated should be deleted permanently.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether a version check should be performed before processing the properties.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>deleteRemovedEntities</td>
-          <td><code>true</code> if the removed entities should be deleted, <code>false</code> otherwise
+          <th>checkVersion</td>
+          <td><code>true</code> if a version checking is enabled, <code>false</code> otherwise
 </td>
         </tr>
       </table>
@@ -1072,7 +1159,7 @@ From class
 </div>
 
 
-<A NAME="setSaveAssociationsProperties(java.lang.Boolean)"></A>
+<A NAME="setCloneObjects(java.lang.Boolean)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1084,8 +1171,8 @@ From class
          
         void
       </span>
-      <span class="sympad">setSaveAssociationsProperties</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> saveAssociationsProperties)</span>
+      <span class="sympad">setCloneObjects</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> cloneObjects)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1097,13 +1184,96 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets whether properties of associated entities should be processed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether objects should be cloned instead of reused.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>saveAssociationsProperties</td>
-          <td><code>true</code> if the properties of associated entities should be processed, <code>false</code> otherwise
+          <th>cloneObjects</td>
+          <td><code>true</code> if objects should be cloned, <code>false</code> otherwise
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setCreateEmptyCollections(java.lang.Boolean)"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        void
+      </span>
+      <span class="sympad">setCreateEmptyCollections</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> createEmptyCollections)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether org.hibernate.collection.PersistentCollection PersistentCollections should be replaced with
+ empty collections or maps or with <code>null</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>createEmptyCollections</td>
+          <td><code>true</code> if empty collections should be created, <code>false</code> otherwise
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setFlushAutomatically(java.lang.Boolean)"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        void
+      </span>
+      <span class="sympad">setFlushAutomatically</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> flushAutomatically)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether automatic flushing should be done upon cloning objects.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>flushAutomatically</td>
+          <td><code>true</code> if automatic flushing should be enabled, <code>false</code> otherwise
 </td>
         </tr>
       </table>
@@ -1145,47 +1315,6 @@ From class
         <tr>
           <th>saveNewEntities</td>
           <td><code>true</code> if new entities should be processed, <code>false</code> otherwise
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<A NAME="setVersionChecking(java.lang.Boolean)"></A>
-
-<div class="jd-details api apilevel-"> 
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public 
-         
-         
-         
-         
-        void
-      </span>
-      <span class="sympad">setVersionChecking</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Boolean.html">Boolean</a> versionChecking)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Sets whether a version check should be performed before processing the properties.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>versionChecking</td>
-          <td><code>true</code> if a version checking is enabled, <code>false</code> otherwise
 </td>
         </tr>
       </table>

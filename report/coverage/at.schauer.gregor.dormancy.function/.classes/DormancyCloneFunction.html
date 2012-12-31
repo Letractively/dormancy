@@ -61,7 +61,7 @@
     100%
   </span>
   <span class="absValue">
-    (3/ 3)
+    (4/ 4)
   </span>
 </td>
 </tr>
@@ -102,16 +102,18 @@
 <i>28</i>&nbsp;	@Nullable
 <i>29</i>&nbsp;	@Override
 <i>30</i>&nbsp;	public FunctionContext&lt;E&gt; apply(@Nullable FunctionContext&lt;E&gt; input) {
-<b class="fc"><i>31</i>&nbsp;		input.setObj(dormancy.clone_(input.getObj(), input.getTree()));</b>
-<b class="fc"><i>32</i>&nbsp;		return input;</b>
-<i>33</i>&nbsp;	}
-<i>34</i>&nbsp;}
+<b class="fc"><i>31</i>&nbsp;		if (input != null) {</b>
+<b class="fc"><i>32</i>&nbsp;			input.setObj(dormancy.clone_(input.getObj(), input.getTree()));</b>
+<i>33</i>&nbsp;		}
+<b class="fc"><i>34</i>&nbsp;		return input;</b>
+<i>35</i>&nbsp;	}
+<i>36</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

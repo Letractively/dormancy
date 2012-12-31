@@ -47,10 +47,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    94.8%
+    98.3%
   </span>
   <span class="absValue">
-    (55/ 58)
+    (57/ 58)
   </span>
 </td>
 </tr>
@@ -161,10 +161,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    85.5%
+    88.2%
   </span>
   <span class="absValue">
-    (65/ 76)
+    (67/ 76)
   </span>
 </td>
 </tr>
@@ -246,7 +246,7 @@
 <i>70</i>&nbsp;	protected Pointcut pointcut;
 <i>71</i>&nbsp;	protected Integer order;
 <i>72</i>&nbsp;
-<b class="fc"><i>73</i>&nbsp;	public static enum Mode {</b>
+<b class="fc"><i>73</i>&nbsp;	public enum Mode {</b>
 <b class="fc"><i>74</i>&nbsp;		PARAMETERS, RESULT, BOTH</b>
 <i>75</i>&nbsp;	}
 <i>76</i>&nbsp;
@@ -261,176 +261,180 @@
 <b class="fc"><i>85</i>&nbsp;		this.dormancy = dormancy;</b>
 <b class="fc"><i>86</i>&nbsp;	}</b>
 <i>87</i>&nbsp;
-<i>88</i>&nbsp;	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable&lt;?&gt; callable) throws Throwable {
-<i>89</i>&nbsp;		// If the method to invoke takes no parameters and does not return anything, directly invoke it
-<b class="fc"><i>90</i>&nbsp;		if (args.length == 0 &amp;&amp; method.getReturnType() == void.class) {</b>
-<b class="fc"><i>91</i>&nbsp;			return callable.call();</b>
-<i>92</i>&nbsp;		}
-<i>93</i>&nbsp;
-<b class="fc"><i>94</i>&nbsp;		EntityPersister entityPersister = dormancy;</b>
+<i>88</i>&nbsp;	@Nullable
+<i>89</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>90</i>&nbsp;	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable&lt;?&gt; callable) throws Throwable {
+<i>91</i>&nbsp;		// If the method to invoke takes no parameters and does not return anything, directly invoke it
+<b class="fc"><i>92</i>&nbsp;		if (args.length == 0 &amp;&amp; method.getReturnType() == void.class) {</b>
+<b class="fc"><i>93</i>&nbsp;			return callable.call();</b>
+<i>94</i>&nbsp;		}
 <i>95</i>&nbsp;
-<i>96</i>&nbsp;		// Retrieve the persistence endpoint annotation from the method (if present)
-<b class="fc"><i>97</i>&nbsp;		Annotation annotation = method.getAnnotation(annotationType);</b>
-<b class="fc"><i>98</i>&nbsp;		if (annotation == null) {</b>
-<i>99</i>&nbsp;			// Retrieve the annotation from the object instance (if present)
-<b class="fc"><i>100</i>&nbsp;			annotation = target.getClass().getAnnotation(annotationType);</b>
-<i>101</i>&nbsp;		}
-<i>102</i>&nbsp;
-<i>103</i>&nbsp;		// If a persistence endpoint annotation was found
-<b class="fc"><i>104</i>&nbsp;		if (annotation != null &amp;&amp; annotation.annotationType() == PersistenceEndpoint.class) {</b>
-<b class="fc"><i>105</i>&nbsp;			PersistenceEndpoint persistenceEndpoint = PersistenceEndpoint.class.cast(annotation);</b>
-<b class="fc"><i>106</i>&nbsp;			String name = persistenceEndpoint.name();</b>
-<b class="fc"><i>107</i>&nbsp;			if (!StringUtils.isEmpty(name)) {</b>
-<i>108</i>&nbsp;				// If the name attribute is set, retrieve an EntityPersister from the BeanFactory
-<b class="fc"><i>109</i>&nbsp;				Assert.notNull(beanFactory, &quot;BeanFactory must not be null&quot;);</b>
-<b class="fc"><i>110</i>&nbsp;				entityPersister = beanFactory.getBean(name, EntityPersister.class);</b>
-<b class="fc"><i>111</i>&nbsp;			} else if (persistenceEndpoint.types().length &gt; 0) {</b>
-<i>112</i>&nbsp;				// If types are set, look for an registered EntityPersister
-<b class="fc"><i>113</i>&nbsp;				Class&lt;? extends EntityPersister&gt;[] types = persistenceEndpoint.types();</b>
-<b class="fc"><i>114</i>&nbsp;				for (Class&lt;? extends EntityPersister&gt; clazz : types) {</b>
-<b class="fc"><i>115</i>&nbsp;					entityPersister = dormancy.getEntityPersister(clazz);</b>
-<b class="fc"><i>116</i>&nbsp;					if (entityPersister != null) {</b>
-<b class="fc"><i>117</i>&nbsp;						break;</b>
-<i>118</i>&nbsp;					}
-<i>119</i>&nbsp;				}
-<b class="fc"><i>120</i>&nbsp;				if (entityPersister == null) {</b>
-<b class="fc"><i>121</i>&nbsp;					throw new IllegalArgumentException(&quot;No EntityPersister registered for any of the types: &quot; + Arrays.toString(types));</b>
-<i>122</i>&nbsp;				}
-<i>123</i>&nbsp;			}
-<i>124</i>&nbsp;		}
-<i>125</i>&nbsp;
-<i>126</i>&nbsp;		// Process method parameters (if enabled)
-<b class="fc"><i>127</i>&nbsp;		if (mode == Mode.PARAMETERS || mode == Mode.BOTH) {</b>
-<b class="fc"><i>128</i>&nbsp;			if (logger.isDebugEnabled()) {</b>
-<b class="nc"><i>129</i>&nbsp;				logger.debug(String.format(&quot;Using %s for method invocation %s.%s(%s)&quot;,</b>
-<i>130</i>&nbsp;						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
-<i>131</i>&nbsp;						method.getName(), Arrays.toString(args)));
-<i>132</i>&nbsp;			}
-<b class="fc"><i>133</i>&nbsp;			for (int i = 0; i &lt; args.length; i++) {</b>
-<b class="fc"><i>134</i>&nbsp;				args[i] = entityPersister.merge(args[i]);</b>
-<i>135</i>&nbsp;			}
-<i>136</i>&nbsp;		}
-<i>137</i>&nbsp;
-<i>138</i>&nbsp;		// Invoke the desired method
-<b class="fc"><i>139</i>&nbsp;		Object result = callable.call();</b>
-<i>140</i>&nbsp;
-<i>141</i>&nbsp;		// Process the result (if enabled)
-<b class="fc"><i>142</i>&nbsp;		if (mode == Mode.RESULT || mode == Mode.BOTH) {</b>
-<b class="fc"><i>143</i>&nbsp;			if (logger.isDebugEnabled()) {</b>
-<b class="nc"><i>144</i>&nbsp;				logger.debug(String.format(&quot;Using %s for method result %s.%s(%s) =&gt; %s&quot;,</b>
-<i>145</i>&nbsp;						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
-<i>146</i>&nbsp;						method.getName(), Arrays.toString(args), result));
-<i>147</i>&nbsp;			}
-<b class="fc"><i>148</i>&nbsp;			result = result != null ? entityPersister.clone(result) : result;</b>
-<i>149</i>&nbsp;		}
-<b class="fc"><i>150</i>&nbsp;		return result;</b>
-<i>151</i>&nbsp;	}
-<i>152</i>&nbsp;
-<i>153</i>&nbsp;	@Nullable
-<i>154</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
-<i>155</i>&nbsp;	public Object around(@Nonnull final ProceedingJoinPoint joinPoint) throws Throwable {
-<b class="fc"><i>156</i>&nbsp;		Method method = MethodSignature.class.cast(joinPoint.getSignature()).getMethod();</b>
-<b class="fc"><i>157</i>&nbsp;		return process(joinPoint.getArgs(), method, joinPoint.getTarget(), new Callable&lt;Object&gt;() {</b>
-<i>158</i>&nbsp;			@Override
-<i>159</i>&nbsp;			public Object call() throws Exception {
-<i>160</i>&nbsp;				try {
-<b class="fc"><i>161</i>&nbsp;					return joinPoint.proceed();</b>
-<b class="nc"><i>162</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>163</i>&nbsp;					throw e;</b>
-<b class="nc"><i>164</i>&nbsp;				} catch (Throwable throwable) {</b>
-<b class="nc"><i>165</i>&nbsp;					throw new RuntimeException(throwable);</b>
-<i>166</i>&nbsp;				}
-<i>167</i>&nbsp;			}
-<i>168</i>&nbsp;		});
-<i>169</i>&nbsp;	}
-<i>170</i>&nbsp;
-<i>171</i>&nbsp;	@Nullable
-<i>172</i>&nbsp;	@Override
-<i>173</i>&nbsp;	public Object invoke(@Nonnull final MethodInvocation invocation) throws Throwable {
-<b class="fc"><i>174</i>&nbsp;		return process(invocation.getArguments(), invocation.getMethod(), invocation.getThis(), new Callable&lt;Object&gt;() {</b>
-<i>175</i>&nbsp;			@Override
-<i>176</i>&nbsp;			public Object call() throws Exception {
-<i>177</i>&nbsp;				try {
-<b class="fc"><i>178</i>&nbsp;					return invocation.proceed();</b>
-<b class="nc"><i>179</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>180</i>&nbsp;					throw e;</b>
-<b class="nc"><i>181</i>&nbsp;				} catch (Throwable throwable) {</b>
-<b class="nc"><i>182</i>&nbsp;					throw new RuntimeException(throwable);</b>
-<i>183</i>&nbsp;				}
-<i>184</i>&nbsp;			}
-<i>185</i>&nbsp;		});
-<i>186</i>&nbsp;	}
-<i>187</i>&nbsp;
-<i>188</i>&nbsp;	@Override
-<i>189</i>&nbsp;	public Pointcut getPointcut() {
-<b class="fc"><i>190</i>&nbsp;		if (pointcut == null) {</b>
-<b class="fc"><i>191</i>&nbsp;			pointcut = new AnnotationMatchingPointcut(null, annotationType) {</b>
-<i>192</i>&nbsp;				@Override
-<i>193</i>&nbsp;				public MethodMatcher getMethodMatcher() {
-<b class="fc"><i>194</i>&nbsp;					return new AnnotationMethodMatcher(annotationType) {</b>
-<i>195</i>&nbsp;						@Override
-<i>196</i>&nbsp;						public boolean matches(Method method, Class targetClass) {
-<b class="fc"><i>197</i>&nbsp;							return super.matches(method, targetClass)</b>
-<i>198</i>&nbsp;									|| AopUtils.getTargetClass(targetClass).isAnnotationPresent(annotationType);
-<i>199</i>&nbsp;						}
-<i>200</i>&nbsp;					};
-<i>201</i>&nbsp;				}
-<i>202</i>&nbsp;			};
-<i>203</i>&nbsp;		}
-<b class="fc"><i>204</i>&nbsp;		return pointcut;</b>
-<i>205</i>&nbsp;	}
-<i>206</i>&nbsp;
-<i>207</i>&nbsp;	@Override
-<i>208</i>&nbsp;	public Advice getAdvice() {
-<b class="fc"><i>209</i>&nbsp;		return this;</b>
-<i>210</i>&nbsp;	}
-<i>211</i>&nbsp;
-<i>212</i>&nbsp;	@Override
-<i>213</i>&nbsp;	public int getOrder() {
-<b class="fc"><i>214</i>&nbsp;		if (order != null) {</b>
-<b class="fc"><i>215</i>&nbsp;			return this.order;</b>
-<i>216</i>&nbsp;		}
-<b class="fc"><i>217</i>&nbsp;		Advice advice = getAdvice();</b>
-<b class="fc"><i>218</i>&nbsp;		if (advice instanceof Ordered &amp;&amp; advice != this) {</b>
-<b class="nc"><i>219</i>&nbsp;			return ((Ordered) advice).getOrder();</b>
+<b class="fc"><i>96</i>&nbsp;		EntityPersister entityPersister = dormancy;</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;		// Retrieve the persistence endpoint annotation from the method (if present)
+<b class="fc"><i>99</i>&nbsp;		Annotation annotation = method.getAnnotation(annotationType);</b>
+<b class="fc"><i>100</i>&nbsp;		if (annotation == null) {</b>
+<i>101</i>&nbsp;			// Retrieve the annotation from the object instance (if present)
+<b class="fc"><i>102</i>&nbsp;			annotation = target.getClass().getAnnotation(annotationType);</b>
+<i>103</i>&nbsp;		}
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;		// If a persistence endpoint annotation was found
+<b class="fc"><i>106</i>&nbsp;		if (annotation != null &amp;&amp; annotation.annotationType() == PersistenceEndpoint.class) {</b>
+<b class="fc"><i>107</i>&nbsp;			PersistenceEndpoint persistenceEndpoint = PersistenceEndpoint.class.cast(annotation);</b>
+<b class="fc"><i>108</i>&nbsp;			String name = persistenceEndpoint.name();</b>
+<b class="fc"><i>109</i>&nbsp;			if (!StringUtils.isEmpty(name)) {</b>
+<i>110</i>&nbsp;				// If the name attribute is set, retrieve an EntityPersister from the BeanFactory
+<b class="fc"><i>111</i>&nbsp;				Assert.notNull(beanFactory, &quot;BeanFactory must not be null&quot;);</b>
+<b class="fc"><i>112</i>&nbsp;				entityPersister = beanFactory.getBean(name, EntityPersister.class);</b>
+<b class="fc"><i>113</i>&nbsp;			} else if (persistenceEndpoint.types().length &gt; 0) {</b>
+<i>114</i>&nbsp;				// If types are set, look for an registered EntityPersister
+<b class="fc"><i>115</i>&nbsp;				Class&lt;? extends EntityPersister&gt;[] types = persistenceEndpoint.types();</b>
+<b class="fc"><i>116</i>&nbsp;				for (Class&lt;? extends EntityPersister&gt; clazz : types) {</b>
+<b class="fc"><i>117</i>&nbsp;					entityPersister = dormancy.getEntityPersister(clazz);</b>
+<b class="fc"><i>118</i>&nbsp;					if (entityPersister != null) {</b>
+<b class="fc"><i>119</i>&nbsp;						break;</b>
+<i>120</i>&nbsp;					}
+<i>121</i>&nbsp;				}
+<b class="fc"><i>122</i>&nbsp;				if (entityPersister == null) {</b>
+<b class="fc"><i>123</i>&nbsp;					throw new IllegalArgumentException(&quot;No EntityPersister registered for any of the types: &quot; + Arrays.toString(types));</b>
+<i>124</i>&nbsp;				}
+<i>125</i>&nbsp;			}
+<i>126</i>&nbsp;		}
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;		// Process method parameters (if enabled)
+<b class="fc"><i>129</i>&nbsp;		if (mode == Mode.PARAMETERS || mode == Mode.BOTH) {</b>
+<b class="fc"><i>130</i>&nbsp;			if (logger.isDebugEnabled()) {</b>
+<b class="fc"><i>131</i>&nbsp;				logger.debug(String.format(&quot;Using %s for method invocation %s.%s(%s)&quot;,</b>
+<i>132</i>&nbsp;						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
+<i>133</i>&nbsp;						method.getName(), Arrays.toString(args)));
+<i>134</i>&nbsp;			}
+<b class="fc"><i>135</i>&nbsp;			for (int i = 0; i &lt; args.length; i++) {</b>
+<b class="fc"><i>136</i>&nbsp;				args[i] = entityPersister.merge(args[i]);</b>
+<i>137</i>&nbsp;			}
+<i>138</i>&nbsp;		}
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;		// Invoke the desired method
+<b class="fc"><i>141</i>&nbsp;		Object result = callable.call();</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;		// Process the result (if enabled)
+<b class="fc"><i>144</i>&nbsp;		if (mode == Mode.RESULT || mode == Mode.BOTH) {</b>
+<b class="fc"><i>145</i>&nbsp;			if (logger.isDebugEnabled()) {</b>
+<b class="fc"><i>146</i>&nbsp;				logger.debug(String.format(&quot;Using %s for method result %s.%s(%s) =&gt; %s&quot;,</b>
+<i>147</i>&nbsp;						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
+<i>148</i>&nbsp;						method.getName(), Arrays.toString(args), result));
+<i>149</i>&nbsp;			}
+<b class="fc"><i>150</i>&nbsp;			result = result != null ? entityPersister.clone(result) : result;</b>
+<i>151</i>&nbsp;		}
+<b class="fc"><i>152</i>&nbsp;		return result;</b>
+<i>153</i>&nbsp;	}
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;	@Nullable
+<i>156</i>&nbsp;	public Object around(@Nonnull final ProceedingJoinPoint joinPoint) throws Throwable {
+<b class="fc"><i>157</i>&nbsp;		Method method = MethodSignature.class.cast(joinPoint.getSignature()).getMethod();</b>
+<b class="fc"><i>158</i>&nbsp;		return process(joinPoint.getArgs(), method, joinPoint.getTarget(), new Callable&lt;Object&gt;() {</b>
+<i>159</i>&nbsp;			@Override
+<i>160</i>&nbsp;			public Object call() throws Exception {
+<i>161</i>&nbsp;				try {
+<b class="fc"><i>162</i>&nbsp;					return joinPoint.proceed();</b>
+<b class="nc"><i>163</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>164</i>&nbsp;					throw e;</b>
+<b class="nc"><i>165</i>&nbsp;				} catch (Throwable throwable) {</b>
+<b class="nc"><i>166</i>&nbsp;					throw new RuntimeException(throwable);</b>
+<i>167</i>&nbsp;				}
+<i>168</i>&nbsp;			}
+<i>169</i>&nbsp;		});
+<i>170</i>&nbsp;	}
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;	@Nullable
+<i>173</i>&nbsp;	@Override
+<i>174</i>&nbsp;	public Object invoke(@Nonnull final MethodInvocation invocation) throws Throwable {
+<b class="fc"><i>175</i>&nbsp;		return process(invocation.getArguments(), invocation.getMethod(), invocation.getThis(), new Callable&lt;Object&gt;() {</b>
+<i>176</i>&nbsp;			@Override
+<i>177</i>&nbsp;			public Object call() throws Exception {
+<i>178</i>&nbsp;				try {
+<b class="fc"><i>179</i>&nbsp;					return invocation.proceed();</b>
+<b class="nc"><i>180</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>181</i>&nbsp;					throw e;</b>
+<b class="nc"><i>182</i>&nbsp;				} catch (Throwable throwable) {</b>
+<b class="nc"><i>183</i>&nbsp;					throw new RuntimeException(throwable);</b>
+<i>184</i>&nbsp;				}
+<i>185</i>&nbsp;			}
+<i>186</i>&nbsp;		});
+<i>187</i>&nbsp;	}
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;	@Nonnull
+<i>190</i>&nbsp;	@Override
+<i>191</i>&nbsp;	public Pointcut getPointcut() {
+<b class="fc"><i>192</i>&nbsp;		if (pointcut == null) {</b>
+<b class="fc"><i>193</i>&nbsp;			pointcut = new AnnotationMatchingPointcut(null, annotationType) {</b>
+<i>194</i>&nbsp;				@Nonnull
+<i>195</i>&nbsp;				@Override
+<i>196</i>&nbsp;				public MethodMatcher getMethodMatcher() {
+<b class="fc"><i>197</i>&nbsp;					return new AnnotationMethodMatcher(annotationType) {</b>
+<i>198</i>&nbsp;						@Override
+<i>199</i>&nbsp;						public boolean matches(Method method, Class targetClass) {
+<b class="fc"><i>200</i>&nbsp;							return super.matches(method, targetClass)</b>
+<i>201</i>&nbsp;									|| AopUtils.getTargetClass(targetClass).isAnnotationPresent(annotationType);
+<i>202</i>&nbsp;						}
+<i>203</i>&nbsp;					};
+<i>204</i>&nbsp;				}
+<i>205</i>&nbsp;			};
+<i>206</i>&nbsp;		}
+<b class="fc"><i>207</i>&nbsp;		return pointcut;</b>
+<i>208</i>&nbsp;	}
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;	@Nonnull
+<i>211</i>&nbsp;	@Override
+<i>212</i>&nbsp;	public Advice getAdvice() {
+<b class="fc"><i>213</i>&nbsp;		return this;</b>
+<i>214</i>&nbsp;	}
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;	@Override
+<i>217</i>&nbsp;	public int getOrder() {
+<b class="fc"><i>218</i>&nbsp;		if (order != null) {</b>
+<b class="fc"><i>219</i>&nbsp;			return order;</b>
 <i>220</i>&nbsp;		}
-<b class="fc"><i>221</i>&nbsp;		return Ordered.LOWEST_PRECEDENCE;</b>
-<i>222</i>&nbsp;	}
-<i>223</i>&nbsp;
-<i>224</i>&nbsp;	@Override
-<i>225</i>&nbsp;	public void setOrder(int order) {
-<b class="fc"><i>226</i>&nbsp;		this.order = order;</b>
-<b class="fc"><i>227</i>&nbsp;	}</b>
-<i>228</i>&nbsp;
-<i>229</i>&nbsp;	@Override
-<i>230</i>&nbsp;	public void setBeanFactory(@Nonnull BeanFactory beanFactory) {
-<b class="fc"><i>231</i>&nbsp;		this.beanFactory = beanFactory;</b>
-<b class="fc"><i>232</i>&nbsp;	}</b>
-<i>233</i>&nbsp;
-<i>234</i>&nbsp;	/**
-<i>235</i>&nbsp;	 * Sets the Mode that should be used to process method parameters and return values, respectively.
-<i>236</i>&nbsp;	 *
-<i>237</i>&nbsp;	 * @param mode the mode to operate
-<i>238</i>&nbsp;	 */
-<i>239</i>&nbsp;	public void setMode(@Nonnull Mode mode) {
-<b class="fc"><i>240</i>&nbsp;		this.mode = mode;</b>
-<b class="fc"><i>241</i>&nbsp;	}</b>
-<i>242</i>&nbsp;
-<i>243</i>&nbsp;	/**
-<i>244</i>&nbsp;	 * Sets the annotation type that indicates a persistence endpoint.
-<i>245</i>&nbsp;	 *
-<i>246</i>&nbsp;	 * @param annotationType the type of the annotation
-<i>247</i>&nbsp;	 */
-<i>248</i>&nbsp;	public void setAnnotationType(Class&lt;? extends Annotation&gt; annotationType) {
-<b class="fc"><i>249</i>&nbsp;		this.annotationType = annotationType;</b>
-<b class="fc"><i>250</i>&nbsp;	}</b>
-<i>251</i>&nbsp;}
+<b class="fc"><i>221</i>&nbsp;		Advice advice = getAdvice();</b>
+<b class="fc"><i>222</i>&nbsp;		if (advice instanceof Ordered &amp;&amp; advice != this) {</b>
+<b class="nc"><i>223</i>&nbsp;			return ((Ordered) advice).getOrder();</b>
+<i>224</i>&nbsp;		}
+<b class="fc"><i>225</i>&nbsp;		return Ordered.LOWEST_PRECEDENCE;</b>
+<i>226</i>&nbsp;	}
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;	@Override
+<i>229</i>&nbsp;	public void setOrder(int order) {
+<b class="fc"><i>230</i>&nbsp;		this.order = order;</b>
+<b class="fc"><i>231</i>&nbsp;	}</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;	@Override
+<i>234</i>&nbsp;	public void setBeanFactory(@Nonnull BeanFactory beanFactory) {
+<b class="fc"><i>235</i>&nbsp;		this.beanFactory = beanFactory;</b>
+<b class="fc"><i>236</i>&nbsp;	}</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;	/**
+<i>239</i>&nbsp;	 * Sets the Mode that should be used to process method parameters and return values, respectively.
+<i>240</i>&nbsp;	 *
+<i>241</i>&nbsp;	 * @param mode the mode to operate
+<i>242</i>&nbsp;	 */
+<i>243</i>&nbsp;	public void setMode(@Nonnull Mode mode) {
+<b class="fc"><i>244</i>&nbsp;		this.mode = mode;</b>
+<b class="fc"><i>245</i>&nbsp;	}</b>
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;	/**
+<i>248</i>&nbsp;	 * Sets the annotation type that indicates a persistence endpoint.
+<i>249</i>&nbsp;	 *
+<i>250</i>&nbsp;	 * @param annotationType the type of the annotation
+<i>251</i>&nbsp;	 */
+<i>252</i>&nbsp;	public void setAnnotationType(@Nonnull Class&lt;? extends Annotation&gt; annotationType) {
+<b class="fc"><i>253</i>&nbsp;		this.annotationType = annotationType;</b>
+<b class="fc"><i>254</i>&nbsp;	}</b>
+<i>255</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

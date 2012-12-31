@@ -147,11 +147,15 @@
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -162,6 +166,7 @@
               
     <li><h2>Interfaces</h2>
       <ul>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</li>
       </ul>
     </li>
@@ -170,10 +175,22 @@
       <ul>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractContainerPersister.html">AbstractContainerPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</li>
           <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</li>
           <li class="selected api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></li>
-          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpEntityPersister.html">NoOpEntityPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</li>
+          <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</li>
       </ul>
     </li>
               
@@ -230,6 +247,8 @@
    
   
   
+  
+   
   
   
 
@@ -384,7 +403,7 @@ Summary:
 
 
 <h2>Class Overview</h2>
-<p>Processes all types of java.util.Maps by traversing them and invoking the desired operation of the
+<p>Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a></code>s by traversing them and invoking the desired operation of the
  appropriate <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all keys and values.</p>
 
 
@@ -495,6 +514,39 @@ Summary:
 </td></tr>
 
 
+
+<tr class="api apilevel-" >
+<td colspan="12">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister" class="jd-expando-trigger closed"
+          ><img id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-trigger"
+          src="../../../../../../assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>From class
+<a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">at.schauer.gregor.dormancy.persister.AbstractEntityPersister</a>
+<div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister">
+  <div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol"><nobr>
+          protected
+          
+          
+          <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class[]</a>&lt;?&nbsp;extends&nbsp;C&gt;</nobr></td>
+          <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#supportedTypes">supportedTypes</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+</table>
+  </div>
+</div>
+</td></tr>
 
 
 
@@ -634,7 +686,7 @@ Summary:
             <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>,&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html#createContainer(java.util.Map<?, ?>)">createContainer</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;?,&nbsp;?&gt; map)</nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html#createContainer(java.util.Map<?, ?>)">createContainer</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;?,&nbsp;?&gt; container)</nobr>
         
         <div class="jd-descrdiv">Creates an empty container of the given type.</div>
   
@@ -911,6 +963,24 @@ From class
         <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#merge_(T, T, java.util.Map<java.lang.Object, java.lang.Object>)">merge_</a></span>(T trObj, T dbObj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>,&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>&gt; tree)</nobr>
         
         <div class="jd-descrdiv">Merges the given transient object with the persistent object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#setSupportedTypes(java.lang.Class<? extends C>...)">setSupportedTypes</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&nbsp;extends&nbsp;C&gt; supportedTypes)</nobr>
+        
+        <div class="jd-descrdiv">Sets the object types supported by this implementation.</div>
   
   </td></tr>
 
@@ -1492,7 +1562,7 @@ From interface
         <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>,&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>&gt;
       </span>
       <span class="sympad">createContainer</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;?,&nbsp;?&gt; map)</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;?,&nbsp;?&gt; container)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1509,7 +1579,7 @@ From interface
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</td>
+          <th>container</td>
           <td>the original container</td>
         </tr>
       </table>

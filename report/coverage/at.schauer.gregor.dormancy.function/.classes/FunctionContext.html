@@ -89,73 +89,74 @@
 <i>15</i>&nbsp; */
 <i>16</i>&nbsp;package at.schauer.gregor.dormancy.function;
 <i>17</i>&nbsp;
-<i>18</i>&nbsp;import javax.annotation.Nullable;
-<i>19</i>&nbsp;import java.util.IdentityHashMap;
-<i>20</i>&nbsp;import java.util.Map;
-<i>21</i>&nbsp;
-<i>22</i>&nbsp;/**
-<i>23</i>&nbsp; * Holds context sensitive variables for stateless {@link ContextFunction}s.&lt;br/&gt;
-<i>24</i>&nbsp; * This implementations holds:
-<i>25</i>&nbsp; * &lt;ul&gt;
-<i>26</i>&nbsp; * &lt;li&gt;a value that represents the parameter and the last function result&lt;/li&gt;
-<i>27</i>&nbsp; * &lt;li&gt;an adjacency stack that keeps track of the function invocations&lt;/li&gt;
-<i>28</i>&nbsp; * &lt;/ul&gt;
-<i>29</i>&nbsp; *
-<i>30</i>&nbsp; * @author Gregor Schauer
-<i>31</i>&nbsp; * @since 1.0.1
-<i>32</i>&nbsp; */
-<i>33</i>&nbsp;public class FunctionContext&lt;T&gt; {
-<i>34</i>&nbsp;	private T obj;
-<i>35</i>&nbsp;	private Map&lt;Object, Object&gt; tree;
-<i>36</i>&nbsp;
-<i>37</i>&nbsp;	public FunctionContext() {
-<b class="fc"><i>38</i>&nbsp;		this(null);</b>
-<b class="fc"><i>39</i>&nbsp;	}</b>
-<i>40</i>&nbsp;
-<i>41</i>&nbsp;	public FunctionContext(@Nullable T obj) {
-<b class="fc"><i>42</i>&nbsp;		this(obj, new IdentityHashMap&lt;Object, Object&gt;());</b>
-<b class="fc"><i>43</i>&nbsp;	}</b>
-<i>44</i>&nbsp;
-<b class="fc"><i>45</i>&nbsp;	public FunctionContext(@Nullable T obj, @Nullable Map&lt;Object, Object&gt; tree) {</b>
-<b class="fc"><i>46</i>&nbsp;		this.obj = obj;</b>
-<b class="fc"><i>47</i>&nbsp;		this.tree = tree;</b>
-<b class="fc"><i>48</i>&nbsp;	}</b>
-<i>49</i>&nbsp;
-<i>50</i>&nbsp;	/**
-<i>51</i>&nbsp;	 * Returns the value associated with this context.
-<i>52</i>&nbsp;	 *
-<i>53</i>&nbsp;	 * @return the value
-<i>54</i>&nbsp;	 */
-<i>55</i>&nbsp;	@Nullable
-<i>56</i>&nbsp;	public T getObj() {
-<b class="fc"><i>57</i>&nbsp;		return obj;</b>
-<i>58</i>&nbsp;	}
-<i>59</i>&nbsp;
-<i>60</i>&nbsp;	/**
-<i>61</i>&nbsp;	 * Sets the value associated with this context.
-<i>62</i>&nbsp;	 *
-<i>63</i>&nbsp;	 * @param obj the value
-<i>64</i>&nbsp;	 */
-<i>65</i>&nbsp;	public void setObj(@Nullable T obj) {
-<b class="fc"><i>66</i>&nbsp;		this.obj = obj;</b>
-<b class="fc"><i>67</i>&nbsp;	}</b>
-<i>68</i>&nbsp;
-<i>69</i>&nbsp;	/**
-<i>70</i>&nbsp;	 * Returns the adjacency stack built by function invocations.
-<i>71</i>&nbsp;	 *
-<i>72</i>&nbsp;	 * @return the adjacency stack
-<i>73</i>&nbsp;	 */
-<i>74</i>&nbsp;	@Nullable
-<i>75</i>&nbsp;	public Map&lt;Object, Object&gt; getTree() {
-<b class="fc"><i>76</i>&nbsp;		return tree;</b>
-<i>77</i>&nbsp;	}
-<i>78</i>&nbsp;}
+<i>18</i>&nbsp;import javax.annotation.Nonnull;
+<i>19</i>&nbsp;import javax.annotation.Nullable;
+<i>20</i>&nbsp;import java.util.IdentityHashMap;
+<i>21</i>&nbsp;import java.util.Map;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;/**
+<i>24</i>&nbsp; * Holds context sensitive variables for stateless {@link ContextFunction}s.&lt;br/&gt;
+<i>25</i>&nbsp; * This implementations holds:
+<i>26</i>&nbsp; * &lt;ul&gt;
+<i>27</i>&nbsp; * &lt;li&gt;a value that represents the parameter and the last function result&lt;/li&gt;
+<i>28</i>&nbsp; * &lt;li&gt;an adjacency stack that keeps track of the function invocations&lt;/li&gt;
+<i>29</i>&nbsp; * &lt;/ul&gt;
+<i>30</i>&nbsp; *
+<i>31</i>&nbsp; * @author Gregor Schauer
+<i>32</i>&nbsp; * @since 1.0.1
+<i>33</i>&nbsp; */
+<i>34</i>&nbsp;public class FunctionContext&lt;T&gt; {
+<i>35</i>&nbsp;	private T obj;
+<i>36</i>&nbsp;	private Map&lt;Object, Object&gt; tree;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;	public FunctionContext() {
+<b class="fc"><i>39</i>&nbsp;		this(null);</b>
+<b class="fc"><i>40</i>&nbsp;	}</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;	public FunctionContext(@Nullable T obj) {
+<b class="fc"><i>43</i>&nbsp;		this(obj, new IdentityHashMap&lt;Object, Object&gt;());</b>
+<b class="fc"><i>44</i>&nbsp;	}</b>
+<i>45</i>&nbsp;
+<b class="fc"><i>46</i>&nbsp;	public FunctionContext(@Nullable T obj, @Nonnull Map&lt;Object, Object&gt; tree) {</b>
+<b class="fc"><i>47</i>&nbsp;		this.obj = obj;</b>
+<b class="fc"><i>48</i>&nbsp;		this.tree = tree;</b>
+<b class="fc"><i>49</i>&nbsp;	}</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;	/**
+<i>52</i>&nbsp;	 * Returns the value associated with this context.
+<i>53</i>&nbsp;	 *
+<i>54</i>&nbsp;	 * @return the value
+<i>55</i>&nbsp;	 */
+<i>56</i>&nbsp;	@Nullable
+<i>57</i>&nbsp;	public T getObj() {
+<b class="fc"><i>58</i>&nbsp;		return obj;</b>
+<i>59</i>&nbsp;	}
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;	/**
+<i>62</i>&nbsp;	 * Sets the value associated with this context.
+<i>63</i>&nbsp;	 *
+<i>64</i>&nbsp;	 * @param obj the value
+<i>65</i>&nbsp;	 */
+<i>66</i>&nbsp;	public void setObj(@Nullable T obj) {
+<b class="fc"><i>67</i>&nbsp;		this.obj = obj;</b>
+<b class="fc"><i>68</i>&nbsp;	}</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;	/**
+<i>71</i>&nbsp;	 * Returns the adjacency stack built by function invocations.
+<i>72</i>&nbsp;	 *
+<i>73</i>&nbsp;	 * @return the adjacency stack
+<i>74</i>&nbsp;	 */
+<i>75</i>&nbsp;	@Nonnull
+<i>76</i>&nbsp;	public Map&lt;Object, Object&gt; getTree() {
+<b class="fc"><i>77</i>&nbsp;		return tree;</b>
+<i>78</i>&nbsp;	}
+<i>79</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2012-07-14 23:59</div>
+    <div style="float:right;">generated on 2012-12-31 18:52</div>
 </div>
 </body>
 </html>

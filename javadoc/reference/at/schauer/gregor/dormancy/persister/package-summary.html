@@ -147,11 +147,15 @@
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="selected api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="api apilevel-">
   <a href="../../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -162,6 +166,7 @@
               
     <li><h2>Interfaces</h2>
       <ul>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</li>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</li>
       </ul>
     </li>
@@ -170,10 +175,22 @@
       <ul>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractContainerPersister.html">AbstractContainerPersister</a>&lt;C&gt;</li>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</li>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</li>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</li>
         <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></li>
-        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpEntityPersister.html">NoOpEntityPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</li>
+        <li class="api apilevel-"><a href="../../../../../at/schauer/gregor/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</li>
       </ul>
     </li>
               
@@ -244,6 +261,10 @@
     
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Dynamically decides if a certain object type can be persisted.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</td>
               <td class="jd-descrcol" width="100%">Contains operations for cloning Hibernate managed objects and merging them into a org.hibernate.Session.&nbsp;</td>
           </tr>
@@ -266,22 +287,72 @@
               <td class="jd-descrcol" width="100%">Abstract implementation containing some convenience methods.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</td>
+              <td class="jd-descrcol" width="100%">Uses PropertyAccessors for reading and writing bean properties.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Processes all types of arrays by traversing them and invoking the desired operation of the appropriate
+ <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Processes all named properties by retrieving the value, invoking the desired <code><a href="../../../../../at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></code> operation and writing
+ the result back to the bean.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Uses BeanWrappers for reading and writing bean properties.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</td>
               <td class="jd-descrcol" width="100%">Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a></code>s by traversing them and invoking the desired operation of the appropriate
  <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Uses ConfigurablePropertyAccessors for reading and writing bean properties.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Uses org.springframework.util.ReflectionUtils.FieldFilters for determining the properties to process.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</td>
               <td class="jd-descrcol" width="100%">&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></td>
-              <td class="jd-descrcol" width="100%">Processes all types of java.util.Maps by traversing them and invoking the desired operation of the
- appropriate <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all keys and values.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Determines the properties to process dynamically.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpEntityPersister.html">NoOpEntityPersister</a>&lt;C&gt;</td>
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></td>
+              <td class="jd-descrcol" width="100%">Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a></code>s by traversing them and invoking the desired operation of the
+ appropriate <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all keys and values.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</td>
               <td class="jd-descrcol" width="100%">Simply returns the given entities.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Simply returns <code>null</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</td>
+              <td class="jd-descrcol" width="100%">Evaluates a Predicate for determining the <code><a href="../../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> to use for processing certain objects.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../at/schauer/gregor/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</td>
+              <td class="jd-descrcol" width="100%">Processes all non-static non-final fields that are declared in the transient as well as the persistent object.&nbsp;</td>
           </tr>
   </table>
     </div>

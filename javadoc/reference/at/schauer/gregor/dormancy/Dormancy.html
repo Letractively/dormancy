@@ -147,11 +147,15 @@
     <li class="selected api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="../../../../at/schauer/gregor/dormancy/closure/package-summary.html">at.schauer.gregor.dormancy.closure</a></li>
+  <a href="../../../../at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
     <li class="api apilevel-">
   <a href="../../../../at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
               </ul><br/>
@@ -213,6 +217,8 @@
   
   
   
+   
+  
   
 
   
@@ -260,6 +266,9 @@ Summary:
   <a href="#lfields">Fields</a>
   
 
+
+  &#124; <a href="#inhfields">Inherited Fields</a>
+  
 
 
   &#124; <a href="#pubctors">Ctors</a>
@@ -367,7 +376,7 @@ Summary:
 
 
 <h2>Class Overview</h2>
-<p>Clones Hibernate entities and merges them into a org.hibernate.Session.<br/></p>
+<p>Clones Hibernate entities and merges them into a Session.<br/></p>
 
 
 
@@ -438,13 +447,24 @@ Summary:
           protected
           
           
-          <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt;</nobr></td>
-          <td class="jd-linkcol"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#persisterMap">persisterMap</a></td>
+          Logger</nobr></td>
+          <td class="jd-linkcol"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#logger">logger</a></td>
           <td class="jd-descrcol" width="100%"></td>
       </tr>
       
     
       <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol"><nobr>
+          protected
+          
+          
+          <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt;</nobr></td>
+          <td class="jd-linkcol"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#persisterMap">persisterMap</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
           <td class="jd-typecol"><nobr>
           protected
           
@@ -455,7 +475,7 @@ Summary:
       </tr>
       
     
-      <tr class=" api apilevel-" >
+      <tr class="alt-color api apilevel-" >
           <td class="jd-typecol"><nobr>
           protected
           
@@ -466,7 +486,7 @@ Summary:
       </tr>
       
     
-      <tr class="alt-color api apilevel-" >
+      <tr class=" api apilevel-" >
           <td class="jd-typecol"><nobr>
           protected
           
@@ -482,6 +502,57 @@ Summary:
 
 
 
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="inhfields" class="jd-sumtable"><tr><th>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  <div style="clear:left;">Inherited Fields</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister" class="jd-expando-trigger closed"
+          ><img id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-trigger"
+          src="../../../../../assets/images/triangle-closed.png"
+          class="jd-expando-trigger-img" /></a>From class
+<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">at.schauer.gregor.dormancy.persister.AbstractEntityPersister</a>
+<div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister">
+  <div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-fields-at.schauer.gregor.dormancy.persister.AbstractEntityPersister-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol"><nobr>
+          protected
+          
+          
+          <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class[]</a>&lt;?&nbsp;extends&nbsp;C&gt;</nobr></td>
+          <td class="jd-linkcol"><a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#supportedTypes">supportedTypes</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+
+
+
+
+
+
+
+</table>
 
 
 
@@ -531,7 +602,7 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class...)">addEntityPersister</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; entityPersisterClass, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a> types)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class<?>...)">addEntityPersister</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; entityPersisterClass, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&gt; types)</nobr>
         
         <div class="jd-descrdiv">Registers an instance of the given <code><a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a></code> type for certain types.</div>
   
@@ -549,7 +620,7 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, java.lang.Class...)">addEntityPersister</a></span>(<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a> entityPersister, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a> types)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister<?>, java.lang.Class<?>...)">addEntityPersister</a></span>(<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt; entityPersister, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&gt; types)</nobr>
         
         <div class="jd-descrdiv">Registers the given <code><a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a></code> for certain types.</div>
   
@@ -617,11 +688,11 @@ Summary:
             
             
             
-            
-            <a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a></nobr>
+            &lt;T&gt;
+            <a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;T&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#getEntityPersister(java.lang.Class)">getEntityPersister</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a> clazz)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#getEntityPersister(java.lang.Class<? extends T>)">getEntityPersister</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;T&gt; clazz)</nobr>
         
         <div class="jd-descrdiv">Returns an <code><a href="../../../../at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> that is capable of processing instances
  of the given type.</div>
@@ -637,7 +708,7 @@ Summary:
             
             
             
-            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt;</nobr>
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt;</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
         <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#getPersisterMap()">getPersisterMap</a></span>()</nobr>
@@ -818,7 +889,7 @@ Summary:
             void</nobr>
         </td>
         <td class="jd-linkcol" width="100%"><nobr>
-        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#setPersisterMap(java.util.Map<java.lang.Class, at.schauer.gregor.dormancy.persister.AbstractEntityPersister>)">setPersisterMap</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; persisterMap)</nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#setPersisterMap(java.util.Map<java.lang.Class<?>, at.schauer.gregor.dormancy.persister.AbstractEntityPersister<?>>)">setPersisterMap</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt; persisterMap)</nobr>
         
         <div class="jd-descrdiv">Sets the mapping of the AbstractEntityPersisters that should be used.</div>
   
@@ -1080,6 +1151,24 @@ From class
         <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#merge_(T, T, java.util.Map<java.lang.Object, java.lang.Object>)">merge_</a></span>(T trObj, T dbObj, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>,&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a>&gt; tree)</nobr>
         
         <div class="jd-descrdiv">Merges the given transient object with the persistent object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
+            
+            void</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html#setSupportedTypes(java.lang.Class<? extends C>...)">setSupportedTypes</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&nbsp;extends&nbsp;C&gt; supportedTypes)</nobr>
+        
+        <div class="jd-descrdiv">Sets the object types supported by this implementation.</div>
   
   </td></tr>
 
@@ -1478,6 +1567,36 @@ From interface
 
 
 
+<A NAME="logger"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected 
+         
+         
+        Logger
+      </span>
+        logger
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+
 <A NAME="persisterMap"></A>
 
 <div class="jd-details api apilevel-"> 
@@ -1486,7 +1605,7 @@ From interface
         protected 
          
          
-        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt;
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt;
       </span>
         persisterMap
     </h4>
@@ -1653,7 +1772,7 @@ From interface
 
 
 
-<A NAME="addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class...)"></A>
+<A NAME="addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class<?>...)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1666,7 +1785,7 @@ From interface
         void
       </span>
       <span class="sympad">addEntityPersister</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; entityPersisterClass, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a> types)</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; entityPersisterClass, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&gt; types)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1698,7 +1817,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, java.lang.Class...)">addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, Class[])</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister<?>, java.lang.Class<?>...)">addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, Class[])</a></code></li>
       </ul>
   </div>
 
@@ -1706,7 +1825,7 @@ From interface
 </div>
 
 
-<A NAME="addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister, java.lang.Class...)"></A>
+<A NAME="addEntityPersister(at.schauer.gregor.dormancy.persister.AbstractEntityPersister<?>, java.lang.Class<?>...)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1719,7 +1838,7 @@ From interface
         void
       </span>
       <span class="sympad">addEntityPersister</span>
-      <span class="normal">(<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a> entityPersister, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a> types)</span>
+      <span class="normal">(<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt; entityPersister, <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class...</a>&lt;?&gt; types)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1751,7 +1870,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class...)">addEntityPersister(Class, Class[])</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../at/schauer/gregor/dormancy/Dormancy.html#addEntityPersister(java.lang.Class<? extends at.schauer.gregor.dormancy.persister.AbstractEntityPersister>, java.lang.Class<?>...)">addEntityPersister(Class, Class[])</a></code></li>
       </ul>
   </div>
 
@@ -1889,7 +2008,7 @@ From interface
 </div>
 
 
-<A NAME="getEntityPersister(java.lang.Class)"></A>
+<A NAME="getEntityPersister(java.lang.Class<? extends T>)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -1899,10 +2018,10 @@ From interface
          
          
          
-        <a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>
+        <a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;T&gt;
       </span>
       <span class="sympad">getEntityPersister</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a> clazz)</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;T&gt; clazz)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1945,7 +2064,7 @@ From interface
          
          
          
-        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt;
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt;
       </span>
       <span class="sympad">getPersisterMap</span>
       <span class="normal">()</span>
@@ -2366,7 +2485,7 @@ From interface
 </div>
 
 
-<A NAME="setPersisterMap(java.util.Map<java.lang.Class, at.schauer.gregor.dormancy.persister.AbstractEntityPersister>)"></A>
+<A NAME="setPersisterMap(java.util.Map<java.lang.Class<?>, at.schauer.gregor.dormancy.persister.AbstractEntityPersister<?>>)"></A>
 
 <div class="jd-details api apilevel-"> 
     <h4 class="jd-details-title">
@@ -2379,7 +2498,7 @@ From interface
         void
       </span>
       <span class="sympad">setPersisterMap</span>
-      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&gt; persisterMap)</span>
+      <span class="normal">(<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&gt;,&nbsp;<a href="../../../../at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;?&gt;&gt; persisterMap)</span>
     </h4>
       <div class="api-level">
         <div>

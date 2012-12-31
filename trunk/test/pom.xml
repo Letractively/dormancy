@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>dormancy</artifactId>
 		<groupId>at.schauer.gregor.dormancy</groupId>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,10 +17,6 @@
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
 			<artifactId>dormancy-closure</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>at.schauer.gregor.dormancy</groupId>
-			<artifactId>dormancy-dev</artifactId>
 		</dependency>
 
 		<dependency>
