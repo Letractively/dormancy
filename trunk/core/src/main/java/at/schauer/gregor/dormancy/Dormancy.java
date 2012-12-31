@@ -23,6 +23,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.*;
+import org.hibernate.collection.PersistentMap;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
@@ -33,6 +34,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.CollectionFactory;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.util.ClassUtils;
 
@@ -161,8 +163,14 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 
 			Object trValue = null;
 			// If the property (e.g., a lazy persistent collection) is initialized traverse the object graph recursively
-			if (dbValue != null && Hibernate.isInitialized(dbValue)) {
-				trValue = clone_((T) dbValue, tree);
+			if (dbValue != null) {
+				if (Hibernate.isInitialized(dbValue)) {
+					trValue = clone_((T) dbValue, tree);
+				} else if (utils.isPersistentCollection(dbValue) && config.getCreateEmptyCollections()) {
+					trValue = dbValue instanceof PersistentMap
+							? CollectionFactory.createApproximateMap(dbValue, 0)
+							: CollectionFactory.createApproximateCollection(dbValue, 0);
+				}
 			}
 
 			if (logger.isTraceEnabled()) {
@@ -327,7 +335,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			Type type = metadata.getPropertyType(propertyName);
 
 			// Lazily loaded collections are not copied
-			if (type.isCollectionType() && utils.isPersistentCollection(dbValue)) {
+			if (type.isCollectionType()) {
 				if (!utils.isInitializedPersistentCollection(dbValue)) {
 					// If property is loaded lazily, the value of the given object must be null or empty
 					if (trValue != null && trValue != dbValue && CollectionUtils.size(trValue) > 0) {

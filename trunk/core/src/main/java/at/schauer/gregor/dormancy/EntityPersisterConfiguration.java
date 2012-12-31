@@ -41,6 +41,10 @@ public class EntityPersisterConfiguration {
 	 */
 	private Boolean cloneObjects;
 	/**
+	 * Attempts to create empty collections/maps for uninitialized persistent collections
+	 */
+	private Boolean createEmptyCollections;
+	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
@@ -50,6 +54,7 @@ public class EntityPersisterConfiguration {
 		checkVersion = true;
 		flushAutomatically = false;
 		cloneObjects = false;
+		createEmptyCollections = true;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
@@ -138,5 +143,25 @@ public class EntityPersisterConfiguration {
 	 */
 	public void setCloneObjects(@Nullable Boolean cloneObjects) {
 		this.cloneObjects = cloneObjects;
+	}
+
+	/**
+	 * Returns whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} are replaced with
+	 * empty collections or maps or with {@code null}.
+	 *
+	 * @return {@code true} if empty collections should be created, {@code false} otherwise
+	 */
+	public Boolean getCreateEmptyCollections() {
+		return createEmptyCollections == null ? parent.getCreateEmptyCollections() : createEmptyCollections;
+	}
+
+	/**
+	 * Sets whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} should be replaced with
+	 * empty collections or maps or with {@code null}.
+	 *
+	 * @param createEmptyCollections {@code true} if empty collections should be created, {@code false} otherwise
+	 */
+	public void setCreateEmptyCollections(Boolean createEmptyCollections) {
+		this.createEmptyCollections = createEmptyCollections;
 	}
 }
