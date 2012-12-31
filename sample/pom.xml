@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>dormancy</artifactId>
 		<groupId>at.schauer.gregor.dormancy</groupId>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -22,17 +22,17 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<version>2.4.0</version>
+			<version>${gwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>2.4.0</version>
+			<version>${gwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>2.4.0</version>
+			<version>${gwt.version}</version>
 		</dependency>
 
 		<dependency>
@@ -53,5 +53,10 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 	</dependencies>
+
+
+	<properties>
+		<gwt.version>2.5.0</gwt.version>
+	</properties>
 
 </project>
