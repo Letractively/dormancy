@@ -15,45 +15,59 @@
  */
 package at.schauer.gregor.dormancy.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
  * @author Gregor Schauer
  */
-@Entity
-public class CompositeKey implements Serializable {
-	@Id
-	public Long id;
-	@Id
-	public Long time;
-	public String value;
+@Embeddable
+public class EmbeddableEntity implements Serializable {
+	static transient long counter;
+	private Long id = ++counter;
+	private Long timestamp = System.currentTimeMillis();
 
-	public CompositeKey() {
+	public Long getId() {
+		return id;
 	}
 
-	public CompositeKey(Long id, Long time, String value) {
+	public void setId(Long id) {
 		this.id = id;
-		this.time = time;
-		this.value = value;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("EmbeddableEntity");
+		sb.append("{id=").append(id);
+		sb.append(", timestamp=").append(timestamp);
+		sb.append('}');
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
 
-		CompositeKey that = (CompositeKey) obj;
+		EmbeddableEntity that = (EmbeddableEntity) o;
 
 		if (!id.equals(that.id)) {
 			return false;
 		}
-		if (!time.equals(that.time)) {
+		if (!timestamp.equals(that.timestamp)) {
 			return false;
 		}
 
@@ -63,7 +77,7 @@ public class CompositeKey implements Serializable {
 	@Override
 	public int hashCode() {
 		int result = id.hashCode();
-		result = 31 * result + time.hashCode();
+		result = 31 * result + timestamp.hashCode();
 		return result;
 	}
 }

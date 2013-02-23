@@ -20,6 +20,7 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import org.hibernate.StaleObjectStateException;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.UUID;
 
@@ -59,7 +60,7 @@ public class VersioningDormancyTest extends AbstractDormancyTest {
 	@Test(expected = StaleObjectStateException.class)
 	public void testManipulateVersion() {
 		Application app = service.load(Application.class, 1L);
-		app.setLastUpdate(app.getLastUpdate() + 1);
+		ReflectionTestUtils.setField(app, "lastUpdate", app.getLastUpdate() + 1);
 		service.save(app);
 	}
 

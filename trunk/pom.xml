@@ -7,7 +7,7 @@
 	<groupId>at.schauer.gregor.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<modules>
 		<module>closure</module>
 		<module>core</module>
@@ -24,7 +24,7 @@
 			<extension>
 				<groupId>org.jvnet.wagon-svn</groupId>
 				<artifactId>wagon-svn</artifactId>
-				<version>1.9</version>
+				<version>1.12</version>
 			</extension>
 		</extensions>
 		<pluginManagement>
@@ -56,6 +56,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -64,7 +65,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>2.6</version>
 				<configuration>
 					<scope>runtime</scope>
 				</configuration>
@@ -126,6 +127,7 @@
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
+				<version>1.9.0</version>
 				<configuration>
 					<basedir>${basedir}</basedir>
 					<header>src/etc/apache_v2.header.txt</header>
@@ -161,22 +163,22 @@
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
 				<artifactId>dormancy-core</artifactId>
-				<version>${dormancy.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
 				<artifactId>dormancy-closure</artifactId>
-				<version>${dormancy.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
 				<artifactId>dormancy-hibernate3</artifactId>
-				<version>${dormancy.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>at.schauer.gregor.dormancy</groupId>
 				<artifactId>dormancy-hibernate4</artifactId>
-				<version>${dormancy.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
@@ -193,6 +195,11 @@
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
 				<version>2.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>14.0-rc3</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
@@ -350,6 +357,12 @@
 			<modules>
 				<module>hibernate3</module>
 			</modules>
+			<dependencies>
+				<dependency>
+					<groupId>javax.persistence</groupId>
+					<artifactId>persistence-api</artifactId>
+				</dependency>
+			</dependencies>
 			<dependencyManagement>
 				<dependencies>
 					<dependency>
@@ -475,7 +488,6 @@
 
 
 	<properties>
-		<dormancy.version>1.1.1</dormancy.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.root>${project.basedir}</project.root>

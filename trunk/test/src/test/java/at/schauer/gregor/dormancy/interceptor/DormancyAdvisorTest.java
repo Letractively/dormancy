@@ -47,14 +47,9 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Gregor Schauer
  */
-@Configuration
-@ContextConfiguration(classes = DormancyAdvisorTest.class)
-@EnableAspectJAutoProxy(proxyTargetClass = true)
-@EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan(value = "at.schauer.gregor.dormancy.persister",
-		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
+@ContextConfiguration(classes = DormancyAdvisorTest.Config.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class DormancyAdvisorTest extends DormancySpringConfig {
+public class DormancyAdvisorTest {
 	@Inject
 	Service service;
 	@Inject
@@ -90,34 +85,41 @@ public class DormancyAdvisorTest extends DormancySpringConfig {
 		assertEquals(Ordered.HIGHEST_PRECEDENCE, dormancyAdvisor.getOrder());
 	}
 
-	@Bean
-	public DormancyAdvisorAspect dormancyInterceptor() {
-		return new DormancyAdvisorAspect(dormancyAdvisor());
-	}
-
-	@Bean
-	public DormancyAdvisor dormancyAdvisor() {
-		DormancyAdvisor advisor = new DormancyAdvisor(dormancy());
-		advisor.setAnnotationType(Transactional.class);
-		return advisor;
-	}
-
-	@Bean
-	public Service service() {
-		return new ServiceImpl();
-	}
-
-	@Aspect
-	static class DormancyAdvisorAspect {
-		DormancyAdvisor delegate;
-
-		public DormancyAdvisorAspect(DormancyAdvisor delegate) {
-			this.delegate = delegate;
+	@Configuration
+	@EnableAspectJAutoProxy(proxyTargetClass = true)
+	@EnableTransactionManagement(proxyTargetClass = true)
+	@ComponentScan(value = "at.schauer.gregor.dormancy.persister",
+			includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
+	static class Config extends DormancySpringConfig {
+		@Bean
+		public DormancyAdvisorAspect dormancyInterceptor() {
+			return new DormancyAdvisorAspect(dormancyAdvisor());
 		}
 
-		@Around("target(at.schauer.gregor.dormancy.service.ServiceImpl) && @target(org.springframework.transaction.annotation.Transactional)")
-		public Object around(@Nonnull ProceedingJoinPoint joinPoint) throws Throwable {
-			return delegate.around(joinPoint);
+		@Bean
+		public DormancyAdvisor dormancyAdvisor() {
+			DormancyAdvisor advisor = new DormancyAdvisor(dormancy());
+			advisor.setAnnotationType(Transactional.class);
+			return advisor;
+		}
+
+		@Bean
+		public Service service() {
+			return new ServiceImpl();
+		}
+
+		@Aspect
+		static class DormancyAdvisorAspect {
+			DormancyAdvisor delegate;
+
+			public DormancyAdvisorAspect(DormancyAdvisor delegate) {
+				this.delegate = delegate;
+			}
+
+			@Around("target(at.schauer.gregor.dormancy.service.ServiceImpl) && @target(org.springframework.transaction.annotation.Transactional)")
+			public Object around(@Nonnull ProceedingJoinPoint joinPoint) throws Throwable {
+				return delegate.around(joinPoint);
+			}
 		}
 	}
 }
