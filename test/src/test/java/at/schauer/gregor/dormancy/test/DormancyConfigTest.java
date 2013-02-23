@@ -15,7 +15,6 @@
  */
 package at.schauer.gregor.dormancy.test;
 
-import at.schauer.gregor.commons.test.BeanTester;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
 import at.schauer.gregor.dormancy.entity.Book;
@@ -26,11 +25,11 @@ import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.PostConstruct;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Gregor Schauer
@@ -60,14 +59,13 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 	@Test
 	public void testConfigWithoutParent() throws Exception {
-		BeanTester.getInstance().instantiate(EntityPersisterConfiguration.class);
+		assertNull(ReflectionTestUtils.getField(new EntityPersisterConfiguration(), "parent"));
 	}
 
 	@Test
 	public void testConfigWithParent() throws Exception {
 		EntityPersisterConfiguration config = new EntityPersisterConfiguration(new EntityPersisterConfiguration());
-		assertNotNull(config);
-		BeanTester.getInstance().test(config);
+		assertNotNull(ReflectionTestUtils.getField(config, "parent"));
 	}
 
 	@Test(expected = TransientObjectException.class)

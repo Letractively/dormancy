@@ -21,6 +21,7 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.AbstractPropertyAccessor;
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
 
@@ -134,6 +135,12 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 				throw throwException(propertyName, e);
 			}
 		}
+	}
+
+	@Nullable
+	@Override
+	public <T> T convertIfNecessary(@Nullable Object value, @Nonnull Class<T> requiredType) throws TypeMismatchException {
+		return convertIfNecessary(value, requiredType, (MethodParameter) null);
 	}
 
 	@Nullable
