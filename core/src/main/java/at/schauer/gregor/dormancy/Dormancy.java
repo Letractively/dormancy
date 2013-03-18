@@ -290,14 +290,14 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			return entityPersister.merge_(trObj, dbObj, tree);
 		}
 
-		// Verify that the given object is a non-null managed entity.
-		ClassMetadata metadata = utils.getClassMetadata(trObj);
-		if (metadata == null) {
-			return trObj;
-		}
-
 		// Add the object to the adjacency list
 		tree.put(trObj, dbObj);
+
+		// Verify that the given object is a non-null managed entity or it is not necessary to merge it
+		ClassMetadata metadata = utils.getClassMetadata(trObj);
+		if (metadata == null || trObj == dbObj) {
+			return trObj;
+		}
 
 		// Retrieve the identifier of the persistent object
 		Serializable identifier = utils.getIdentifierValue(metadata, dbObj);

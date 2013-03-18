@@ -17,6 +17,7 @@ package at.schauer.gregor.dormancy.access;
 
 import org.hibernate.annotations.AccessType;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.Id;
 
@@ -33,7 +34,7 @@ public class HibernatePropertyAccessStrategy extends PropertyAccessStrategy {
 		idAnnotations = new Class[]{Id.class};
 	}
 
-	public HibernatePropertyAccessStrategy(Class<?> entityType) {
+	public HibernatePropertyAccessStrategy(@Nonnull Class<?> entityType) {
 		super(entityType);
 	}
 }

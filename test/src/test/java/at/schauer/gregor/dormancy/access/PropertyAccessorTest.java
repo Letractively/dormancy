@@ -26,6 +26,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.MethodInvocationException;
 import org.springframework.beans.PropertyAccessor;
+import org.springframework.beans.PropertyValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -47,15 +48,20 @@ public class PropertyAccessorTest {
 	@Test
 	public void testApplication() {
 		Application application = new Application();
-		application.setId(1L);
-		application.setName("app");
-
 		PropertyAccessor accessor = new StrategyPropertyAccessor(application, utils.getAccessTypeStrategy(AopUtils.getTargetClass(application)));
 		assertSame(Long.class, accessor.getPropertyType("id"));
+		assertSame(Long.class, accessor.getPropertyTypeDescriptor("id").getType());
 		assertSame(String.class, accessor.getPropertyType("name"));
+		assertSame(String.class, accessor.getPropertyTypeDescriptor("name").getType());
+
+		accessor.setPropertyValue(new PropertyValue("id", 1L));
+		accessor.setPropertyValue(new PropertyValue("name", "app"));
 
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("app", accessor.getPropertyValue("name"));
+
+		assertEquals(true, accessor.isReadableProperty("lastUpdate"));
+		assertEquals(true, accessor.isWritableProperty("lastUpdate"));
 	}
 
 	@Test(expected = MethodInvocationException.class)
@@ -65,7 +71,12 @@ public class PropertyAccessorTest {
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
+		assertEquals(true, accessor.isReadableProperty("id"));
+		assertEquals(true, accessor.isWritableProperty("id"));
 		accessor.setPropertyValue("id", 0L);
+
+		assertEquals(true, accessor.isReadableProperty("value"));
+		assertEquals(true, accessor.isWritableProperty("value"));
 		accessor.setPropertyValue("value", "value");
 	}
 
@@ -76,7 +87,12 @@ public class PropertyAccessorTest {
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
+		assertEquals(true, accessor.isReadableProperty("id"));
+		assertEquals(true, accessor.isWritableProperty("id"));
 		accessor.setPropertyValue("id", 0L);
+
+		assertEquals(true, accessor.isReadableProperty("value"));
+		assertEquals(true, accessor.isWritableProperty("value"));
 		accessor.setPropertyValue("value", "value");
 	}
 }

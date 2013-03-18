@@ -111,8 +111,7 @@
 						<artifactId>doclava</artifactId>
 						<version>1.0.5</version>
 					</docletArtifact>
-					<excludePackageNames>at.schauer.gregor.commons.*:at.schauer.gregor.dormancy.sample.*
-					</excludePackageNames>
+					<excludePackageNames>at.schauer.gregor.dormancy.sample.*</excludePackageNames>
 					<maxmemory>256m</maxmemory>
 					<useStandardDocletOptions>false</useStandardDocletOptions>
 				</configuration>
