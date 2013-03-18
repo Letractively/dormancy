@@ -60,7 +60,7 @@ public abstract class PropertyAccessStrategy {
 	 * @param entityType the type of the entity
 	 * @see #initialize(Class)
 	 */
-	protected PropertyAccessStrategy(Class<?> entityType) {
+	protected PropertyAccessStrategy(@Nonnull Class<?> entityType) {
 		initialize(entityType);
 	}
 
@@ -69,7 +69,7 @@ public abstract class PropertyAccessStrategy {
 	 *
 	 * @param entityType the entity type
 	 */
-	protected void initialize(Class<?> entityType) {
+	protected void initialize(@Nonnull Class<?> entityType) {
 		// Retrieve the default access type for the entity type by looking up access annotations on type level
 		Annotation accessType = getAnnotation(entityType, getAccessAnnotations());
 		AccessMode entityAccessMode = accessType != null ? valueOf((String) getValue(accessType)) : null;
@@ -101,7 +101,7 @@ public abstract class PropertyAccessStrategy {
 			// If field access is used by default, scan for fields annotated with an access annotation
 			doWithFields(entityType, new FieldCallback() {
 				@Override
-				public void doWith(Field field) {
+				public void doWith(@Nonnull Field field) {
 					// Retrieve the access annotation from the field (if possible)
 					Annotation annotation = getAnnotation(field, getAccessAnnotations());
 
@@ -114,7 +114,7 @@ public abstract class PropertyAccessStrategy {
 			// If property access is used by default, scan for methods annotated with an access annotation
 			doWithMethods(entityType, new MethodCallback() {
 				@Override
-				public void doWith(Method method) {
+				public void doWith(@Nonnull Method method) {
 					// Check whether the given method is an ordinary getter method
 					PropertyDescriptor descriptor = findPropertyForMethod(method);
 					if (descriptor == null) {
@@ -136,6 +136,7 @@ public abstract class PropertyAccessStrategy {
 	 *
 	 * @return the access mode
 	 */
+	@Nullable
 	public AccessMode getDefaultAccessMode() {
 		return defaultAccessMode;
 	}
@@ -145,7 +146,7 @@ public abstract class PropertyAccessStrategy {
 	 *
 	 * @param defaultAccessMode the mode to set
 	 */
-	protected void setDefaultAccessMode(AccessMode defaultAccessMode) {
+	protected void setDefaultAccessMode(@Nullable AccessMode defaultAccessMode) {
 		this.defaultAccessMode = defaultAccessMode;
 	}
 
@@ -155,7 +156,8 @@ public abstract class PropertyAccessStrategy {
 	 * @param propertyName the name of the property
 	 * @return the access mode to use
 	 */
-	public AccessMode getAccessMode(String propertyName) {
+	@Nonnull
+	public AccessMode getAccessMode(@Nonnull String propertyName) {
 		AccessMode accessMode = (AccessMode) MapUtils.getObject(propertyAccessTypeMap, propertyName, null);
 		Assert.notNull(accessMode, "Cannot find property named '" + propertyName + "'");
 		return accessMode;
@@ -166,6 +168,7 @@ public abstract class PropertyAccessStrategy {
 	 *
 	 * @return the access annotation type
 	 */
+	@Nullable
 	public static Class<? extends Annotation>[] getAccessAnnotations() {
 		return accessAnnotations;
 	}
@@ -175,6 +178,7 @@ public abstract class PropertyAccessStrategy {
 	 *
 	 * @return the identifier annotation types
 	 */
+	@Nullable
 	public static Class<? extends Annotation>[] getIdAnnotations() {
 		return idAnnotations;
 	}

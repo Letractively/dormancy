@@ -19,6 +19,7 @@ import org.springframework.beans.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMode.FIELD;
@@ -41,43 +42,46 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	protected BeanWrapper propertyAccessor;
 	protected Object target;
 
-	public StrategyPropertyAccessor(Object target, PropertyAccessStrategy strategy) {
+	public StrategyPropertyAccessor(@Nonnull Object target, @Nonnull PropertyAccessStrategy strategy) {
 		this.target = target;
 		this.strategy = strategy;
 	}
 
 	@Override
-	public boolean isReadableProperty(String propertyName) {
+	public boolean isReadableProperty(@Nonnull String propertyName) {
 		return strategy.propertyAccessTypeMap.containsKey(propertyName);
 	}
 
 	@Override
-	public boolean isWritableProperty(String propertyName) {
+	public boolean isWritableProperty(@Nonnull String propertyName) {
 		return strategy.propertyAccessTypeMap.containsKey(propertyName);
 	}
 
+	@Nonnull
 	@Override
-	public Class<?> getPropertyType(String propertyPath) {
+	public Class<?> getPropertyType(@Nonnull String propertyPath) {
 		return getPropertyAccessor(propertyPath).getPropertyType(propertyPath);
 	}
 
+	@Nonnull
 	@Override
-	public TypeDescriptor getPropertyTypeDescriptor(String propertyName) {
+	public TypeDescriptor getPropertyTypeDescriptor(@Nonnull String propertyName) {
 		return getPropertyAccessor(propertyName).getPropertyTypeDescriptor(propertyName);
 	}
 
+	@Nullable
 	@Override
-	public Object getPropertyValue(String propertyName) {
+	public Object getPropertyValue(@Nonnull String propertyName) {
 		return getPropertyAccessor(propertyName).getPropertyValue(propertyName);
 	}
 
 	@Override
-	public void setPropertyValue(String propertyName, Object value) {
+	public void setPropertyValue(@Nonnull String propertyName, @Nullable Object value) {
 		getPropertyAccessor(propertyName).setPropertyValue(propertyName, value);
 	}
 
 	@Override
-	public void setPropertyValue(PropertyValue pv) {
+	public void setPropertyValue(@Nonnull PropertyValue pv) {
 		getPropertyAccessor(pv.getName()).setPropertyValue(pv);
 	}
 
@@ -90,7 +94,8 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see #getFieldAccessor()
 	 * @see #getPropertyAccessor()
 	 */
-	public PropertyAccessor getPropertyAccessor(String propertyName) {
+	@Nonnull
+	public PropertyAccessor getPropertyAccessor(@Nonnull String propertyName) {
 		PropertyAccessStrategy.AccessMode accessMode = strategy.getAccessMode(propertyName);
 		return accessMode == FIELD ? getFieldAccessor() : getPropertyAccessor();
 	}
@@ -101,6 +106,7 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	 *
 	 * @return the property accessor to use
 	 */
+	@Nonnull
 	public ConfigurablePropertyAccessor getFieldAccessor() {
 		if (fieldAccessor == null) {
 			fieldAccessor = PropertyAccessorFactory.forDirectFieldAccess(target);
@@ -114,6 +120,7 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	 *
 	 * @return the property accessor to use
 	 */
+	@Nonnull
 	public BeanWrapper getPropertyAccessor() {
 		if (propertyAccessor == null) {
 			propertyAccessor = PropertyAccessorFactory.forBeanPropertyAccess(target);
