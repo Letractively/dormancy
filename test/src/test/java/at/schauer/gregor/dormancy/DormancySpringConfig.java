@@ -21,26 +21,20 @@ import at.schauer.gregor.dormancy.persister.EntityPersister;
 import at.schauer.gregor.dormancy.service.Service;
 import at.schauer.gregor.dormancy.service.ServiceImpl;
 import org.aopalliance.aop.Advice;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.hibernate.dialect.HSQLDialect;
 import org.springframework.aop.framework.ProxyFactoryBean;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Properties;
-
-import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.isHibernate3;
 
 /**
  * @author Gregor Schauer
@@ -50,45 +44,39 @@ import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.isHibernate3
 @ComponentScan(value = "at.schauer.gregor.dormancy.persister",
 		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
 public class DormancySpringConfig {
-	public static final Level LOG_LEVEL = Level.WARN;
-
 	@Bean
 	public Dormancy dormancy() {
-		Logger.getLogger(Dormancy.class).setLevel(LOG_LEVEL);
 		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
+		config.setDeleteRemovedEntities(false);
+		config.setSaveAssociationsProperties(true);
+		config.setSaveNewEntities(true);
+		config.setVersionChecking(true);
 		Dormancy dormancy = new Dormancy();
 		dormancy.setConfig(config);
 		return dormancy;
 	}
 
 	@Bean
-	public FactoryBean<SessionFactory> sessionFactory() {
-		if (isHibernate3()) {
-			AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
-			sessionFactory.setDataSource(dataSource());
-			sessionFactory.setPackagesToScan(new String[]{DormancySpringConfig.class.getPackage().getName()});
-			sessionFactory.setHibernateProperties(hibernateProperties());
-			return sessionFactory;
-		} else {
-			LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-			sessionFactory.setDataSource(dataSource());
-			sessionFactory.setPackagesToScan(DormancySpringConfig.class.getPackage().getName());
-			sessionFactory.setHibernateProperties(hibernateProperties());
-			return sessionFactory;
-		}
+	public AnnotationSessionFactoryBean sessionFactory() {
+		AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource());
+		sessionFactory.setPackagesToScan(new String[]{this.getClass().getPackage().getName()});
+		sessionFactory.setHibernateProperties(hibernateProperties());
+		return sessionFactory;
 	}
 
 	@Bean
-	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public DataSource dataSource() {
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
 		return builder.setType(EmbeddedDatabaseType.HSQL).build();
+		// return new SingleConnectionDataSource("jdbc:hsqldb:mem:db_" + System.nanoTime(), true);
+		// return new SingleConnectionDataSource("jdbc:hsqldb:file:db/db;shutdown=true;hsqldb.write_delay=0", true);
 	}
 
 	@Bean
-	public PlatformTransactionManager transactionManager() throws Exception {
-		return isHibernate3() ? new HibernateTransactionManager(sessionFactory().getObject())
-				: new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory().getObject());
+	public PlatformTransactionManager transactionManager() throws SQLException {
+		return new HibernateTransactionManager(sessionFactory().getObject());
 	}
 
 	@Bean
@@ -96,8 +84,8 @@ public class DormancySpringConfig {
 		Properties properties = new Properties();
 		properties.setProperty("hibernate.dialect", HSQLDialect.class.getName());
 		properties.setProperty("hibernate.show_sql", "false");
-		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		properties.setProperty("current_session_context_class", "thread");
+		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		properties.setProperty("javax.persistence.validation.mode", "none");
 		return properties;
 	}
@@ -118,7 +106,6 @@ public class DormancySpringConfig {
 
 	@Bean
 	public Advice dormancyAdvisor() {
-		Logger.getLogger(DormancyAdvisor.class).setLevel(LOG_LEVEL);
 		DormancyAdvisor support = new DormancyAdvisor(dormancy());
 		support.setMode(DormancyAdvisor.Mode.BOTH);
 		return support;

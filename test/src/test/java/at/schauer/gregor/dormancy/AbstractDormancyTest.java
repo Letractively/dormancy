@@ -23,6 +23,7 @@ import at.schauer.gregor.dormancy.service.Service;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.collection.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -38,8 +39,6 @@ import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.*;
-
-import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateCollectionClass;
 
 /**
  * @author Gregor Schauer
@@ -80,6 +79,23 @@ public abstract class AbstractDormancyTest {
 		session.close();
 	}
 
+	// @After
+	public void after() {
+		// Currently it is not necessary to tear down the database after test methods
+		/*
+		Session session = sessionFactory.getCurrentSession();
+
+		Map<String, AbstractCollectionPersister> collectionPersisterMap = sessionFactory.getAllCollectionMetadata();
+		for (AbstractCollectionPersister persister : collectionPersisterMap.values()) {
+			session.createSQLQuery("DELETE FROM " + persister.getTableName()).executeUpdate();
+		}
+		for (Object entityName : sessionFactory.getAllClassMetadata().keySet()) {
+			session.createQuery("DELETE FROM " + entityName).executeUpdate();
+		}
+		session.flush();
+		*/
+	}
+
 	@Nonnull
 	@SuppressWarnings("unchecked")
 	public static Map<String, ?> describe(@Nullable Object bean) {
@@ -94,16 +110,16 @@ public abstract class AbstractDormancyTest {
 		}
 	}
 
-	public static boolean isManaged(@Nonnull Object entity, @Nonnull Session session) {
-		return isProxy(entity, session) || session.isOpen() && session.contains(entity);
+	public boolean isManaged(@Nonnull Object entity) {
+		return isManaged(entity, sessionFactory.getCurrentSession());
 	}
 
-	public static boolean isProxy(@Nonnull Object entity, @Nonnull Session session) {
-		if (entity instanceof HibernateProxy || getHibernateCollectionClass().isAssignableFrom(entity.getClass())) {
+	public static boolean isManaged(@Nonnull final Object entity, @Nonnull Session session) {
+		if (entity instanceof HibernateProxy || entity instanceof PersistentCollection) {
 			return true;
 		} else if (entity instanceof Iterable) {
 			for (Object elem : (Iterable<?>) entity) {
-				if (isProxy(elem, session)) {
+				if (isManaged(elem, session)) {
 					return true;
 				}
 			}
@@ -111,7 +127,7 @@ public abstract class AbstractDormancyTest {
 			for (Field field : listFields(entity.getClass())) {
 				try {
 					Object value = field.get(entity);
-					if (value != null && getHibernateCollectionClass().isAssignableFrom(value.getClass())) {
+					if (value instanceof PersistentCollection) {
 						return true;
 					}
 				} catch (IllegalAccessException e) {
@@ -120,7 +136,7 @@ public abstract class AbstractDormancyTest {
 				}
 			}
 		}
-		return false;
+		return session.isOpen() && session.contains(entity);
 	}
 
 	@Nonnull
@@ -128,7 +144,7 @@ public abstract class AbstractDormancyTest {
 		final List<Field> list = new ArrayList<Field>();
 		ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
 			@Override
-			public void doWith(Field field) {
+			public void doWith(Field field) throws IllegalAccessException {
 				ReflectionUtils.makeAccessible(field);
 				list.add(field);
 			}

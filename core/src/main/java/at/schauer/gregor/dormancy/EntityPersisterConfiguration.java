@@ -19,11 +19,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The configuration for {@link at.schauer.gregor.dormancy.persister.EntityPersister EntityPersister}s.
+ * The configuration for {@link at.schauer.gregor.dormancy.persister.EntityPersister}s.
  *
  * @author Gregor Schauer
  */
 public class EntityPersisterConfiguration {
+	/**
+	 * Permanently deletes removed entities from collections
+	 */
+	private Boolean deleteRemovedEntities;
+	/**
+	 * Enables saving of dirty properties of associations (similar to {@link javax.persistence.CascadeType})
+	 */
+	private Boolean saveAssociationsProperties;
 	/**
 	 * Enables saving of new Hibernate entities without identifier
 	 */
@@ -31,30 +39,17 @@ public class EntityPersisterConfiguration {
 	/**
 	 * Enables version checking for Hibernate entities
 	 */
-	private Boolean checkVersion;
-	/**
-	 * Automatically flushes the current session after cloning
-	 */
-	private Boolean flushAutomatically;
-	/**
-	 * Enables cloning of objects instead of modifying them
-	 */
-	private Boolean cloneObjects;
-	/**
-	 * Attempts to create empty collections/maps for uninitialized persistent collections
-	 */
-	private Boolean createEmptyCollections;
+	private Boolean versionChecking;
 	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
 
 	public EntityPersisterConfiguration() {
-		saveNewEntities = false;
-		checkVersion = true;
-		flushAutomatically = false;
-		cloneObjects = false;
-		createEmptyCollections = true;
+		this.deleteRemovedEntities = false;
+		this.saveAssociationsProperties = false;
+		this.saveNewEntities = false;
+		this.versionChecking = true;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
@@ -62,9 +57,45 @@ public class EntityPersisterConfiguration {
 	}
 
 	/**
+	 * Returns whether entities of deleted associated should be deleted permanently.
+	 *
+	 * @return {@code true} if the removed entities should be deleted, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getDeleteRemovedEntities() {
+		return deleteRemovedEntities == null ? parent.getDeleteRemovedEntities() : deleteRemovedEntities;
+	}
+
+	/**
+	 * Sets whether entities of deleted associated should be deleted permanently.
+	 *
+	 * @param deleteRemovedEntities {@code true} if the removed entities should be deleted, {@code false} otherwise
+	 */
+	public void setDeleteRemovedEntities(@Nullable Boolean deleteRemovedEntities) {
+		this.deleteRemovedEntities = deleteRemovedEntities;
+	}
+
+	/**
+	 * Returns whether properties of associated entities should be processed.
+	 *
+	 * @return {@code true} if the properties of associated entities should be processed, {@code false} otherwise
+	 */
+	@Nonnull
+	public Boolean getSaveAssociationsProperties() {
+		return saveAssociationsProperties == null ? parent.getSaveAssociationsProperties() : saveAssociationsProperties;
+	}
+
+	/**
+	 * Sets whether properties of associated entities should be processed.
+	 *
+	 * @param saveAssociationsProperties {@code true} if the properties of associated entities should be processed, {@code false} otherwise
+	 */
+	public void setSaveAssociationsProperties(@Nullable Boolean saveAssociationsProperties) {
+		this.saveAssociationsProperties = saveAssociationsProperties;
+	}
+
+	/**
 	 * Returns whether new entities should be persisted automatically.
-	 * <p/>
-	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if new entities should be processed, {@code false} otherwise
 	 */
@@ -84,84 +115,20 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether a version check should be performed before processing the properties.
-	 * <p/>
-	 * <p>Default is {@code true}.</p>
 	 *
 	 * @return {@code true} if a version checking is enabled, {@code false} otherwise
 	 */
 	@Nonnull
-	public Boolean getCheckVersion() {
-		return checkVersion == null ? parent.getCheckVersion() : checkVersion;
+	public Boolean getVersionChecking() {
+		return versionChecking == null ? parent.getVersionChecking() : versionChecking;
 	}
 
 	/**
 	 * Sets whether a version check should be performed before processing the properties.
 	 *
-	 * @param checkVersion {@code true} if a version checking is enabled, {@code false} otherwise
+	 * @param versionChecking {@code true} if a version checking is enabled, {@code false} otherwise
 	 */
-	public void setCheckVersion(@Nullable Boolean checkVersion) {
-		this.checkVersion = checkVersion;
-	}
-
-	/**
-	 * Returns whether automatic flushing is done upon cloning objects.
-	 * <p/>
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if automatic flushing is enabled, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getFlushAutomatically() {
-		return flushAutomatically == null ? parent.getFlushAutomatically() : flushAutomatically;
-	}
-
-	/**
-	 * Sets whether automatic flushing should be done upon cloning objects.
-	 *
-	 * @param flushAutomatically {@code true} if automatic flushing should be enabled, {@code false} otherwise
-	 */
-	public void setFlushAutomatically(@Nullable Boolean flushAutomatically) {
-		this.flushAutomatically = flushAutomatically;
-	}
-
-	/**
-	 * Returns whether objects are cloned instead of reused.
-	 * <p/>
-	 * <p>Default is {@code false}.</p>
-	 *
-	 * @return {@code true} if cloning is enabled, {@code false} otherwise
-	 */
-	@Nonnull
-	public Boolean getCloneObjects() {
-		return cloneObjects == null ? parent.getCloneObjects() : cloneObjects;
-	}
-
-	/**
-	 * Sets whether objects should be cloned instead of reused.
-	 *
-	 * @param cloneObjects {@code true} if objects should be cloned, {@code false} otherwise
-	 */
-	public void setCloneObjects(@Nullable Boolean cloneObjects) {
-		this.cloneObjects = cloneObjects;
-	}
-
-	/**
-	 * Returns whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} are replaced with
-	 * empty collections or maps or with {@code null}.
-	 *
-	 * @return {@code true} if empty collections should be created, {@code false} otherwise
-	 */
-	public Boolean getCreateEmptyCollections() {
-		return createEmptyCollections == null ? parent.getCreateEmptyCollections() : createEmptyCollections;
-	}
-
-	/**
-	 * Sets whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} should be replaced with
-	 * empty collections or maps or with {@code null}.
-	 *
-	 * @param createEmptyCollections {@code true} if empty collections should be created, {@code false} otherwise
-	 */
-	public void setCreateEmptyCollections(Boolean createEmptyCollections) {
-		this.createEmptyCollections = createEmptyCollections;
+	public void setVersionChecking(@Nullable Boolean versionChecking) {
+		this.versionChecking = versionChecking;
 	}
 }

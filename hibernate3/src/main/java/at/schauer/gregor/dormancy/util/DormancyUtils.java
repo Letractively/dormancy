@@ -15,16 +15,12 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import at.schauer.gregor.dormancy.access.HibernatePropertyAccessStrategy;
-import at.schauer.gregor.dormancy.access.PropertyAccessStrategy;
-import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.EntityMode;
-import org.hibernate.QueryException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.metadata.ClassMetadata;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.beans.PropertyAccessor;
+import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,37 +32,36 @@ import java.io.Serializable;
  * @author Gregor Schauer
  */
 public class DormancyUtils extends AbstractDormancyUtils {
-	public DormancyUtils(SessionFactory sessionFactory) {
-		super(sessionFactory);
+	protected DormancyUtils() {
 	}
 
 	@Nullable
 	@Override
-	public ClassMetadata getClassMetadata(@Nullable Class<?> clazz) {
-		return clazz != null ? sessionFactory.getClassMetadata(clazz) : null;
-	}
-
-	@Nullable
-	@Override
-	public <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean) {
+	public <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull T bean, @Nonnull Session session) {
 		Serializable identifier = metadata.getIdentifier(bean, EntityMode.POJO);
-		if (identifier == null) {
-			identifier = Serializable.class.cast(getPropertyValue(metadata, bean, metadata.getIdentifierPropertyName()));
+		if (identifier == null && propertyAccessor != null) {
+			identifier = Serializable.class.cast(propertyAccessor.getPropertyValue(metadata.getIdentifierPropertyName()));
 		}
 		return identifier;
 	}
 
 	@Nullable
 	@Override
-	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName) {
-		IntrospectorUtils.getDescriptorMap(getClass(bean));
-		return IntrospectorUtils.getValue(bean, propertyName);
+	public Object getPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName) {
+		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
+		return propertyAccessor != null ? propertyAccessor.getPropertyValue(propertyName) : metadata.getPropertyValue(bean, propertyName, EntityMode.POJO);
 	}
 
 	@Override
-	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
-		IntrospectorUtils.getDescriptorMap(getClass(bean));
-		IntrospectorUtils.setValue(bean, propertyName, value);
+	public void setPropertyValue(@Nullable ClassMetadata metadata, @Nullable PropertyAccessor propertyAccessor, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value) {
+		Assert.isTrue(metadata != null || propertyAccessor != null, "ClassMetadata and PropertyAccessor cannot both be null");
+		if (propertyAccessor != null) {
+			// Use Spring's PropertyAccessor to set the value directly
+			propertyAccessor.setPropertyValue(propertyName, value);
+		} else {
+			// If no PropertyAccessor is available, use Hibernate's ClassMetadata to set the value
+			metadata.setPropertyValue(bean, propertyName, value, EntityMode.POJO);
+		}
 	}
 
 	/**
@@ -74,7 +69,7 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	 * @see ClassMetadata#getMappedClass(org.hibernate.EntityMode)
 	 */
 	@Override
-	public Class<?> getMappedClass(@Nonnull ClassMetadata metadata) {
+	public Class getMappedClass(@Nonnull ClassMetadata metadata) {
 		return metadata.getMappedClass(EntityMode.POJO);
 	}
 
@@ -90,70 +85,5 @@ public class DormancyUtils extends AbstractDormancyUtils {
 	@Override
 	public boolean isInitializedPersistentCollection(Object obj) {
 		return isPersistentCollection(obj) && PersistentCollection.class.cast(obj).wasInitialized();
-	}
-
-	@Nonnull
-	@Override
-	public String getEntityName(@Nonnull Class<?> clazz) {
-		ClassMetadata metadata = getClassMetadata(clazz);
-		return metadata != null ? metadata.getEntityName() : clazz.getSimpleName();
-	}
-
-	@Override
-	protected String getIdentifierPropertyName(@Nonnull Class<?> clazz) {
-		ClassMetadata metadata = getClassMetadata(clazz);
-		return metadata != null ? metadata.getIdentifierPropertyName() : null;
-	}
-
-	@Nonnull
-	@Override
-	public Class<?> getPropertyType(@Nonnull Class<?> clazz, @Nonnull String propertyName) {
-		ClassMetadata metadata = getClassMetadata(clazz);
-		if (metadata != null) {
-			try {
-				return metadata.getPropertyType(propertyName).getReturnedClass();
-			} catch (QueryException e) {
-				if (ArrayUtils.contains(metadata.getPropertyNames(), propertyName)) {
-					throw e;
-				}
-			}
-		}
-		return ReflectionUtils.findField(clazz, propertyName).getType();
-	}
-
-	@Nonnull
-	@Override
-	protected PropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz) {
-		return new HibernatePropertyAccessStrategy(clazz);
-	}
-
-	@Override
-	public boolean isVersioned(@Nonnull ClassMetadata metadata) {
-		return metadata.isVersioned();
-	}
-
-	@Override
-	public String getVersionPropertyName(@Nonnull ClassMetadata metadata) {
-		int index = metadata.getVersionProperty();
-		return index >= 0 ? metadata.getPropertyNames()[index] : null;
-	}
-
-	@Nullable
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T find(@Nonnull Class<T> clazz, @Nonnull Serializable id) {
-		return (T) getSession().get(clazz, id);
-	}
-
-	@Nonnull
-	@Override
-	public <K> K persist(@Nonnull Object obj) {
-		return (K) getSession().save(obj);
-	}
-
-	@Nonnull
-	@Override
-	public Session getSession() {
-		return sessionFactory.getCurrentSession();
 	}
 }

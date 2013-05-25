@@ -79,7 +79,6 @@ public abstract class PersisterTest<T extends AbstractEntityPersister> {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public final void testNull() {
 		assertEquals(null, persister.clone(null));
 		assertEquals(null, persister.merge(null));

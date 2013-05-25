@@ -17,6 +17,7 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.entity.Employee;
 import com.google.common.collect.Iterables;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;
@@ -34,13 +35,14 @@ public class FunctionPersisterTest extends PersisterTest<FunctionPersister<Emplo
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new FunctionPersister<Employee>(dormancy);
+		persister.setDormancy(dormancy);
 	}
 
 	@Test
 	public void testClone() {
 		Employee b = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
 		Iterable<?> e = persister.clone(b.getEmployees());
-		assertEquals(1, Iterables.size(e));
+		Assert.assertEquals(1, Iterables.size(e));
 	}
 
 	@Test

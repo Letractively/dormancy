@@ -70,7 +70,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	protected Pointcut pointcut;
 	protected Integer order;
 
-	public enum Mode {
+	public static enum Mode {
 		PARAMETERS, RESULT, BOTH
 	}
 
@@ -85,8 +85,6 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		this.dormancy = dormancy;
 	}
 
-	@Nullable
-	@SuppressWarnings("unchecked")
 	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable<?> callable) throws Throwable {
 		// If the method to invoke takes no parameters and does not return anything, directly invoke it
 		if (args.length == 0 && method.getReturnType() == void.class) {
@@ -153,6 +151,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	}
 
 	@Nullable
+	@SuppressWarnings("unchecked")
 	public Object around(@Nonnull final ProceedingJoinPoint joinPoint) throws Throwable {
 		Method method = MethodSignature.class.cast(joinPoint.getSignature()).getMethod();
 		return process(joinPoint.getArgs(), method, joinPoint.getTarget(), new Callable<Object>() {
@@ -186,12 +185,10 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		});
 	}
 
-	@Nonnull
 	@Override
 	public Pointcut getPointcut() {
 		if (pointcut == null) {
 			pointcut = new AnnotationMatchingPointcut(null, annotationType) {
-				@Nonnull
 				@Override
 				public MethodMatcher getMethodMatcher() {
 					return new AnnotationMethodMatcher(annotationType) {
@@ -207,7 +204,6 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		return pointcut;
 	}
 
-	@Nonnull
 	@Override
 	public Advice getAdvice() {
 		return this;
@@ -216,7 +212,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	@Override
 	public int getOrder() {
 		if (order != null) {
-			return order;
+			return this.order;
 		}
 		Advice advice = getAdvice();
 		if (advice instanceof Ordered && advice != this) {
@@ -249,7 +245,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	 *
 	 * @param annotationType the type of the annotation
 	 */
-	public void setAnnotationType(@Nonnull Class<? extends Annotation> annotationType) {
+	public void setAnnotationType(Class<? extends Annotation> annotationType) {
 		this.annotationType = annotationType;
 	}
 }

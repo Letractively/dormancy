@@ -57,7 +57,7 @@ public class Book implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Book");
 		sb.append("{id=").append(id);
 		sb.append(", title='").append(title).append('\'');

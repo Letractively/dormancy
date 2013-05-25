@@ -138,7 +138,7 @@ public class DataTypes implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("DataTypes");
 		sb.append("{id=").append(id);
 		sb.append(", longWrapper=").append(longWrapper);

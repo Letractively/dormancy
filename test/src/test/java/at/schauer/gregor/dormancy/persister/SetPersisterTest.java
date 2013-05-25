@@ -65,7 +65,7 @@ public class SetPersisterTest extends PersisterTest<CollectionPersister<Set>> {
 
 		Set clone = persister.clone(a.getEmployees());
 		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
-		assertEquals(false, AbstractDormancyTest.isProxy(clone.iterator().next(), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.iterator().next(), session));
 
 		Set merge = persister.merge(clone);
 		assertEquals(true, AbstractDormancyTest.isManaged(merge.iterator().next(), session));

@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>dormancy</artifactId>
 		<groupId>at.schauer.gregor.dormancy</groupId>
-		<version>1.1.2</version>
+		<version>1.0.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,14 +21,6 @@
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -51,6 +43,10 @@
 			<artifactId>aspectjrt</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
@@ -67,32 +63,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
 	</dependencies>
-
-
-	<profiles>
-		<profile>
-			<id>hibernate3</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>hibernate4</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
 
 </project>

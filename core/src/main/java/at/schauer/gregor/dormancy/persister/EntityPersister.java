@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
  * without modifications e.g., {@code entityPersister.merge(entityPersister.clone(anObject)).equals(anObject)} results
  * to {@code true}.
  * <p/>
- * Implementors must be threadsafe (preferably immutable).
+ * Implementors must be threadsafe (preferrably immutable).
  *
  * @author Gregor Schauer
  */

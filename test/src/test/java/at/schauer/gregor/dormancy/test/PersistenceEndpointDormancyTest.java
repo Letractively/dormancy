@@ -21,8 +21,8 @@ import at.schauer.gregor.dormancy.container.Team;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.CollectionPersister;
-import at.schauer.gregor.dormancy.persister.NoOpPersister;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
+import org.hibernate.collection.PersistentSet;
 import org.junit.Test;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -30,12 +30,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author Gregor Schauer
@@ -44,36 +44,36 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 	@Test
 	public void testPersisterTypePersistenceEndpoint() {
 		dormancy.getPersisterMap().clear();
-		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
-		dormancy.addEntityPersister(new CollectionPersister<List<?>>(dormancy), List.class);
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
+		dormancy.getPersisterMap().put(TeamPersister.class, new TeamPersister(dormancy));
+		dormancy.getPersisterMap().put(List.class, new CollectionPersister<List>(dormancy));
 
 		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.next(team);
-		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
+		assertSame(LinkedHashSet.class, pass.getEmployees().get(0).getEmployees().getClass());
+
+		pass = service.prev(team);
+		assertSame(PersistentSet.class, pass.getEmployees().get(0).getEmployees().getClass());
 	}
 
 	@Test
 	public void testPersisterNamePersistenceEndpoint() {
 		dormancy.getPersisterMap().clear();
 		dormancy.getPersisterMap().put(TeamPersister.class, new TeamPersister(dormancy));
-		dormancy.getPersisterMap().put(List.class, new CollectionPersister<List<?>>(dormancy));
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
+		dormancy.getPersisterMap().put(List.class, new CollectionPersister<List>(dormancy));
 
 		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
 		Team team = new Team(service.load(Employee.class, 1L));
 
 		Team pass = service.pass(team);
-		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
+		assertSame(LinkedHashSet.class, pass.getEmployees().get(0).getEmployees().getClass());
 		assertNotSame(team.getEmployees().get(0), pass.getEmployees().get(0));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnavailablePersisterPersistenceEndpoint() {
 		dormancy.getPersisterMap().clear();
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
 		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
 
 		service.next(new Team(service.load(Employee.class, 1L)));

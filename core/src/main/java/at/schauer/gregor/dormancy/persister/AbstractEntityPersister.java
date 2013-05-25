@@ -26,8 +26,6 @@ import java.util.Map;
  * @author Gregor Schauer
  */
 public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
-	protected Class<? extends C>[] supportedTypes;
-
 	@Nullable
 	@Override
 	public <T extends C> C clone(@Nullable T dbObj) {
@@ -94,15 +92,6 @@ public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
 	 */
 	@Nullable
 	public Class<?>[] getSupportedTypes() {
-		return supportedTypes;
-	}
-
-	/**
-	 * Sets the object types supported by this implementation.
-	 *
-	 * @param supportedTypes the supported types
-	 */
-	public void setSupportedTypes(@Nullable Class<? extends C>... supportedTypes) {
-		this.supportedTypes = supportedTypes;
+		return null;
 	}
 }

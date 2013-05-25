@@ -19,6 +19,7 @@ import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Employee;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,46 +40,44 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 		HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 			@Override
 			@Transactional
-			public Employee doInHibernate(Session session) {
+			public Employee doInHibernate(Session session) throws SQLException {
 				Criteria criteria = session.createCriteria(Employee.class);
 				criteria.add(Restrictions.eq("id", 2L));
 				criteria.setFetchMode("employees", FetchMode.JOIN);
 				Employee employee = (Employee) criteria.uniqueResult();
-				assertEquals(true, isManaged(employee, session));
+				assertEquals(true, isManaged(employee));
 				return employee;
 			}
 		};
 
-		Session session = sessionFactory.getCurrentSession();
-		Employee c = (Employee) session.get(Employee.class, 3L);
-		assertEquals(true, isManaged(c, session));
+		Employee c = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 3L);
+		assertEquals(true, isManaged(c));
 		c = dormancy.clone(c);
-		assertEquals(false, isProxy(c, session));
-		session.clear();
+		assertEquals(false, isManaged(c));
 
-		Employee b = (Employee) session.get(Employee.class, 2L);
-		assertEquals(true, isManaged(b, session));
+		Employee b = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
+		assertEquals(true, isManaged(b));
 		b = dormancy.clone(b);
-		assertEquals(false, isProxy(b, session));
-		assertEquals(Collections.<Employee>emptySet(), b.getEmployees());
-		session.clear();
+		assertEquals(false, isManaged(b));
+		assertNotNull(b.getEmployees());
+		assertEquals(0, b.getEmployees().size());
 
-		b = callback.doInHibernate(session);
-		assertEquals(true, isManaged(b, session));
+		b = callback.doInHibernate(sessionFactory.getCurrentSession());
+		assertEquals(true, isManaged(b));
 		b = dormancy.clone(b);
-		assertEquals(false, isProxy(b, session));
+		assertEquals(false, isManaged(b));
 		assertNotNull(b.getEmployees());
 		assertEquals(1, b.getEmployees().size());
 		assertEquals(true, b.getEmployees().contains(c));
 
 		b.setName("Leader");
 		b.getEmployees().iterator().next().setName("Overseer");
-		session.clear();
+		sessionFactory.getCurrentSession().clear();
 
 		b = dormancy.merge(b, callback);
-		session.flush();
+		sessionFactory.getCurrentSession().flush();
 		assertNotNull(b);
-		assertEquals(true, isManaged(b, session));
+		assertEquals(true, isManaged(b));
 		assertEquals(1, b.getEmployees().size());
 		assertEquals(b.getName(), b.getName());
 		assertEquals("Overseer", b.getEmployees().iterator().next().getName());
@@ -90,7 +88,7 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 		HibernateCallback<Employee> callback = new HibernateCallback<Employee>() {
 			@Override
 			@Transactional
-			public Employee doInHibernate(Session session) {
+			public Employee doInHibernate(Session session) throws HibernateException, SQLException {
 				return (Employee) session.createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees LEFT JOIN FETCH e.colleagues WHERE e.id = 1").uniqueResult();
 			}
 		};

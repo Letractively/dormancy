@@ -17,28 +17,16 @@ package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.domain.DTO;
-import at.schauer.gregor.dormancy.domain.ReadOnlyDTO;
-import at.schauer.gregor.dormancy.domain.Stage;
-import at.schauer.gregor.dormancy.domain.WriteOnlyDTO;
 import at.schauer.gregor.dormancy.entity.*;
-import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
-import at.schauer.gregor.dormancy.persister.NoOpPersister;
-import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.FlushMode;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.MethodInvocationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,41 +36,11 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  */
 public class SimpleDormancyTest extends AbstractDormancyTest {
-	Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
-
-	@Before
-	public void before() {
-		if (persisterMap == null) {
-			persisterMap = new HashMap<Class<?>, AbstractEntityPersister<?>>(dormancy.getPersisterMap());
-		} else {
-			dormancy.getPersisterMap().clear();
-			dormancy.getPersisterMap().putAll(persisterMap);
-		}
-		dormancy.addEntityPersister(NoOpPersister.getInstance(), DTO.class);
-	}
-
 	@Test
 	public void testNull() {
 		assertEquals(null, dormancy.clone(null));
 		assertEquals(null, dormancy.merge(null));
 		assertEquals(null, dormancy.merge(null, (Object) null));
-	}
-
-	@Test
-	public void testPrimitive() {
-		Long l = Long.MAX_VALUE;
-		Double pi = Math.PI;
-		assertSame(true, dormancy.clone(true));
-		assertSame(5, dormancy.clone(5));
-		assertSame(pi, dormancy.clone(pi));
-		assertSame("", dormancy.clone(""));
-		assertSame(l, dormancy.clone(l));
-
-		assertSame(true, dormancy.merge(true));
-		assertSame(5, dormancy.merge(5));
-		assertSame(pi, dormancy.merge(pi));
-		assertSame("", dormancy.merge(""));
-		assertSame(l, dormancy.merge(l));
 	}
 
 	@Test
@@ -100,86 +58,17 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test(expected = BeanInstantiationException.class)
-	public void testCloneInvalidEntity() {
-		dormancy.getConfig().setCloneObjects(true);
-		try {
-			dormancy.clone(new InvalidEntity(false));
-			fail(BeanInstantiationException.class.getSimpleName() + " expected");
-		} finally {
-			dormancy.getConfig().setCloneObjects(false);
-		}
-	}
-
-	@Test
-	public void testUseInvalidEntity() {
-		InvalidEntity obj = new InvalidEntity(false);
-		InvalidEntity clone = dormancy.clone(obj);
-		assertSame(obj, clone);
-	}
-
-	@Test(expected = MethodInvocationException.class)
-	public void testCloneEntityWithoutSetter() {
-		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
-		dormancy.clone(obj);
-	}
-
-	@Test(expected = MethodInvocationException.class)
-	public void testMergeEntityWithoutSetter() {
-		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
-		ReadOnlyEntity modified = new ReadOnlyEntity(1L, "read");
-		dormancy.merge(modified, obj);
-	}
-
-	@Test(expected = InvalidPropertyException.class)
-	public void testCloneEntityWithoutGetter() {
-		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
-		dormancy.clone(obj);
-	}
-
-	@Test(expected = InvalidPropertyException.class)
-	public void testMergeEntityWithoutGetter() {
-		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
-		WriteOnlyEntity modified = new WriteOnlyEntity(1L, "write");
-		dormancy.merge(modified, obj);
-	}
-
-	@Test
-	public void testCloneDTOWithoutSetter() {
-		ReadOnlyDTO obj = new ReadOnlyDTO(1L, "readOnly");
-		dormancy.clone(obj);
-	}
-
-	@Test
-	public void testMergeDTOWithoutSetter() {
-		ReadOnlyDTO obj = new ReadOnlyDTO(1L, "readOnly");
-		ReadOnlyDTO modified = new ReadOnlyDTO(1L, "read");
-		dormancy.merge(modified, obj);
-	}
-
-	@Test
-	public void testCloneDTOWithoutGetter() {
-		WriteOnlyDTO obj = new WriteOnlyDTO(1L, "writeOnly");
-		dormancy.clone(obj);
-	}
-
-	@Test
-	public void testMergeDTOWithoutGetter() {
-		WriteOnlyDTO obj = new WriteOnlyDTO(1L, "writeOnly");
-		WriteOnlyDTO modified = new WriteOnlyDTO(1L, "write");
-		dormancy.merge(modified, obj);
+	public void testInvalidEntity() {
+		dormancy.clone(new InvalidEntity(false));
+		fail(BeanInstantiationException.class.getSimpleName() + " expected");
 	}
 
 	@Test
 	public void testNewInstance() {
-		dormancy.getConfig().setSaveNewEntities(true);
-		try {
-			Long id = (Long) service.save(new Book("new"));
-			Book load = service.load(Book.class, id);
-			assertEquals(false, isManaged(load, sessionFactory.getCurrentSession()));
-			assertEquals("new", load.getTitle());
-		} finally {
-			dormancy.getConfig().setSaveNewEntities(false);
-		}
+		Long id = (Long) service.save(new Book("new"));
+		Book load = service.load(Book.class, id);
+		assertEquals(false, isManaged(load));
+		assertEquals("new", load.getTitle());
 	}
 
 	@Test(expected = ObjectNotFoundException.class)
@@ -191,14 +80,13 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testDataTypes() {
-		Session session = sessionFactory.getCurrentSession();
-		DataTypes a = (DataTypes) session.load(DataTypes.class, 1L);
+		DataTypes a = (DataTypes) sessionFactory.getCurrentSession().load(DataTypes.class, 1L);
 		DataTypes b = service.load(DataTypes.class, 1L);
 		assertNotSame(a, b);
 		assertEquals(false, a.equals(b));
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a, session));
-		assertEquals(false, isManaged(b, session));
+		assertEquals(true, isManaged(a));
+		assertEquals(false, isManaged(b));
 
 		b.setIntArray(new int[]{11});
 		b.setIntegerArray(new Integer[]{12});
@@ -208,41 +96,13 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test
-	public void testDateTime() {
-		Clock clock = new Clock();
-		sessionFactory.getCurrentSession().save(clock);
-		sessionFactory.getCurrentSession().flush();
-
-		Clock load = service.load(Clock.class, 1L);
-		load.update();
-		service.save(load);
-		Clock bar = service.load(Clock.class, 1L);
-		assertEquals(load, bar);
-	}
-
-	@Test
 	public void testCompare() throws Exception {
-		Session session = sessionFactory.getCurrentSession();
-		Book a = (Book) session.load(Book.class, 1L);
+		Book a = (Book) sessionFactory.getCurrentSession().load(Book.class, 1L);
 		Book b = service.load(Book.class, 1L);
 		assertNotSame(a, b);
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a, session));
-		assertEquals(false, isManaged(b, session));
-	}
-
-	@Test
-	public void testEnum() {
-		Stage stage = Stage.DEV;
-
-		Stage clone = dormancy.clone(stage);
-		assertSame(stage, clone);
-
-		Stage merge = dormancy.merge(clone);
-		assertSame(stage, merge);
-
-		merge = dormancy.merge(clone, stage);
-		assertSame(stage, merge);
+		assertEquals(true, isManaged(a));
+		assertEquals(false, isManaged(b));
 	}
 
 	@Test
@@ -251,9 +111,9 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		Employee bt = service.load(Employee.class, 2L);
 
 		assertEquals(false, bp.getColleagues() == null);
-		assertEquals(Collections.<Employee>emptySet(), bt.getColleagues());
+		assertEquals(null, bt.getColleagues());
 		assertEquals(1, bp.getEmployees().size());
-		assertEquals(Collections.<Employee>emptySet(), bt.getEmployees());
+		assertEquals(0, bt.getEmployees().size());
 
 		assertNotNull(bp.getBoss());
 		assertNotNull(bt.getBoss());
@@ -280,6 +140,39 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Test
+	public void testUpdateReference() {
+		Session session = sessionFactory.getCurrentSession();
+		session.setFlushMode(FlushMode.MANUAL);
+
+		Query query = session.createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
+		Employee a = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
+		Employee b = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
+		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
+
+		assertEquals(b, c.getBoss());
+		assertEquals(false, a.equals(c.getBoss()));
+		assertEquals(true, b.equals(c.getBoss()));
+		assertEquals(false, a.getEmployees().contains(c));
+		assertEquals(true, b.getEmployees().contains(c));
+		session.clear();
+
+		b.getEmployees().remove(c);
+		a.getEmployees().add(c);
+		c.setBoss(a);
+		session.save(dormancy.merge(b, (Employee) query.setParameter("id", 2L).uniqueResult()));
+		session.save(dormancy.merge(a, (Employee) query.setParameter("id", 1L).uniqueResult()));
+		session.save(dormancy.merge(c, (Employee) query.setParameter("id", 3L).uniqueResult()));
+
+		Employee x = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
+		Employee y = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
+		Employee z = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
+		assertEquals(true, x.equals(z.getBoss()));
+		assertEquals(false, y.equals(z.getBoss()));
+		assertEquals(true, x.getEmployees().contains(z));
+		assertEquals(false, y.getEmployees().contains(z));
+	}
+
+	@Test
 	public void testUpdateReferencedEntity() {
 		Query query = sessionFactory.getCurrentSession().createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
 		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
@@ -290,7 +183,16 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals("Master", z.getBoss().getName());
 	}
 
-	@Ignore
+	@Test
+	public void testUpdateUnreferencedEntity() {
+		Employee c = service.load(Employee.class, 3L);
+		c.getBoss().setName("Chief");
+		service.save(c);
+
+		Employee z = service.load(Employee.class, 3L);
+		assertEquals("Chief", z.getBoss().getName());
+	}
+
 	@Test
 	public void testModifyCollection() throws SQLException {
 		Session session = sessionFactory.getCurrentSession();
@@ -322,13 +224,11 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testModifyCollectionNew() throws SQLException {
-		dormancy.getConfig().setCloneObjects(true);
-
 		Session session = sessionFactory.getCurrentSession();
 
 		HibernateCallback<Application> hibernateCallback = new HibernateCallback<Application>() {
 			@Override
-			public Application doInHibernate(Session session) {
+			public Application doInHibernate(Session session) throws SQLException {
 				return (Application) session.createQuery("SELECT a FROM Application a JOIN FETCH a.employees WHERE a.id = 1").uniqueResult();
 			}
 		};
@@ -340,8 +240,8 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 		assertEquals(describe(app), describe(merge));
 
-		assertEquals(false, isManaged(app.getEmployees(), session));
-		assertEquals(true, isManaged(merge.getEmployees(), session));
+		assertEquals(false, isManaged(app.getEmployees()));
+		assertEquals(true, isManaged(merge.getEmployees()));
 
 		assertEquals("A", app.getEmployees().iterator().next().getName());
 		assertEquals("A", merge.getEmployees().iterator().next().getName());
@@ -349,24 +249,5 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals("A", service.load(Employee.class, 1L).getName());
 		assertEquals("B", service.load(Employee.class, 2L).getName());
 		assertEquals("C", service.load(Employee.class, 3L).getName());
-	}
-
-	@Test
-	public void testEmbeddedId() throws Exception {
-		EmbeddedIdEntity entity = new EmbeddedIdEntity();
-		entity.setEmbeddableEntity(new EmbeddableEntity());
-		entity.setValue("test");
-
-		sessionFactory.getCurrentSession().save(entity);
-		sessionFactory.getCurrentSession().flush();
-		Map<String, String> expected = BeanUtils.describe(entity);
-
-		EmbeddedIdEntity clone = dormancy.clone(entity);
-		assertEquals(expected, BeanUtils.describe(clone));
-
-		sessionFactory.getCurrentSession().clear();
-		EmbeddedIdEntity merge = dormancy.merge(clone);
-		assertNotSame(entity, merge);
-		assertEquals(expected, BeanUtils.describe(merge));
 	}
 }

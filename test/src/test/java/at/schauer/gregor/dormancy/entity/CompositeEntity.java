@@ -43,15 +43,15 @@ public class CompositeEntity implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
 
-		CompositeEntity that = (CompositeEntity) obj;
+		CompositeEntity that = (CompositeEntity) o;
 
 		if (!book.equals(that.book)) {
 			return false;

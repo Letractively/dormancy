@@ -74,9 +74,8 @@ public class CollectionEntity implements Serializable {
 		this.longMap = longMap;
 	}
 
-	@OneToMany
-	@JoinTable(name = "Cust_Order")
-	// @MapKeyColumn(name = "orders_number")
+	@OneToMany @JoinTable(name="Cust_Order")
+	@MapKeyColumn(name = "orders_number")
 	public Map<Long, Book> getBookMap() {
 		if (bookMap == null) {
 			bookMap = new HashMap<Long, Book>();

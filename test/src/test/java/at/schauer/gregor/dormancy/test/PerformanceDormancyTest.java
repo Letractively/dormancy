@@ -16,15 +16,9 @@
 package at.schauer.gregor.dormancy.test;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
-import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.entity.Employee;
-import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.annotation.*;
@@ -36,19 +30,6 @@ import static org.junit.Assert.assertNotNull;
  */
 public class PerformanceDormancyTest extends AbstractDormancyTest {
 	protected static final Logger logger = Logger.getLogger(PerformanceDormancyTest.class);
-	protected Level level = Logger.getLogger(Dormancy.class).getLevel();
-
-	@Before
-	public void beforeClass() {
-		Logger.getLogger(Dormancy.class).setLevel(Level.WARN);
-		Logger.getLogger(DormancyAdvisor.class).setLevel(Level.WARN);
-	}
-
-	@After
-	public void after() {
-		Logger.getLogger(Dormancy.class).setLevel(level);
-		Logger.getLogger(DormancyAdvisor.class).setLevel(level);
-	}
 
 	@Perform(name = "Session.get(Object, Serializable)", n = 100)
 	@Test(timeout = 200)
@@ -81,7 +62,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Perform(name = "Dormancy.merge(Object)", n = 100)
-	@Test(timeout = 400)
+	@Test(timeout = 200)
 	public void testMerge() {
 		Perform perform = getAnnotation();
 		Employee b = service.load(Employee.class, 2L);
@@ -98,8 +79,8 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Perform(name = "Dormancy.merge(Object, Object)", n = 100)
-	@Test(timeout = 1000)
-	public void nbtestMergeTogether() {
+	@Test(timeout = 100)
+	public void testMergeTogether() {
 		Perform perform = getAnnotation();
 		Employee bp = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
 		Employee bt = service.load(Employee.class, 2L);
@@ -132,7 +113,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 	protected Perform getAnnotation() {
 		String methodName = getMethodName();
-		return MethodUtils.getAccessibleMethod(getClass(), methodName, ArrayUtils.EMPTY_CLASS_ARRAY).getAnnotation(Perform.class);
+		return MethodUtils.getAccessibleMethod(this.getClass(), methodName, new Class[0]).getAnnotation(Perform.class);
 	}
 
 	protected static String getMethodName() {
