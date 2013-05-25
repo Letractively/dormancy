@@ -48,9 +48,8 @@ public abstract class GenericEntityPersister<C> extends AbstractEntityPersister<
 	 * @return the instance
 	 * @see org.springframework.beans.BeanUtils#instantiateClass(Class)
 	 */
-	@Nonnull
 	@SuppressWarnings("unchecked")
-	protected <T extends C> T createObject(@Nonnull T trObj) {
+	protected <T extends C> T createObject(T trObj) {
 		return reuseObject ? trObj : (T) BeanUtils.instantiateClass(dormancy.getUtils().getClass(trObj));
 	}
 

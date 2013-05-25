@@ -94,7 +94,6 @@ public class PredicatePersister<C, P extends Predicate> extends AbstractEntityPe
 	 *
 	 * @return the predicate AbstractEntityPersister
 	 */
-	@Nonnull
 	public AbstractEntityPersister<C> getPredicateDelegate() {
 		return predicateDelegate != null ? predicateDelegate : (predicateDelegate = NoOpPersister.getInstance());
 	}
@@ -113,7 +112,6 @@ public class PredicatePersister<C, P extends Predicate> extends AbstractEntityPe
 	 *
 	 * @return the fallback AbstractEntityPersister
 	 */
-	@Nonnull
 	public AbstractEntityPersister<C> getFallbackDelegate() {
 		return fallbackDelegate != null ? fallbackDelegate : (fallbackDelegate = NoOpPersister.getInstance());
 	}

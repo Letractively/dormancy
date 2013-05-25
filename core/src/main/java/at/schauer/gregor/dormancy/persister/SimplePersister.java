@@ -46,7 +46,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 		super(dormancy);
 		setFieldFilters(new ReflectionUtils.FieldFilter() {
 			@Override
-			public boolean matches(@Nonnull Field field) {
+			public boolean matches(Field field) {
 				return !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers());
 			}
 		});

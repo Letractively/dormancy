@@ -16,6 +16,7 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
+import org.hibernate.Session;
 import org.springframework.core.CollectionFactory;
 
 import javax.annotation.Nonnull;
@@ -82,9 +83,11 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 		C dbCopy = createContainer(dbObj);
 		dbCopy.addAll(dbObj);
 
+		Session session = sessionFactory.getCurrentSession();
+
 		for (Object trElem : trObj) {
 			// For every transient element, find a persistent element
-			Object dbElem = dormancy.getUtils().findPendant(trElem, dbCopy);
+			Object dbElem = dormancy.getUtils().findPendant(trElem, dbCopy, session);
 
 			if (dbElem == null) {
 				container.add(dormancy.merge_(trElem, tree));

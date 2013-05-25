@@ -109,7 +109,7 @@ public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 		for (ReflectionUtils.FieldFilter filter : getFieldFilters()) {
 			ReflectionUtils.doWithFields(obj.getClass(), new ReflectionUtils.FieldCallback() {
 				@Override
-				public void doWith(@Nonnull Field field) {
+				public void doWith(Field field) {
 					field.setAccessible(true);
 					fields.add(field);
 				}

@@ -21,12 +21,10 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.AbstractPropertyAccessor;
 import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -38,7 +36,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	protected LazyInitializer lazyInitializer;
 	protected ClassMetadata metadata;
 
-	public LazyInitializerPropertyAccessor(@Nonnull LazyInitializer lazyInitializer) {
+	public LazyInitializerPropertyAccessor(LazyInitializer lazyInitializer) {
 		this.lazyInitializer = lazyInitializer;
 	}
 
@@ -49,7 +47,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#isReadable(Object, String)
 	 */
 	@Override
-	public boolean isReadableProperty(@Nonnull String propertyName) {
+	public boolean isReadableProperty(String propertyName) {
 		return isIdentifierName(propertyName) || PropertyUtils.isReadable(getTarget(), propertyName);
 	}
 
@@ -60,7 +58,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#isWriteable(Object, String)
 	 */
 	@Override
-	public boolean isWritableProperty(@Nonnull String propertyName) {
+	public boolean isWritableProperty(String propertyName) {
 		return isIdentifierName(propertyName) || PropertyUtils.isWriteable(getTarget(), propertyName);
 	}
 
@@ -73,8 +71,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#getPropertyType(Object, String)
 	 */
 	@Override
-	@Nonnull
-	public TypeDescriptor getPropertyTypeDescriptor(@Nonnull String propertyName) {
+	public TypeDescriptor getPropertyTypeDescriptor(String propertyName) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				return TypeDescriptor.forObject(metadata.getIdentifierType());
@@ -94,9 +91,8 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see PropertyUtils#getProperty(Object, String)
 	 * @see FieldUtils#readField(Object, String, boolean)
 	 */
-	@Nullable
 	@Override
-	public Object getPropertyValue(@Nonnull String propertyName) {
+	public Object getPropertyValue(String propertyName) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				return lazyInitializer.getIdentifier();
@@ -121,7 +117,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @see FieldUtils#writeField(Object, String, Object, boolean)
 	 */
 	@Override
-	public void setPropertyValue(@Nonnull String propertyName, @Nullable Object value) {
+	public void setPropertyValue(String propertyName, Object value) {
 		try {
 			if (isIdentifierName(propertyName)) {
 				lazyInitializer.setIdentifier((Serializable) value);
@@ -137,15 +133,8 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 		}
 	}
 
-	@Nullable
 	@Override
-	public <T> T convertIfNecessary(@Nullable Object value, @Nonnull Class<T> requiredType) throws TypeMismatchException {
-		return convertIfNecessary(value, requiredType, (MethodParameter) null);
-	}
-
-	@Nullable
-	@Override
-	public <T> T convertIfNecessary(@Nullable Object value, @Nonnull Class<T> requiredType, @Nullable MethodParameter methodParam) {
+	public <T> T convertIfNecessary(Object value, Class<T> requiredType, MethodParameter methodParam) {
 		return requiredType.cast(value);
 	}
 
@@ -155,8 +144,7 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @param propertyName the offending property
 	 * @param e            the root cause
 	 */
-	@Nonnull
-	protected InvalidPropertyException throwException(@Nonnull String propertyName, @Nullable Exception e) {
+	protected InvalidPropertyException throwException(String propertyName, Exception e) {
 		return new InvalidPropertyException(lazyInitializer.getPersistentClass(), propertyName, e != null ? e.getMessage() : "", e);
 	}
 
@@ -166,7 +154,6 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	 * @return The underlying target entity.
 	 * @see LazyInitializer#getImplementation()
 	 */
-	@Nonnull
 	protected Object getTarget() {
 		return lazyInitializer.getImplementation();
 	}
@@ -174,7 +161,6 @@ public class LazyInitializerPropertyAccessor extends AbstractPropertyAccessor {
 	/**
 	 * Get the {@link ClassMetadata} associated with the given entity class
 	 */
-	@Nonnull
 	protected ClassMetadata getMetadata() {
 		if (metadata == null) {
 			metadata = lazyInitializer.getSession().getFactory().getClassMetadata(lazyInitializer.getPersistentClass());

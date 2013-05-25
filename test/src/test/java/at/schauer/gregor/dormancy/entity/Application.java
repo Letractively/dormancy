@@ -15,8 +15,6 @@
  */
 package at.schauer.gregor.dormancy.entity;
 
-import org.hibernate.annotations.AccessType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -53,10 +51,13 @@ public class Application implements Serializable {
 		this.id = id;
 	}
 
-	@AccessType("field")
 	@Version
 	public Long getLastUpdate() {
 		return lastUpdate;
+	}
+
+	public void setLastUpdate(Long lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public String getName() {

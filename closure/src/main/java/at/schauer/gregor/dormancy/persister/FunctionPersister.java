@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Uses {@link Function Functions} for cloning/merging of {@link Iterable Iterables} containing Hibernate entities.
- *
  * @author Gregor Schauer
  */
 public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>> {
@@ -80,14 +78,6 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		return container;
 	}
 
-	/**
-	 * Returns the {@link Function} used for cloning the given persistent object.
-	 *
-	 * @param dbObj the object to clone
-	 * @param tree the adjacency map to use for traversal
-	 * @return the function
-	 */
-	@Nonnull
 	public <T extends Iterable<E>> Function<E, E> getCloneFunction(@Nonnull T dbObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
@@ -97,33 +87,16 @@ public class FunctionPersister<E> extends AbstractContainerPersister<Iterable<E>
 		};
 	}
 
-	/**
-	 * Returns the {@link Function} used for merging the given transient object.
-	 *
-	 * @param trObj the object to merge
-	 * @param tree the adjacency map to use for traversal
-	 * @return the function
-	 */
-	@Nonnull
 	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, @Nonnull final Map<Object, Object> tree) {
 		return new Function<E, E>() {
 			@Override
 			public E apply(@Nullable E input) {
-				return dormancy.merge_(input, tree);
+				return dormancy.clone_(input, tree);
 			}
 		};
 	}
 
-	/**
-	 * Returns the {@link Function} used for merging the given transient object into the persistent object.
-	 *
-	 * @param trObj the transient object
-	 * @param dbObj the persistent object
-	 * @param tree the adjacency map to use for traversal
-	 * @return the function
-	 */
-	@Nonnull
-	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, @Nonnull T dbObj, @Nonnull final Map<Object, Object> tree) {
+	public <T extends Iterable<E>> Function<E, E> getMergeFunction(@Nonnull T trObj, T dbObj, @Nonnull final Map<Object, Object> tree) {
 		final Iterator<E> iterator = dbObj.iterator();
 		return new Function<E, E>() {
 			@Override

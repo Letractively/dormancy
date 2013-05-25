@@ -16,6 +16,7 @@
 package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
+import org.hibernate.Session;
 import org.springframework.core.CollectionFactory;
 
 import javax.annotation.Nonnull;
@@ -83,9 +84,11 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 		Map<Object, Object> dbCopy = createContainer(dbObj);
 		dbCopy.putAll(dbObj);
 
+		Session session = sessionFactory.getCurrentSession();
+
 		for (Map.Entry<?, ?> trEntry : trObj.entrySet()) {
 			// For every transient key, find a persistent element and the associated value
-			Object dbKey = trEntry.getKey() != null ? dormancy.getUtils().findPendant(trEntry.getKey(), dbCopy.keySet()) : null;
+			Object dbKey = trEntry.getKey() != null ? dormancy.getUtils().findPendant(trEntry.getKey(), dbCopy.keySet(), session) : null;
 			Object dbValue = dbKey != null ? dbObj.get(dbKey) : null;
 
 			// Merge the retrieved keys and values (if possible)

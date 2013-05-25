@@ -26,7 +26,6 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,7 +60,7 @@ public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
 		assertEquals(true, isManaged(b, session));
 		b = dormancy.clone(b);
 		assertEquals(false, isProxy(b, session));
-		assertEquals(Collections.<Employee>emptySet(), b.getEmployees());
+		assertEquals(null, b.getEmployees());
 		session.clear();
 
 		b = callback.doInHibernate(session);

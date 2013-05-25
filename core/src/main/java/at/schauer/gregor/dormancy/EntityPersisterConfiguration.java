@@ -41,10 +41,6 @@ public class EntityPersisterConfiguration {
 	 */
 	private Boolean cloneObjects;
 	/**
-	 * Attempts to create empty collections/maps for uninitialized persistent collections
-	 */
-	private Boolean createEmptyCollections;
-	/**
 	 * The parent configuration
 	 */
 	private EntityPersisterConfiguration parent;
@@ -54,7 +50,6 @@ public class EntityPersisterConfiguration {
 		checkVersion = true;
 		flushAutomatically = false;
 		cloneObjects = false;
-		createEmptyCollections = true;
 	}
 
 	public EntityPersisterConfiguration(@Nonnull EntityPersisterConfiguration parent) {
@@ -63,7 +58,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether new entities should be persisted automatically.
-	 * <p/>
+	 *
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if new entities should be processed, {@code false} otherwise
@@ -84,7 +79,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether a version check should be performed before processing the properties.
-	 * <p/>
+	 *
 	 * <p>Default is {@code true}.</p>
 	 *
 	 * @return {@code true} if a version checking is enabled, {@code false} otherwise
@@ -105,7 +100,7 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether automatic flushing is done upon cloning objects.
-	 * <p/>
+	 *
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if automatic flushing is enabled, {@code false} otherwise
@@ -126,14 +121,13 @@ public class EntityPersisterConfiguration {
 
 	/**
 	 * Returns whether objects are cloned instead of reused.
-	 * <p/>
+	 *
 	 * <p>Default is {@code false}.</p>
 	 *
 	 * @return {@code true} if cloning is enabled, {@code false} otherwise
 	 */
-	@Nonnull
 	public Boolean getCloneObjects() {
-		return cloneObjects == null ? parent.getCloneObjects() : cloneObjects;
+		return cloneObjects;
 	}
 
 	/**
@@ -141,27 +135,7 @@ public class EntityPersisterConfiguration {
 	 *
 	 * @param cloneObjects {@code true} if objects should be cloned, {@code false} otherwise
 	 */
-	public void setCloneObjects(@Nullable Boolean cloneObjects) {
+	public void setCloneObjects(Boolean cloneObjects) {
 		this.cloneObjects = cloneObjects;
-	}
-
-	/**
-	 * Returns whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} are replaced with
-	 * empty collections or maps or with {@code null}.
-	 *
-	 * @return {@code true} if empty collections should be created, {@code false} otherwise
-	 */
-	public Boolean getCreateEmptyCollections() {
-		return createEmptyCollections == null ? parent.getCreateEmptyCollections() : createEmptyCollections;
-	}
-
-	/**
-	 * Sets whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} should be replaced with
-	 * empty collections or maps or with {@code null}.
-	 *
-	 * @param createEmptyCollections {@code true} if empty collections should be created, {@code false} otherwise
-	 */
-	public void setCreateEmptyCollections(Boolean createEmptyCollections) {
-		this.createEmptyCollections = createEmptyCollections;
 	}
 }
