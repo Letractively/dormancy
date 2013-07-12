@@ -24,7 +24,6 @@ import at.schauer.gregor.dormancy.persister.CollectionPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
 import at.schauer.gregor.dormancy.persister.NullPersister;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
-import org.hibernate.Session;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateSetClass;
+import static at.schauer.gregor.dormancy.util.JpaProviderUtils.getPersistentSetClass;
 import static org.junit.Assert.*;
 
 /**
@@ -42,8 +41,8 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testListPersister() {
-		List<Employee> list = sessionFactory.getCurrentSession().createCriteria(Employee.class).list();
-		assertSame(getHibernateSetClass(), list.get(0).getEmployees().getClass());
+		List<Employee> list = genericService.list(Employee.class);
+		assertSame(getPersistentSetClass(), list.get(0).getEmployees().getClass());
 		assertEquals(false, list.get(0).getColleagues() == null);
 
 		List<Employee> clone = dormancy.clone(new ArrayList<Employee>(list));
@@ -51,42 +50,41 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 		assertEquals(Collections.<Employee>emptySet(), clone.get(0).getEmployees());
 		assertEquals(Collections.<Employee>emptySet(), clone.get(0).getColleagues());
 
-		sessionFactory.getCurrentSession().clear();
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		List<Employee> merge = dormancy.merge(new ArrayList<Employee>(clone));
 		assertEquals(clone.get(0), merge.get(0));
-		assertSame(getHibernateSetClass(), merge.get(0).getEmployees().getClass());
+		assertSame(getPersistentSetClass(), merge.get(0).getEmployees().getClass());
 		assertEquals(false, merge.get(0).getColleagues() == null);
 	}
 
 	@Test
 	public void testCustomPersister() {
-		Session session = sessionFactory.getCurrentSession();
-
+		dormancy.getConfig().setCloneObjects(true);
 		dormancy.getPersisterMap().clear();
 		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
 		dormancy.addEntityPersister(NullPersister.getInstance());
 		CollectionPersister<List> collectionPersister = new CollectionPersister<List>(dormancy);
-		collectionPersister.setSessionFactory(sessionFactory);
+		collectionPersister.setPersistentUnitProvider(persistenceUnitProvider);
 		dormancy.addEntityPersister(collectionPersister);
 
-		Employee a = service.load(Employee.class, 1L);
+		Employee a = service.get(Employee.class, refA.getId());
 		Team custom = new Team(a);
 		assertSame(Employee.class, custom.getEmployees().get(0).getClass());
 
 		Team merge = dormancy.merge(custom);
 		assertSame(custom, merge);
-		assertEquals(true, isManaged(merge.getEmployees().get(0), session));
+		assertEquals(true, isManaged(merge.getEmployees().get(0), persistenceUnitProvider));
 
 		Team clone = dormancy.clone(merge);
 		assertSame(custom, clone);
 		assertSame(Employee.class, clone.getEmployees().get(0).getClass());
-		assertEquals(false, isManaged(merge.getEmployees().get(0), session));
+		assertEquals(false, isManaged(merge.getEmployees().get(0), persistenceUnitProvider));
 	}
 
 	@Test
 	public void testContainerWithoutCustomPersister() {
-		Book book = service.load(Book.class, 1L);
+		Book book = service.get(Book.class, 1L);
 		Box custom = new Box(book);
 		assertSame(Book.class, custom.getBook().getClass());
 

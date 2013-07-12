@@ -50,16 +50,16 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 		Logger.getLogger(DormancyAdvisor.class).setLevel(level);
 	}
 
-	@Perform(name = "Session.get(Object, Serializable)", n = 100)
-	@Test(timeout = 200)
-	public void testHibernateGet() {
+	@Perform(name = "PersistenceContext.get(Object, Serializable)", n = 100)
+	@Test(timeout = 500)
+	public void testGet() {
 		Perform perform = getAnnotation();
 		assertNotNull(perform);
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
-			sessionFactory.getCurrentSession().get(Employee.class, 2L);
-			sessionFactory.getCurrentSession().clear();
+			genericService.get(Employee.class, 2L);
+			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		}
 
 		log(perform, start);
@@ -69,7 +69,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	@Test(timeout = 300)
 	public void testClone() {
 		Perform perform = getAnnotation();
-		Employee b = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
+		Employee b = genericService.get(Employee.class, 2L);
 		assertNotNull(b);
 
 		long start = System.currentTimeMillis();
@@ -84,14 +84,14 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	@Test(timeout = 400)
 	public void testMerge() {
 		Perform perform = getAnnotation();
-		Employee b = service.load(Employee.class, 2L);
+		Employee b = service.get(Employee.class, 2L);
 		assertNotNull(b);
 
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
 			Employee merge = dormancy.merge(b);
-			sessionFactory.getCurrentSession().clear();
+			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		}
 
 		log(perform, start);
@@ -101,14 +101,14 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	@Test(timeout = 1000)
 	public void nbtestMergeTogether() {
 		Perform perform = getAnnotation();
-		Employee bp = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
-		Employee bt = service.load(Employee.class, 2L);
+		Employee bp = genericService.get(Employee.class, 2L);
+		Employee bt = service.get(Employee.class, 2L);
 		assertNotNull(bp);
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
 			Employee merge = dormancy.merge(bt, bp);
-			sessionFactory.getCurrentSession().clear();
+			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		}
 
 		log(perform, start);

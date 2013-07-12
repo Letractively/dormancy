@@ -51,7 +51,7 @@ public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
 	}
 
 	/**
-	 * Merges the given object into the current {@link org.hibernate.Session}.
+	 * Merges the given object into the current persistence context.
 	 *
 	 * @param trObj the object to merge
 	 * @param tree  the adjacency map to use for traversal

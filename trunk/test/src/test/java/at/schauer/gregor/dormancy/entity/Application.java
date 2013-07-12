@@ -53,10 +53,15 @@ public class Application implements Serializable {
 		this.id = id;
 	}
 
+	@Access(javax.persistence.AccessType.FIELD)
 	@AccessType("field")
 	@Version
 	public Long getLastUpdate() {
 		return lastUpdate;
+	}
+
+	private void setLastUpdate(Long lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public String getName() {

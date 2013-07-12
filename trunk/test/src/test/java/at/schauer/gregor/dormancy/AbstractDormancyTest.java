@@ -19,10 +19,13 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.DataTypes;
 import at.schauer.gregor.dormancy.entity.Employee;
+import at.schauer.gregor.dormancy.persistence.HibernatePersistenceUnitProvider;
+import at.schauer.gregor.dormancy.service.GenericService;
 import at.schauer.gregor.dormancy.service.Service;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -35,11 +38,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.getHibernateCollectionClass;
+import static at.schauer.gregor.dormancy.util.JpaProviderUtils.getPersistentCollectionClass;
 
 /**
  * @author Gregor Schauer
@@ -54,28 +58,33 @@ public abstract class AbstractDormancyTest {
 	@Inject
 	protected Service service;
 	@Inject
-	protected Dormancy dormancy;
+	protected GenericService genericService;
+	@Inject
+	protected Dormancy<SessionFactory, Session, ClassMetadata> dormancy;
+	@Inject
+	protected HibernatePersistenceUnitProvider persistenceUnitProvider;
+
+	// Test data
+	protected final Book refBook = new Book("Book");
+	protected final Employee refA = new Employee("A", null);
+	protected final Employee refB = new Employee("B", refA);
+	protected final Employee refC = new Employee("C", refB);
+	protected final Application refApp = new Application("Application", refB, Collections.singleton(refC), "authKey");
+	protected final DataTypes refDataTypes = new DataTypes(1L, 2, true, true, "string", new Date(), new Timestamp(new Date().getTime()), new int[]{3}, new Integer[]{4});
 
 	@PostConstruct
 	public void postConstruct() {
 		Session session = sessionFactory.openSession();
 
-		Book book = new Book("Book");
-		Employee a = new Employee("A", null);
-		Employee b = new Employee("B", a);
-		Employee c = new Employee("C", b);
-		Application app = new Application("Application", b, Collections.singleton(c), "authKey");
-		DataTypes dataTypes = new DataTypes(1L, 2, true, true, "string", new Date(), new Timestamp(new Date().getTime()), new int[]{3}, new Integer[]{4});
+		session.save(refBook);
+		session.save(refA);
+		session.save(refB);
+		session.save(refC);
+		session.save(refApp);
+		session.save(refDataTypes);
 
-		session.save(book);
-		session.save(a);
-		session.save(b);
-		session.save(c);
-		session.save(app);
-		session.save(dataTypes);
-
-		a.getEmployees().add(b);
-		b.getEmployees().add(c);
+		refA.getEmployees().add(refB);
+		refB.getEmployees().add(refC);
 		session.flush();
 		session.close();
 	}
@@ -94,12 +103,16 @@ public abstract class AbstractDormancyTest {
 		}
 	}
 
+	public static boolean isManaged(@Nonnull Object entity, @Nonnull HibernatePersistenceUnitProvider persistenceUnitProvider) {
+		return isManaged(entity, persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext());
+	}
+
 	public static boolean isManaged(@Nonnull Object entity, @Nonnull Session session) {
 		return isProxy(entity, session) || session.isOpen() && session.contains(entity);
 	}
 
 	public static boolean isProxy(@Nonnull Object entity, @Nonnull Session session) {
-		if (entity instanceof HibernateProxy || getHibernateCollectionClass().isAssignableFrom(entity.getClass())) {
+		if (entity instanceof HibernateProxy || getPersistentCollectionClass().isAssignableFrom(entity.getClass())) {
 			return true;
 		} else if (entity instanceof Iterable) {
 			for (Object elem : (Iterable<?>) entity) {
@@ -111,7 +124,7 @@ public abstract class AbstractDormancyTest {
 			for (Field field : listFields(entity.getClass())) {
 				try {
 					Object value = field.get(entity);
-					if (value != null && getHibernateCollectionClass().isAssignableFrom(value.getClass())) {
+					if (value != null && getPersistentCollectionClass().isAssignableFrom(value.getClass())) {
 						return true;
 					}
 				} catch (IllegalAccessException e) {
@@ -134,5 +147,16 @@ public abstract class AbstractDormancyTest {
 			}
 		});
 		return list;
+	}
+
+	/**
+	 * This method is a workaround for some tests that are not compatible with JPA but with Hibernate.
+	 *
+	 * @return {@code true} if JPA is used, {@code false} otherwise
+	 * @deprecated this method will be removed as soon as possible
+	 */
+	@Deprecated
+	protected boolean isJpa() {
+		return dormancy.getUtils().getPersistenceContext() instanceof EntityManager;
 	}
 }

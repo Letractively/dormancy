@@ -38,7 +38,7 @@ public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> 
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new CollectionPersister<List>(dormancy);
-		persister.setSessionFactory(sessionFactory);
+		persister.setSessionFactory(persistenceUnitProvider);
 		persister.setConfig(dormancy.getConfig());
 	}
 

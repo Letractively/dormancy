@@ -34,26 +34,26 @@ public class LazyEagerDormancyTest extends AbstractDormancyTest {
 	@Ignore
 	@Test(expected = HibernateException.class)
 	public void testLazyOneToOne() {
-		Application app = service.load(Application.class, 1L);
+		Application app = service.get(Application.class, 1L);
 		assertNull(app.getResponsibleUser());
 
-		app.setResponsibleUser(service.load(Employee.class, 1L));
+		app.setResponsibleUser(service.get(Employee.class, 1L));
 		service.save(app);
 	}
 
 	@Test(expected = HibernateException.class)
 	public void testOverwriteLazyNullProperty() {
-		Employee b = service.load(Employee.class, 2L);
+		Employee b = service.get(Employee.class, 2L);
 		assertEquals(Collections.<Employee>emptySet(), b.getEmployees());
-		b.setEmployees(Collections.singleton(service.load(Employee.class, 3L)));
+		b.setEmployees(Collections.singleton(service.get(Employee.class, 3L)));
 		service.save(b);
 	}
 
 	@Test(expected = HibernateException.class)
 	public void testOverwriteLazyInitializedProperty() {
-		Employee b = service.load(Employee.class, 2L);
+		Employee b = service.get(Employee.class, 2L);
 		assertEquals(Collections.<Employee>emptySet(), b.getColleagues());
-		b.setColleagues(Collections.singleton(service.load(Employee.class, 3L)));
+		b.setColleagues(Collections.singleton(service.get(Employee.class, 3L)));
 		service.save(b);
 	}
 }

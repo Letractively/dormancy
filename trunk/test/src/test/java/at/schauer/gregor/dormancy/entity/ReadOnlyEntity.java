@@ -25,14 +25,14 @@ import javax.persistence.Id;
 @Entity
 public class ReadOnlyEntity {
 	public Long id;
-	public String value;
+	public long time;
 
 	public ReadOnlyEntity() {
 	}
 
-	public ReadOnlyEntity(Long id, String value) {
+	public ReadOnlyEntity(Long id, long time) {
 		this.id = id;
-		this.value = value;
+		this.time = time;
 	}
 
 	@Id
@@ -45,11 +45,11 @@ public class ReadOnlyEntity {
 		this.id = id;
 	}
 
-	public String getValue() {
-		return value;
+	public long getTime() {
+		return time;
 	}
 
-	public void setValue(String value) {
-		throw new UnsupportedOperationException();
+	private void setTime(long time) {
+		this.time = time;
 	}
 }

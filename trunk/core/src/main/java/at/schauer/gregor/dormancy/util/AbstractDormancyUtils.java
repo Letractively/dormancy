@@ -15,25 +15,14 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import at.schauer.gregor.dormancy.access.PropertyAccessStrategy;
-import at.schauer.gregor.dormancy.access.StrategyPropertyAccessor;
-import org.apache.log4j.Logger;
-import org.hibernate.PropertyValueException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.proxy.LazyInitializer;
-import org.springframework.aop.support.AopUtils;
+import at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy;
+import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import org.springframework.beans.PropertyAccessor;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,23 +34,18 @@ import java.util.Set;
  *
  * @author Gregor Schauer
  */
-public abstract class AbstractDormancyUtils {
-	protected static final Map<Class<?>, PropertyAccessStrategy> STRATEGY_MAP = new HashMap<Class<?>, PropertyAccessStrategy>();
-	@Nonnull
+public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends PersistenceUnitProvider<PU, PC, PMD>> {
+	protected static final Map<Class<?>, AbstractPropertyAccessStrategy> STRATEGY_MAP = new HashMap<Class<?>, AbstractPropertyAccessStrategy>();
 	protected static final Class<? extends Annotation> idClass;
-	protected SessionFactory sessionFactory;
+	protected PUP persistenceUnitProvider;
 
 	static {
 		String javaxPersistenceId = "javax.persistence.Id";
-		try {
-			idClass = (Class<? extends Annotation>) Class.forName(javaxPersistenceId);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Cannot find class: " + javaxPersistenceId, e);
-		}
+		idClass = ClassLookup.find(javaxPersistenceId).orThrow("Cannot find class: %s", javaxPersistenceId).get();
 	}
 
-	protected AbstractDormancyUtils(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+	protected AbstractDormancyUtils(PUP persistenceUnitProvider) {
+		this.persistenceUnitProvider = persistenceUnitProvider;
 	}
 
 	/**
@@ -77,7 +61,7 @@ public abstract class AbstractDormancyUtils {
 	 * @param obj        the object
 	 * @param collection the collection to traverse
 	 * @return the object found or {@code null} if the collection does not contain such an object
-	 * @see #getIdentifierValue(ClassMetadata, Object)
+	 * @see #getIdentifierValue(PMD, Object)
 	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
@@ -93,7 +77,7 @@ public abstract class AbstractDormancyUtils {
 				}
 			} else {
 				// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
-				ClassMetadata objMetadata = getClassMetadata(obj);
+				PMD objMetadata = getClassMetadata(obj);
 				Object objIdentifier = getIdentifier(objMetadata, obj);
 
 				// For every object in the collection, check if the type matches and if the identifier is equal
@@ -113,7 +97,7 @@ public abstract class AbstractDormancyUtils {
 	}
 
 	/**
-	 * Gets the {@link ClassMetadata} associated with the given entity class.
+	 * Gets the persistence metadata associated with the given entity class.
 	 *
 	 * @param obj the object to retrieve ClassMetadata for
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
@@ -121,54 +105,53 @@ public abstract class AbstractDormancyUtils {
 	 * @see #getClass(Object)
 	 */
 	@Nullable
-	public ClassMetadata getClassMetadata(@Nullable Object obj) {
+	public PMD getClassMetadata(@Nullable Object obj) {
 		return obj != null ? getClassMetadata(getClass(obj)) : null;
 	}
 
 	/**
-	 * Gets the {@link ClassMetadata} associated with the given entity class.
+	 * Gets the persistence metadata associated with the given entity class.
 	 *
 	 * @param clazz the type to retrieve ClassMetadata for
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
 	 */
 	@Nullable
-	public abstract ClassMetadata getClassMetadata(@Nullable Class<?> clazz);
+	public abstract PMD getClassMetadata(@Nullable Class<?> clazz);
 
 	/**
-	 * Attempts to get the identifier of the given object by using the provided {@link ClassMetadata} or
+	 * Attempts to get the identifier of the given object by using the provided persistence metadata or
 	 * {@link PropertyAccessor}.
 	 *
 	 * @param metadata the ClassMetadata of the object (may be null)
 	 * @param bean     the object
 	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifierValue(ClassMetadata, Object)
+	 * @see #getIdentifierValue(PMD, Object)
 	 */
 	@Nullable
-	public abstract <T> Serializable getIdentifier(@Nonnull ClassMetadata metadata, @Nonnull T bean);
+	public abstract <T> Serializable getIdentifier(@Nonnull PMD metadata, @Nonnull T bean);
 
 	/**
-	 * Retrieves the identifier of the given object by using the provided {@link ClassMetadata} or
+	 * Retrieves the identifier of the given object by using the provided persistence metadata or
 	 * {@link PropertyAccessor}.
-	 * If the identifier cannot be retrieved, an {@link org.hibernate.PropertyValueException} is thrown.
+	 * If the identifier cannot be retrieved, an exception is thrown.
 	 *
 	 * @param metadata the ClassMetadata of the object (may be null)
 	 * @param bean     the object
 	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifier(ClassMetadata, Object)
+	 * @see #getIdentifier(PMD, Object)
 	 */
 	@Nonnull
-	public <T> Serializable getIdentifierValue(@Nonnull ClassMetadata metadata, @Nonnull T bean) {
+	public <T> Serializable getIdentifierValue(@Nonnull PMD metadata, @Nonnull T bean) {
 		Serializable identifier = getIdentifier(metadata, bean);
 		if (identifier == null) {
 			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
-			throw new PropertyValueException("Cannot read identifier", getEntityName(bean.getClass()), getIdentifierPropertyName(bean.getClass()));
+			throwPropertyValueException("Cannot read identifier", bean);
 		}
 		return identifier;
 	}
 
 	/**
-	 * Retrieves the property of the given object by using the provided {@link ClassMetadata} or
-	 * {@link PropertyAccessor}.
+	 * Retrieves the property of the given object.
 	 *
 	 * @param metadata     the ClassMetadata of the object (may be null)
 	 * @param bean         the object
@@ -177,10 +160,10 @@ public abstract class AbstractDormancyUtils {
 	 * @see PropertyAccessor#getPropertyValue(String)
 	 */
 	@Nullable
-	public abstract Object getPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName);
+	public abstract Object getPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName);
 
 	/**
-	 * Sets the property of the given object by using the provided {@link ClassMetadata} or {@link PropertyAccessor}.
+	 * Sets the property of the given object.
 	 *
 	 * @param metadata     the ClassMetadata of the object (may be null)
 	 * @param bean         the object
@@ -188,7 +171,7 @@ public abstract class AbstractDormancyUtils {
 	 * @param value        the value to set
 	 * @see PropertyAccessor#setPropertyValue(String, Object)
 	 */
-	public abstract void setPropertyValue(@Nullable ClassMetadata metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
+	public abstract void setPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
 
 	/**
 	 * Returns the entity name of the given class.<br/>
@@ -203,7 +186,7 @@ public abstract class AbstractDormancyUtils {
 
 	/**
 	 * Returns the name of the identifier property of the given type.<br/>
-	 * If the type has no identifier property e.g., it is not Hibernate entity, {@code null} is returned instead.
+	 * If the type has no identifier property e.g., it is not an entity, {@code null} is returned instead.
 	 *
 	 * @param clazz the type
 	 * @return the identifier property name or {@code null} if there is no identifier property
@@ -213,9 +196,6 @@ public abstract class AbstractDormancyUtils {
 
 	/**
 	 * Gets the unproxified type of the given object.
-	 * <p/>
-	 * Note that this method does not use {@link org.hibernate.Hibernate#getClass(Object) Hibernate.getClass(Object)}
-	 * to avoid the initialization of the proxy.
 	 *
 	 * @param proxy a persistable object or proxy
 	 * @return the true class of the instance
@@ -223,7 +203,18 @@ public abstract class AbstractDormancyUtils {
 	@Nonnull
 	@SuppressWarnings("unchecked")
 	public <T> Class<T> getClass(@Nonnull Object proxy) {
-		Class<?> clazz = proxy.getClass();
+		return getClass(proxy.getClass());
+	}
+
+	/**
+	 * Gets the real type of the given class.
+	 *
+	 * @param clazz the type
+	 * @return the true class of the type
+	 */
+	@Nonnull
+	@SuppressWarnings("unchecked")
+	public <T> Class<T> getClass(@Nonnull Class<?> clazz) {
 		while (isJavassistProxy(clazz)) {
 			clazz = clazz.getSuperclass();
 		}
@@ -237,10 +228,10 @@ public abstract class AbstractDormancyUtils {
 	 * @return the persistent class, or {@code null}
 	 */
 	@Nullable
-	public abstract Class<?> getMappedClass(@Nonnull ClassMetadata metadata);
+	public abstract Class<?> getMappedClass(@Nonnull PMD metadata);
 
 	/**
-	 * Checks if the given class is a Hibernate proxy that has been generated by using Javassist.
+	 * Checks if the given class is a proxy of a persistent object that has been generated by using Javassist.
 	 *
 	 * @param clazz the class to check
 	 * @return {@code true} if the given class is a Javassist proxy.
@@ -250,19 +241,19 @@ public abstract class AbstractDormancyUtils {
 	}
 
 	/**
-	 * Checks if the given object is a {@code PersistentCollection}.
+	 * Checks if the given object is a persistent collection.
 	 *
 	 * @param obj the object to check
-	 * @return {@code true} if the object is a {@code PersistentCollection}, {@code false} otherwise
+	 * @return {@code true} if the object is a persistent collection, {@code false} otherwise
 	 * @see #isInitializedPersistentCollection(Object)
 	 */
 	public abstract boolean isPersistentCollection(@Nullable Object obj);
 
 	/**
-	 * Checks if the given object is an initialized {@code PersistentCollection}.
+	 * Checks if the given object is an initialized persistent collection.
 	 *
 	 * @param obj the object to check
-	 * @return {@code true} if the object is an initialized {@code PersistentCollection}, {@code false} otherwise
+	 * @return {@code true} if the object is an initialized persistent collection, {@code false} otherwise
 	 * @see #isPersistentCollection(Object)
 	 */
 	public abstract boolean isInitializedPersistentCollection(@Nullable Object obj);
@@ -297,10 +288,10 @@ public abstract class AbstractDormancyUtils {
 	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor}.
 	 * <p/>
 	 * The decision is made by applying the following algorithm:<br/>
-	 * If there is Hibernate class metadata available and
+	 * If there is persistence metadata available and
 	 * <ul>
 	 * <li>if the {@code javax.persistence.Id} annotation was found on a getter method or</li>
-	 * <li>if the object is a proxy modified by Javassist and its {@link LazyInitializer} is not accessible</li>
+	 * <li>if the object is a proxy modified by Javassist and its but it is not accessible</li>
 	 * </ul>
 	 * the properties are access via getter and setter methods.<br/>
 	 * Otherwise the fields are accessed directly via reflection.
@@ -313,31 +304,12 @@ public abstract class AbstractDormancyUtils {
 	 * @param obj      the object
 	 * @return the property accessor
 	 */
-	@Nonnull
-	public PropertyAccessor getPropertyAccessor(@Nullable ClassMetadata metadata, @Nonnull Object obj) {
-		if (metadata != null) {
-			if (isJavassistProxy(obj.getClass())) {
-				// If the object is a proxy, attempt to find its LazyInitializer
-				Field handlerField = ReflectionUtils.findField(obj.getClass(), "handler");
-				if (handlerField != null) {
-					// If the LazyInitializer is available, obtain the underlying object
-					LazyInitializer lazyInitializer = (LazyInitializer) ReflectionTestUtils.getField(obj, "handler");
-					// Initialize it if necessary and return a DirectFieldAccessor for the nested object
-					obj = lazyInitializer.getImplementation();
-				} else {
-					/*
-					 * Otherwise log a warning message because this is very unlikely to happen or even impossible.
-					 * However, instead of throwing an exception, property access is used as a fallback solution.
-					 */
-					Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
-				}
-			}
-		}
-		return new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
-	}
+	@Nullable
+	public abstract PropertyAccessor getPropertyAccessor(@Nullable PMD metadata, @Nonnull Object obj);
 
 	/**
-	 * Returns the {@link at.schauer.gregor.dormancy.access.PropertyAccessStrategy} to use for accessing properties of the given type.<br/>
+	 * Returns the {@link at.schauer.gregor.dormancy.access.AnnotationPropertyAccessStrategy} to use for accessing properties
+	 * of the given type.<br/>
 	 * If no strategy is defined for the type, a new one is created on-demand.
 	 *
 	 * @param clazz the type
@@ -345,8 +317,9 @@ public abstract class AbstractDormancyUtils {
 	 * @see #createStrategy(Class)
 	 */
 	@Nonnull
-	public PropertyAccessStrategy getAccessTypeStrategy(@Nonnull Class<?> clazz) {
-		PropertyAccessStrategy strategy = STRATEGY_MAP.get(clazz);
+	public AbstractPropertyAccessStrategy getAccessTypeStrategy(@Nonnull Class<?> clazz) {
+		clazz = getClass(clazz);
+		AbstractPropertyAccessStrategy strategy = STRATEGY_MAP.get(clazz);
 		if (strategy == null) {
 			synchronized (STRATEGY_MAP) {
 				strategy = STRATEGY_MAP.get(clazz);
@@ -360,13 +333,13 @@ public abstract class AbstractDormancyUtils {
 	}
 
 	/**
-	 * Creates a new {@link at.schauer.gregor.dormancy.access.PropertyAccessStrategy} instance for the given type.
+	 * Creates a new {@link AbstractPropertyAccessStrategy} instance for the given type.
 	 *
 	 * @param clazz the type
 	 * @return the strategy to use
 	 */
 	@Nonnull
-	protected abstract PropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz);
+	protected abstract AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz);
 
 	/**
 	 * Returns whether the Hibernate entity associated with the given metadata is versioned.<br/>
@@ -374,19 +347,22 @@ public abstract class AbstractDormancyUtils {
 	 * @param metadata the metadata
 	 * @return {@link true}
 	 */
-	public abstract boolean isVersioned(@Nonnull ClassMetadata metadata);
+	public abstract boolean isVersioned(@Nonnull PMD metadata);
 
 	/**
-	 * Returns the name of the property of the Hibernate entity used for versioning (if available).
+	 * Returns the name of the property of the entity used for versioning (if available).
 	 *
 	 * @param metadata the metadata
-	 * @return the name of the version property or {@code null} if the Hibernate entity is not versioned
+	 * @return the name of the version property or {@code null} if the entity is not versioned
 	 */
 	@Nullable
-	public abstract String getVersionPropertyName(@Nonnull ClassMetadata metadata);
+	public abstract String getVersionPropertyName(@Nonnull PMD metadata);
 
 	/**
-	 * Return the persistent instance of the given entity class with the given identifier, or null if there is no such persistent instance. (If the instance is already associated with the session, return that instance. This method never returns an uninitialized instance.)
+	 * Return the persistent instance of the given entity class with the given identifier, or {@code null} if there is
+	 * no such persistent instance.<br/>
+	 * If the instance is already associated with the persistence context, return that instance.
+	 * This method never returns an uninitialized instance.
 	 *
 	 * @param clazz the persistent class
 	 * @param id    the identifier
@@ -394,6 +370,14 @@ public abstract class AbstractDormancyUtils {
 	 */
 	@Nullable
 	public abstract <T> T find(@Nonnull Class<T> clazz, @Nonnull Serializable id);
+
+	/**
+	 * Force the current persistence context to flush.
+	 * <p/>
+	 * <i>Flushing</i> is the process of synchronizing the underlying persistent store with persistable state held in
+	 * memory.
+	 */
+	public abstract void flush();
 
 	/**
 	 * Persists the given transient instance.
@@ -405,10 +389,28 @@ public abstract class AbstractDormancyUtils {
 	public abstract <K> K persist(@Nonnull Object obj);
 
 	/**
-	 * Obtains the current Hibernate {@link Session}.
+	 * Obtains the current persistence context.
 	 *
-	 * @return the session to use
+	 * @return the persistence context to use
 	 */
 	@Nonnull
-	public abstract Session getSession();
+	public abstract PC getPersistenceContext();
+
+	public abstract void throwUnsavedTransientInstanceException(@Nonnull Object object);
+
+	public abstract void throwNullIdentifierException(@Nonnull Object object);
+
+	public abstract void throwLazyPropertyNotNull(Object trValue, Object dbObj, String propertyName);
+
+	public abstract void throwStaleObjectStateException(Object dbValue, Serializable identifier);
+
+	public abstract void throwObjectNotFoundException(Serializable identifier, Object trObj);
+
+	public abstract void throwPropertyValueException(String message, Object bean);
+
+	public abstract boolean isInitialized(Object obj);
+
+	public abstract boolean isProxy(Object dbValue);
+
+	public abstract boolean isUninitialized(String propertyName, Object dbObj, Object dbValue, Object trValue);
 }

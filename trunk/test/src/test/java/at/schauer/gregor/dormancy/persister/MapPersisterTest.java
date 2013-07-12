@@ -34,7 +34,7 @@ public class MapPersisterTest extends PersisterTest<MapPersister> {
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new MapPersister(dormancy);
-		persister.setSessionFactory(sessionFactory);
+		persister.setSessionFactory(persistenceUnitProvider);
 	}
 
 	@Test

@@ -15,18 +15,15 @@
  */
 package at.schauer.gregor.dormancy;
 
+import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import at.schauer.gregor.dormancy.persister.*;
 import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
-import org.apache.commons.beanutils.ConstructorUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.hibernate.*;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.LazyInitializer;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -34,35 +31,38 @@ import org.springframework.beans.PropertyAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.CollectionFactory;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Clones Hibernate entities and merges them into a {@link Session}.<br/>
+ * Clones Hibernate entities and merges them into a persistence context.<br/>
  *
  * @author Gregor Schauer
  * @see EntityPersister
  */
-public class Dormancy extends AbstractEntityPersister<Object> implements ApplicationContextAware {
+public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> implements ApplicationContextAware {
 	protected Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
-	protected SessionFactory sessionFactory;
+	protected PersistenceUnitProvider<PU, PC, PMD> persistenceUnitProvider;
 	protected EntityPersisterConfiguration config;
-	protected AbstractDormancyUtils utils;
+	protected AbstractDormancyUtils<PU, PC, PMD, PersistenceUnitProvider<PU, PC, PMD>> utils;
 	protected Logger logger = Logger.getLogger(Dormancy.class);
 	protected boolean registerDefaultEntityPersisters = true;
+
+	@Inject
+	public Dormancy(PersistenceUnitProvider<PU, PC, PMD> persistenceUnitProvider) {
+		this.persistenceUnitProvider = persistenceUnitProvider;
+	}
 
 	/**
 	 * Initializes this instance.<br/>
@@ -73,7 +73,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	public void initialize() {
 		try {
 			Class<?> type = getClass().getClassLoader().loadClass("at.schauer.gregor.dormancy.util.DormancyUtils");
-			utils = (AbstractDormancyUtils) ConstructorUtils.invokeConstructor(type, sessionFactory);
+			utils = (AbstractDormancyUtils) ConstructorUtils.invokeConstructor(type, persistenceUnitProvider);
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -127,17 +127,24 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		// Add the object to the adjacency list
 		tree.put(dbObj, trObj);
 
-		// If automatic flushing is enabled, flush the session to make sure that there are no pending changes
+		// If automatic flushing is enabled, flush the persistence context to make sure that there are no pending changes
 		if (config.getFlushAutomatically()) {
-			utils.getSession().flush();
+			utils.flush();
 		}
 
 		// Retrieve the Hibernate class metadata (if available)
-		ClassMetadata metadata = utils.getClassMetadata(dbObj);
+		PMD metadata = utils.getClassMetadata(dbObj);
 
 		// Process the properties
 		String[] propertyNames = utils.getPropertyNames(dbObj);
-		PropertyAccessor dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
+		PropertyAccessor dbPropertyAccessor;
+		try {
+			dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
+		} catch (Exception e) {
+			logger.warn("Cannot access object " + ObjectUtils.identityToString(dbObj), e);
+			tree.put(dbObj, null);
+			return null;
+		}
 		PropertyAccessor trPropertyAccessor = dbObj == trObj ? dbPropertyAccessor : utils.getPropertyAccessor(metadata, trObj);
 		for (String propertyName : propertyNames) {
 			Object dbValue;
@@ -162,7 +169,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			Object trValue = null;
 			// If the property (e.g., a lazy persistent collection) is initialized traverse the object graph recursively
 			if (dbValue != null) {
-				if (Hibernate.isInitialized(dbValue)) {
+				if (utils.isInitialized(dbValue)) {
 					trValue = clone_((T) dbValue, tree);
 				} else if (utils.isPersistentCollection(dbValue) && config.getCreateEmptyCollections()) {
 					trValue = dbValue instanceof Map
@@ -222,7 +229,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		}
 
 		// Verify that the given object is a non-null managed entity.
-		ClassMetadata metadata = utils.getClassMetadata(trObj);
+		PMD metadata = utils.getClassMetadata(trObj);
 		if (metadata == null) {
 			return trObj;
 		}
@@ -238,8 +245,8 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				utils.persist(trObj);
 				identifier = utils.getIdentifier(metadata, trObj);
 			} else {
-				// Otherwise throw an exception indicating that session.save() should be called
-				throwNullIdentifierException(trObj);
+				// Otherwise throw an exception indicating that the entity should have be saved before
+				utils.throwNullIdentifierException(trObj);
 			}
 		}
 
@@ -247,23 +254,10 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		T dbObj = (T) utils.find(utils.getClass(trObj), identifier);
 		if (dbObj == null) {
 			// Throw an exception indicating that the persistent object cannot be retrieved.
-			throw new ObjectNotFoundException(identifier, utils.getClass(trObj).getSimpleName());
+			utils.throwObjectNotFoundException(identifier, trObj);
 		}
 
 		return merge_(trObj, dbObj, tree);
-	}
-
-	/**
-	 * Invokes the given {@link HibernateCallback} and passes its result to {@link #merge(Object, Object)}.
-	 *
-	 * @param trObj    the object to merge
-	 * @param callback the callback to execute
-	 * @return the merged object
-	 * @throws SQLException if thrown by Hibernate-exposed JDBC API
-	 */
-	@Nullable
-	public <T> T merge(@Nullable T trObj, @Nonnull HibernateCallback<T> callback) throws SQLException {
-		return merge(trObj, trObj != null ? callback.doInHibernate(utils.getSession()) : null);
 	}
 
 	@Nullable
@@ -294,7 +288,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		tree.put(trObj, dbObj);
 
 		// Verify that the given object is a non-null managed entity or it is not necessary to merge it
-		ClassMetadata metadata = utils.getClassMetadata(trObj);
+		PMD metadata = utils.getClassMetadata(trObj);
 		if (metadata == null || trObj == dbObj) {
 			return trObj;
 		}
@@ -310,7 +304,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			Object dbValue = dbPropertyAccessor.getPropertyValue(utils.getVersionPropertyName(metadata));
 			Object trValue = trPropertyAccessor.getPropertyValue(utils.getVersionPropertyName(metadata));
 			if (dbValue != null && !dbValue.equals(trValue)) {
-				throw new StaleObjectStateException(utils.getEntityName(utils.getClass(dbValue)), identifier);
+				utils.throwStaleObjectStateException(dbValue, identifier);
 			}
 		}
 
@@ -333,7 +327,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 				if (!utils.isInitializedPersistentCollection(dbValue)) {
 					// If property is loaded lazily, the value of the given object must be null or empty
 					if (trValue != null && trValue != dbValue && CollectionUtils.size(trValue) > 0) {
-						throw new PropertyValueException("Property is loaded lazily. Therefore it must be null but was: " + trValue, utils.getEntityName(utils.getClass(dbObj)), propertyName);
+						utils.throwLazyPropertyNotNull(trValue, dbObj, propertyName);
 					}
 					continue;
 				}
@@ -343,19 +337,13 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 			// Lazily loaded properties are not copied
 			if (!ClassUtils.isPrimitiveOrWrapper(type) && !type.getName().startsWith("java.") && !type.isArray()) {
 				// If the persistent value is a Hibernate proxy, it might be loaded lazily
-				if (dbValue instanceof HibernateProxy) {
-					HibernateProxy hibernateProxy = HibernateProxy.class.cast(dbValue);
-					LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
-					if (lazyInitializer.isUninitialized()) {
-						// If property is loaded lazily, the value of the given object must be null
-						if (trValue != null) {
-							throw new PropertyValueException("Property is loaded lazily. Therefore it must be null but was: " + trValue, utils.getEntityName(utils.getClass(dbObj)), propertyName);
-						}
+				if (utils.isProxy(dbValue)) {
+					if (utils.isUninitialized(propertyName, dbObj, dbValue, trValue)) {
 						continue;
 					}
 				} else if (trValue != dbValue) {
 					// Get the identifier of the associated transient object
-					ClassMetadata valueMetadata = utils.getClassMetadata(dbValue);
+					PMD valueMetadata = utils.getClassMetadata(dbValue);
 					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValue));
 					// Get the identifier of the associated persistent object
 					Serializable dbValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, dbValue));
@@ -367,8 +355,8 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 							trValueId = utils.persist(trValue);
 							trValue = utils.find(trValue.getClass(), trValueId);
 						} else {
-							// Otherwise throw an exception indicating that session.save() should be called
-							throw new TransientObjectException("object references an unsaved transient instance - save the transient instance before flushing: " + utils.getClass(trValue).getName());
+							// Otherwise throw an exception indicating that the entity should have been saved before
+							utils.throwUnsavedTransientInstanceException(trValue);
 						}
 					} else if (!trValueId.equals(dbValueId)) {
 						// Load the entity with the given identifier
@@ -392,20 +380,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	}
 
 	/**
-	 * Sets the Hibernate SessionFactory that should be used to create Hibernate Sessions.
+	 * Returns the {@code EntityPersisterConfiguration} that should be used.
 	 *
-	 * @param sessionFactory the SessionFactory to use
-	 */
-	@Inject
-	@Named("sessionFactory")
-	public void setSessionFactory(@Nonnull SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * Returns the EntityPersisterConfiguration that should be used.
-	 *
-	 * @return the EntityPersisterConfiguration to use
+	 * @return the {@code EntityPersisterConfiguration} to use
 	 */
 	@Nonnull
 	public EntityPersisterConfiguration getConfig() {
@@ -413,9 +390,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	}
 
 	/**
-	 * Sets the EntityPersisterConfiguration that should be used.
+	 * Sets the {@code EntityPersisterConfiguration} that should be used.
 	 *
-	 * @param config the EntityPersisterConfiguration to use
+	 * @param config the {@code EntityPersisterConfiguration} to use
 	 */
 	public void setConfig(@Nonnull EntityPersisterConfiguration config) {
 		this.config = config;
@@ -425,16 +402,16 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * Sets a flag indicating that the default {@link EntityPersister}s should be initialized upon initialization.
 	 *
 	 * @param registerDefaultEntityPersisters
-	 *         {@code true} if the default EntityPersisters should be registered, {@code false} otherwise
+	 *         {@code true} if the default {@code EntityPersister}s should be registered, {@code false} otherwise
 	 */
 	public void setRegisterDefaultEntityPersisters(boolean registerDefaultEntityPersisters) {
 		this.registerDefaultEntityPersisters = registerDefaultEntityPersisters;
 	}
 
 	/**
-	 * Returns a modifiable map containing all registered EntityPersisters.
+	 * Returns a modifiable map containing all registered {@code EntityPersister}s.
 	 *
-	 * @return the registered EntityPersisters
+	 * @return the registered {@code EntityPersister}s
 	 */
 	@Nonnull
 	public Map<Class<?>, AbstractEntityPersister<?>> getPersisterMap() {
@@ -445,7 +422,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	}
 
 	/**
-	 * Sets the mapping of the AbstractEntityPersisters that should be used.
+	 * Sets the mapping of the {@code AbstractEntityPersister}s that should be used.
 	 *
 	 * @param persisterMap the entity persister mapping
 	 */
@@ -557,30 +534,9 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
 		AbstractEntityPersister<?> entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : BeanUtils.instantiateClass(entityPersisterClass);
 		if (entityPersister instanceof AbstractContainerPersister) {
-			AbstractContainerPersister.class.cast(entityPersister).setSessionFactory(sessionFactory);
+			((AbstractContainerPersister<?>) entityPersister).setPersistentUnitProvider(persistenceUnitProvider);
 		}
 		addEntityPersister(entityPersister, types);
-	}
-
-	/**
-	 * Throws a {@link TransientObjectException} indicating that the object has no valid identifier.
-	 *
-	 * @param object the object
-	 */
-	protected void throwNullIdentifierException(@Nonnull Object object) {
-		throw new TransientObjectException("The given object has a null identifier: " + utils.getEntityName(utils.getClass(object)));
-	}
-
-	/**
-	 * Throws {@link TransientObjectException} indicating that the object must be saved manually before continuing.
-	 *
-	 * @param object the object
-	 */
-	protected void throwUnsavedTransientInstanceException(@Nonnull Object object) {
-		throw new TransientObjectException(
-				"object references an unsaved transient instance - save the transient instance before flushing: " +
-						utils.getEntityName(utils.getClass(object))
-		);
 	}
 
 	/**
@@ -589,7 +545,7 @@ public class Dormancy extends AbstractEntityPersister<Object> implements Applica
 	 * @return the Dormancy utilities to use
 	 */
 	@Nonnull
-	public AbstractDormancyUtils getUtils() {
+	public AbstractDormancyUtils<PU, PC, PMD, PersistenceUnitProvider<PU, PC, PMD>> getUtils() {
 		return utils;
 	}
 }

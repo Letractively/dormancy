@@ -17,7 +17,7 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
-import org.hibernate.SessionFactory;
+import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -28,8 +28,8 @@ import javax.inject.Inject;
  * @author Gregor Schauer
  */
 public abstract class AbstractContainerPersister<C> extends AbstractEntityPersister<C> {
-	protected SessionFactory sessionFactory;
-	protected Dormancy dormancy;
+	protected PersistenceUnitProvider<?, ?, ?> persistenceUnitProvider;
+	protected Dormancy<?, ?, ?> dormancy;
 	protected EntityPersisterConfiguration config;
 
 	@Inject
@@ -39,19 +39,19 @@ public abstract class AbstractContainerPersister<C> extends AbstractEntityPersis
 	}
 
 	/**
-	 * Sets the Hibernate SessionFactory that should be used to create Hibernate Sessions.
+	 * Sets the {@code PersistenceUnitProvider} that should be used to create persistence contexts.
 	 *
-	 * @param sessionFactory the SessionFactory to use
+	 * @param persistenceUnitProvider the persistence unit provider to use
 	 */
 	@Inject
-	public void setSessionFactory(@Nonnull SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+	public void setPersistentUnitProvider(@Nonnull PersistenceUnitProvider<?, ?, ?> persistenceUnitProvider) {
+		this.persistenceUnitProvider = persistenceUnitProvider;
 	}
 
 	/**
-	 * Returns the EntityPersisterConfiguration that should be used.
+	 * Returns the {@code EntityPersisterConfiguration} that should be used.
 	 *
-	 * @return the EntityPersisterConfiguration to use
+	 * @return the configuration to use
 	 */
 	@Nonnull
 	public EntityPersisterConfiguration getConfig() {
@@ -59,9 +59,9 @@ public abstract class AbstractContainerPersister<C> extends AbstractEntityPersis
 	}
 
 	/**
-	 * Sets the EntityPersisterConfiguration that should be used.
+	 * Sets the {@code EntityPersisterConfiguration} that should be used.
 	 *
-	 * @param config the EntityPersisterConfiguration to use
+	 * @param config the configuration to use
 	 */
 	public void setConfig(@Nonnull EntityPersisterConfiguration config) {
 		this.config = config;

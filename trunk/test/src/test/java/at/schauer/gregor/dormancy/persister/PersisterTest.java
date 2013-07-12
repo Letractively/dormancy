@@ -20,8 +20,10 @@ import at.schauer.gregor.dormancy.DormancySpringConfig;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import at.schauer.gregor.dormancy.entity.Employee;
+import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.metadata.ClassMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -45,9 +47,11 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 public abstract class PersisterTest<T extends AbstractEntityPersister> {
 	@Inject
-	protected Dormancy dormancy;
+	protected Dormancy<?, ?, ?> dormancy;
 	@Inject
 	protected SessionFactory sessionFactory;
+	@Inject
+	protected PersistenceUnitProvider<Session, ClassMetadata, ?> persistenceUnitProvider;
 	protected T persister;
 
 	@PostConstruct

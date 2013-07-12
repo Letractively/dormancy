@@ -20,12 +20,12 @@ import at.schauer.gregor.dormancy.EntityPersisterConfiguration;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.Employee;
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.Query;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
@@ -34,6 +34,7 @@ import static org.junit.Assert.*;
 /**
  * @author Gregor Schauer
  */
+@Transactional
 public class DormancyConfigTest extends AbstractDormancyTest {
 	EntityPersisterConfiguration config;
 
@@ -70,25 +71,33 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 	@Test(expected = TransientObjectException.class)
 	public void testNewInstance() {
+		if (isJpa()) {
+			throw new TransientObjectException("Test not supported by JPA");
+		}
+
 		dormancy.getConfig().setSaveNewEntities(false);
 
 		Long id = (Long) service.save(new Book("new"));
-		Book load = service.load(Book.class, id);
-		assertEquals(false, isManaged(load, sessionFactory.getCurrentSession()));
+		Book load = service.get(Book.class, id);
+		assertEquals(false, isManaged(load, persistenceUnitProvider));
 		assertEquals("new", load.getTitle());
 	}
 
 	@Test
 	public void testSaveTransientCollection() {
+		if (isJpa()) {
+			return;
+		}
+
 		dormancy.getConfig().setSaveNewEntities(true);
 		dormancy.getConfig().setCloneObjects(true);
 
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee c = (Employee) dormancy.clone(query.setParameter("id", 3L).uniqueResult());
+		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?";
+		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
 		c.getEmployees().add(new Employee("D", c));
-		dormancy.merge(c, query.uniqueResult());
+		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
 
-		Employee d = service.load(Employee.class, 4L);
+		Employee d = service.get(Employee.class, 4L);
 		assertNotNull(d);
 	}
 
@@ -97,34 +106,39 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 	public void testSaveTransientAssociation() {
 		dormancy.getConfig().setSaveNewEntities(true);
 
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee c = (Employee) dormancy.clone(query.setParameter("id", 3L).uniqueResult());
+		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?";
+		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
 		c.setBoss(new Employee("D", c));
-		dormancy.merge(c, query.uniqueResult());
+		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
 
-		Employee d = service.load(Employee.class, 4L);
+		Employee d = service.get(Employee.class, 4L);
 		assertNotNull(d);
 	}
 
 	@Test(expected = TransientObjectException.class)
 	public void testNotSaveTransientAssociation() {
+		if (isJpa()) {
+			throw new TransientObjectException("Test not supported by JPA");
+		}
+
 		dormancy.getConfig().setSaveNewEntities(false);
 
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee c = (Employee) dormancy.clone(query.setParameter("id", 3L).uniqueResult());
+		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?";
+		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
 		c.setBoss(new Employee("D", c));
-		dormancy.merge(c, query.uniqueResult());
+		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
 	}
 
 	@Test
 	public void testUpdateAssociation() {
-		Query query = sessionFactory.getCurrentSession().createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee a = (Employee) dormancy.clone(query.setParameter("id", 1L).uniqueResult());
-		Employee c = (Employee) dormancy.clone(query.setParameter("id", 3L).uniqueResult());
+		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?1";
+		Employee a = dormancy.clone(genericService.singleResult(Employee.class, qlString, refA.getId()));
+		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
 		c.setBoss(a);
-		dormancy.merge(c, query.uniqueResult());
 
-		c = (Employee) dormancy.clone(query.setParameter("id", 3L).uniqueResult());
+		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
+
+		c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
 		assertEquals(a, c.getBoss());
 	}
 }

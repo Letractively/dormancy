@@ -21,7 +21,6 @@ import at.schauer.gregor.dormancy.interceptor.PersistenceEndpoint;
 import at.schauer.gregor.dormancy.persister.TeamPersister;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Gregor Schauer
@@ -33,9 +32,9 @@ public interface Service {
 
 	Application loadApp(Long id);
 
-	<T extends Serializable> T load(Class<T> type, Long id);
+	<T extends Serializable> T get(Class<T> type, Long id);
 
-	List<Application> list();
+	<T extends Serializable> T load(Class<T> type, Long id);
 
 	@PersistenceEndpoint(types = TeamPersister.class)
 	Team next(Team team);

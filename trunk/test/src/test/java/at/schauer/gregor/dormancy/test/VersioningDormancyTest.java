@@ -18,10 +18,15 @@ package at.schauer.gregor.dormancy.test;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
+import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
 import org.hibernate.StaleObjectStateException;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -30,49 +35,66 @@ import static org.junit.Assert.fail;
 /**
  * @author Gregor Schauer
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class VersioningDormancyTest extends AbstractDormancyTest {
+	@Inject
+	DormancyAdvisor dormancyAdvisor;
+
 	@Test
 	public void testVersion() {
-		Application app = service.load(Application.class, 1L);
+		dormancy.getConfig().setCloneObjects(true);
+		dormancyAdvisor.setMode(DormancyAdvisor.Mode.BOTH);
+		Application app = service.get(Application.class, refApp.getId());
 		app.setName(UUID.randomUUID().toString());
-		assertEquals(0, app.getLastUpdate().intValue());
+		int version = app.getLastUpdate().intValue();
 
 		service.save(app);
-		app = service.load(Application.class, 1L);
-		assertEquals(1, app.getLastUpdate().intValue());
+		app = service.get(Application.class, refApp.getId());
+		assertEquals(version + 1, app.getLastUpdate().intValue());
 	}
 
 	@Test
 	public void testStaleObjectStateException() {
-		Application app = service.load(Application.class, 1L);
+		Application app = service.get(Application.class, refApp.getId());
 		app.setName(UUID.randomUUID().toString());
 		service.save(app);
 
 		try {
 			app.setName(UUID.randomUUID().toString());
 			service.save(app);
-			fail(StaleObjectStateException.class.getSimpleName() + " expected");
+			fail(String.format("%s or %s expected", StaleObjectStateException.class.getSimpleName(),
+					OptimisticLockException.class.getSimpleName()));
 		} catch (StaleObjectStateException e) {
-			// expected
+			// expected with Hibernate
+		} catch (OptimisticLockException e) {
+			// expected with JPA
 		}
 	}
 
-	@Test(expected = StaleObjectStateException.class)
-	public void testManipulateVersion() {
-		Application app = service.load(Application.class, 1L);
+	@Test
+	public void testManipulateVersion() throws Throwable {
+		Application app = service.get(Application.class, refApp.getId());
 		ReflectionTestUtils.setField(app, "lastUpdate", app.getLastUpdate() + 1);
-		service.save(app);
+		try {
+			service.save(app);
+			fail(String.format("%s or %s expected", StaleObjectStateException.class.getSimpleName(),
+					OptimisticLockException.class.getSimpleName()));
+		} catch (StaleObjectStateException e) {
+			// expected with Hibernate
+		} catch (OptimisticLockException e) {
+			// expected with JPA
+		}
 	}
 
 	@Test
 	public void testNonVersioning() {
-		Book book = service.load(Book.class, 1L);
+		Book book = service.get(Book.class, 1L);
 		book.setTitle(UUID.randomUUID().toString());
 		service.save(book);
 
 		String title = UUID.randomUUID().toString();
 		book.setTitle(title);
 		service.save(book);
-		assertEquals(title, service.load(Book.class, 1L).getTitle());
+		assertEquals(title, service.get(Book.class, 1L).getTitle());
 	}
 }

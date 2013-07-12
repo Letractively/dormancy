@@ -18,7 +18,7 @@ package at.schauer.gregor.dormancy.persister;
 import javax.annotation.Nullable;
 
 /**
- * Contains operations for cloning Hibernate managed objects and merging them into a {@link org.hibernate.Session}.
+ * Contains operations for cloning Hibernate managed objects and merging them into a persistence context.
  * <p/>
  * The term cloning includes any operations required for creating an object graph which is a copy of the given object
  * and its associations. It is neither guaranteed that the types of the constructed objects is the same as the types of
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
  * Merging means to create and/or load Hibernate managed entities which are pendents of the given objects and applying
  * any semantic value changes to them.
  * <p/>
- * It is recommended that merging a previously cloned entity into a {@link org.hibernate.Session} returns the entity
+ * It is recommended that merging a previously cloned entity into a persistence context returns the entity
  * without modifications e.g., {@code entityPersister.merge(entityPersister.clone(anObject)).equals(anObject)} results
  * to {@code true}.
  * <p/>
@@ -46,7 +46,7 @@ public interface EntityPersister<C> {
 	<T extends C> C clone(@Nullable T dbObj);
 
 	/**
-	 * Merges the given object into the current {@link org.hibernate.Session}.
+	 * Merges the given object into the current persistence context.
 	 *
 	 * @param trObj the object to merge
 	 * @return the merged object
