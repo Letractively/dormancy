@@ -35,7 +35,7 @@ public class SetPersisterTest extends PersisterTest<CollectionPersister<Set>> {
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new CollectionPersister<Set>(dormancy);
-		persister.setSessionFactory(sessionFactory);
+		persister.setSessionFactory(persistenceUnitProvider);
 		persister.setConfig(dormancy.getConfig());
 	}
 

@@ -24,5 +24,5 @@ import at.schauer.gregor.dormancy.Dormancy;
  * @since 1.0.1
  */
 public abstract class DormancyFunction<E> implements ContextFunction<E> {
-	protected Dormancy dormancy;
+	protected Dormancy<?, ?, ?> dormancy;
 }

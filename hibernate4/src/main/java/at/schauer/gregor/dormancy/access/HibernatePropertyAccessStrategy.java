@@ -25,10 +25,10 @@ import javax.persistence.Id;
  * Uses Hibernate 4 specific annotations for determining how to access properties of Hibernate entities.
  *
  * @author Gregor Schauer
- * @since 1.1.2
+ * @since 2.0.0
  */
 @SuppressWarnings("unchecked")
-public class HibernatePropertyAccessStrategy extends PropertyAccessStrategy {
+public class HibernatePropertyAccessStrategy extends AnnotationPropertyAccessStrategy {
 	static {
 		accessAnnotations = new Class[]{AccessType.class, Access.class};
 		idAnnotations = new Class[]{Id.class};

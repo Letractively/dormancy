@@ -15,6 +15,7 @@
  */
 package at.schauer.gregor.dormancy.interceptor;
 
+import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.DormancySpringConfig;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
@@ -29,6 +30,7 @@ import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.aop.Pointcut;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 import org.springframework.test.context.ContextConfiguration;
@@ -61,7 +63,7 @@ public class DormancyAdvisorTest {
 	@Transactional
 	public void test() {
 		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
-		assertNotNull(service.load(Book.class, 1L));
+		assertNotNull(service.get(Book.class, 1L));
 	}
 
 	@Test
@@ -86,35 +88,31 @@ public class DormancyAdvisorTest {
 	}
 
 	@Configuration
+	@Import(DormancySpringConfig.class)
 	@EnableAspectJAutoProxy(proxyTargetClass = true)
 	@EnableTransactionManagement(proxyTargetClass = true)
 	@ComponentScan(value = "at.schauer.gregor.dormancy.persister",
 			includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
-	static class Config extends DormancySpringConfig {
+	static class Config {
+		@Inject
+		ApplicationContext ctx;
+
 		@Bean
 		public DormancyAdvisorAspect dormancyInterceptor() {
-			return new DormancyAdvisorAspect(dormancyAdvisor());
+			return new DormancyAdvisorAspect();
 		}
 
 		@Bean
 		public DormancyAdvisor dormancyAdvisor() {
-			DormancyAdvisor advisor = new DormancyAdvisor(dormancy());
+			DormancyAdvisor advisor = new DormancyAdvisor(ctx.getBean(Dormancy.class));
 			advisor.setAnnotationType(Transactional.class);
 			return advisor;
 		}
 
-		@Bean
-		public Service service() {
-			return new ServiceImpl();
-		}
-
 		@Aspect
 		static class DormancyAdvisorAspect {
+			@Inject
 			DormancyAdvisor delegate;
-
-			public DormancyAdvisorAspect(DormancyAdvisor delegate) {
-				this.delegate = delegate;
-			}
 
 			@Around("target(at.schauer.gregor.dormancy.service.ServiceImpl) && @target(org.springframework.transaction.annotation.Transactional)")
 			public Object around(@Nonnull ProceedingJoinPoint joinPoint) throws Throwable {

@@ -17,21 +17,24 @@ package at.schauer.gregor.dormancy;
 
 import at.schauer.gregor.dormancy.interceptor.DormancyAdvisor;
 import at.schauer.gregor.dormancy.interceptor.ServiceInterceptor;
+import at.schauer.gregor.dormancy.persistence.HibernatePersistenceUnitProvider;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
+import at.schauer.gregor.dormancy.service.GenericService;
 import at.schauer.gregor.dormancy.service.Service;
 import at.schauer.gregor.dormancy.service.ServiceImpl;
 import org.aopalliance.aop.Advice;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.dialect.HSQLDialect;
+import org.hibernate.metadata.ClassMetadata;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -40,7 +43,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static at.schauer.gregor.dormancy.util.HibernateVersionUtils.isHibernate3;
+import static at.schauer.gregor.dormancy.util.JpaProviderUtils.isHibernate3;
 
 /**
  * @author Gregor Schauer
@@ -53,10 +56,15 @@ public class DormancySpringConfig {
 	public static final Level LOG_LEVEL = Level.WARN;
 
 	@Bean
-	public Dormancy dormancy() {
+	public HibernatePersistenceUnitProvider persistenceUnitProvider() throws Exception {
+		return new HibernatePersistenceUnitProvider(sessionFactory().getObject());
+	}
+
+	@Bean
+	public Dormancy<SessionFactory, Session, ClassMetadata> dormancy() throws Exception {
 		Logger.getLogger(Dormancy.class).setLevel(LOG_LEVEL);
 		EntityPersisterConfiguration config = new EntityPersisterConfiguration();
-		Dormancy dormancy = new Dormancy();
+		Dormancy<SessionFactory, Session, ClassMetadata> dormancy = new Dormancy<SessionFactory, Session, ClassMetadata>(persistenceUnitProvider());
 		dormancy.setConfig(config);
 		return dormancy;
 	}
@@ -87,7 +95,7 @@ public class DormancySpringConfig {
 
 	@Bean
 	public PlatformTransactionManager transactionManager() throws Exception {
-		return isHibernate3() ? new HibernateTransactionManager(sessionFactory().getObject())
+		return isHibernate3() ? new org.springframework.orm.hibernate3.HibernateTransactionManager(sessionFactory().getObject())
 				: new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory().getObject());
 	}
 
@@ -103,11 +111,11 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Service service() {
+	public Service service() throws Exception {
 		ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 		factoryBean.addAdvice(serviceInterceptor());
 		factoryBean.addAdvice(dormancyAdvisor());
-		factoryBean.setTarget(serviceImpl());
+		factoryBean.setTarget(genericService());
 		return (Service) factoryBean.getObject();
 	}
 
@@ -117,7 +125,7 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Advice dormancyAdvisor() {
+	public Advice dormancyAdvisor() throws Exception {
 		Logger.getLogger(DormancyAdvisor.class).setLevel(LOG_LEVEL);
 		DormancyAdvisor support = new DormancyAdvisor(dormancy());
 		support.setMode(DormancyAdvisor.Mode.BOTH);
@@ -125,7 +133,7 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Service serviceImpl() {
+	public GenericService genericService() {
 		return new ServiceImpl();
 	}
 }

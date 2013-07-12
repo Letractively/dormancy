@@ -24,18 +24,14 @@ import at.schauer.gregor.dormancy.entity.*;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
 import at.schauer.gregor.dormancy.persister.NoOpPersister;
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.FlushMode;
 import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.MethodInvocationException;
-import org.springframework.orm.hibernate3.HibernateCallback;
 
+import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,7 +61,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 	public void testNull() {
 		assertEquals(null, dormancy.clone(null));
 		assertEquals(null, dormancy.merge(null));
-		assertEquals(null, dormancy.merge(null, (Object) null));
+		assertEquals(null, dormancy.merge(null, null));
 	}
 
 	@Test
@@ -112,34 +108,69 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testUseInvalidEntity() {
+		dormancy.getConfig().setCloneObjects(false);
 		InvalidEntity obj = new InvalidEntity(false);
 		InvalidEntity clone = dormancy.clone(obj);
 		assertSame(obj, clone);
+
+		dormancy.getConfig().setCloneObjects(true);
+		try {
+			assertNotNull(dormancy.clone(obj));
+			fail(BeanInstantiationException.class.getSimpleName() + " expected");
+		} catch (BeanInstantiationException e) {
+			// expected
+		}
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testCloneEntityWithPrivateSetter() {
+		ReadOnlyEntity obj = new ReadOnlyEntity(1L, System.nanoTime());
+		dormancy.clone(obj);
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testMergeEntityWithPrivateSetter() {
+		ReadOnlyEntity obj = new ReadOnlyEntity(1L, System.nanoTime());
+		ReadOnlyEntity modified = new ReadOnlyEntity(1L, System.nanoTime());
+		dormancy.merge(modified, obj);
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testCloneEntityWithPrivateGetter() {
+		WriteOnlyEntity obj = new WriteOnlyEntity(1L, System.nanoTime());
+		dormancy.clone(obj);
+	}
+
+	@Test(expected = InvalidPropertyException.class)
+	public void testMergeEntityWithPrivateGetter() {
+		WriteOnlyEntity obj = new WriteOnlyEntity(1L, System.nanoTime());
+		WriteOnlyEntity modified = new WriteOnlyEntity(1L, System.nanoTime());
+		dormancy.merge(modified, obj);
 	}
 
 	@Test(expected = MethodInvocationException.class)
 	public void testCloneEntityWithoutSetter() {
-		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
+		UnsupportedWriteEntity obj = new UnsupportedWriteEntity(1L, "readOnly");
 		dormancy.clone(obj);
 	}
 
 	@Test(expected = MethodInvocationException.class)
 	public void testMergeEntityWithoutSetter() {
-		ReadOnlyEntity obj = new ReadOnlyEntity(1L, "readOnly");
-		ReadOnlyEntity modified = new ReadOnlyEntity(1L, "read");
+		UnsupportedWriteEntity obj = new UnsupportedWriteEntity(1L, "readOnly");
+		UnsupportedWriteEntity modified = new UnsupportedWriteEntity(1L, "read");
 		dormancy.merge(modified, obj);
 	}
 
 	@Test(expected = InvalidPropertyException.class)
 	public void testCloneEntityWithoutGetter() {
-		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
+		UnsupportedReadEntity obj = new UnsupportedReadEntity(1L, "writeOnly");
 		dormancy.clone(obj);
 	}
 
 	@Test(expected = InvalidPropertyException.class)
 	public void testMergeEntityWithoutGetter() {
-		WriteOnlyEntity obj = new WriteOnlyEntity(1L, "writeOnly");
-		WriteOnlyEntity modified = new WriteOnlyEntity(1L, "write");
+		UnsupportedReadEntity obj = new UnsupportedReadEntity(1L, "writeOnly");
+		UnsupportedReadEntity modified = new UnsupportedReadEntity(1L, "write");
 		dormancy.merge(modified, obj);
 	}
 
@@ -174,61 +205,67 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		dormancy.getConfig().setSaveNewEntities(true);
 		try {
 			Long id = (Long) service.save(new Book("new"));
-			Book load = service.load(Book.class, id);
-			assertEquals(false, isManaged(load, sessionFactory.getCurrentSession()));
+			Book load = service.get(Book.class, id);
+			assertEquals(false, isManaged(load, persistenceUnitProvider));
 			assertEquals("new", load.getTitle());
 		} finally {
 			dormancy.getConfig().setSaveNewEntities(false);
 		}
 	}
 
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void testNonExistingEntity() {
 		Book book = new Book("new");
 		book.setId(0L);
-		dormancy.merge(book);
+		try {
+			dormancy.merge(book);
+			fail(String.format("%s or %s expected", ObjectNotFoundException.class.getSimpleName(), EntityNotFoundException.class.getSimpleName()));
+		} catch (ObjectNotFoundException e) {
+			// Hibernate
+		} catch (EntityNotFoundException e) {
+			// JPA
+		}
 	}
 
 	@Test
 	public void testDataTypes() {
-		Session session = sessionFactory.getCurrentSession();
-		DataTypes a = (DataTypes) session.load(DataTypes.class, 1L);
-		DataTypes b = service.load(DataTypes.class, 1L);
+		dormancy.getConfig().setCloneObjects(true);
+		DataTypes a = genericService.get(DataTypes.class, refDataTypes.getId());
+		DataTypes b = service.get(DataTypes.class, refDataTypes.getId());
 		assertNotSame(a, b);
 		assertEquals(false, a.equals(b));
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a, session));
-		assertEquals(false, isManaged(b, session));
+		assertEquals(true, isManaged(a, persistenceUnitProvider));
+		assertEquals(false, isManaged(b, persistenceUnitProvider));
 
 		b.setIntArray(new int[]{11});
 		b.setIntegerArray(new Integer[]{12});
 		Long id = (Long) service.save(b);
-		DataTypes c = service.load(DataTypes.class, id);
+		DataTypes c = service.get(DataTypes.class, id);
 		assertEquals(describe(b), describe(c));
 	}
 
 	@Test
 	public void testDateTime() {
 		Clock clock = new Clock();
-		sessionFactory.getCurrentSession().save(clock);
-		sessionFactory.getCurrentSession().flush();
+		genericService.save(clock);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().flush();
 
-		Clock load = service.load(Clock.class, 1L);
+		Clock load = service.get(Clock.class, clock.getId());
 		load.update();
 		service.save(load);
-		Clock bar = service.load(Clock.class, 1L);
+		Clock bar = service.get(Clock.class, clock.getId());
 		assertEquals(load, bar);
 	}
 
 	@Test
 	public void testCompare() throws Exception {
-		Session session = sessionFactory.getCurrentSession();
-		Book a = (Book) session.load(Book.class, 1L);
-		Book b = service.load(Book.class, 1L);
+		Book a = genericService.get(Book.class, refBook.getId());
+		Book b = service.get(Book.class, refBook.getId());
 		assertNotSame(a, b);
 		assertEquals(describe(a), describe(b));
-		assertEquals(true, isManaged(a, session));
-		assertEquals(false, isManaged(b, session));
+		assertEquals(true, isManaged(a, persistenceUnitProvider));
+		assertEquals(false, isManaged(b, persistenceUnitProvider));
 	}
 
 	@Test
@@ -247,8 +284,9 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testEmployeeHierarchy() {
-		Employee bp = (Employee) sessionFactory.getCurrentSession().load(Employee.class, 2L);
-		Employee bt = service.load(Employee.class, 2L);
+		dormancy.getConfig().setCloneObjects(true);
+		Employee bp = genericService.get(Employee.class, refB.getId());
+		Employee bt = service.get(Employee.class, refB.getId());
 
 		assertEquals(false, bp.getColleagues() == null);
 		assertEquals(Collections.<Employee>emptySet(), bt.getColleagues());
@@ -264,109 +302,56 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testManipulateId() {
-		sessionFactory.getCurrentSession().save(new Book("2"));
-		sessionFactory.getCurrentSession().flush();
+		Long otherId = (Long) genericService.save(new Book("2"));
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().flush();
 
-		Book a = service.load(Book.class, 1L);
-		Book b = service.load(Book.class, 2L);
+		Book a = service.get(Book.class, refBook.getId());
+		Book b = service.get(Book.class, otherId);
 
-		b.setId(1L);
+		b.setId(refBook.getId());
 		b.setTitle(UUID.randomUUID().toString());
 		service.save(b);
 
-		Book c = service.load(Book.class, b.getId());
+		Book c = service.get(Book.class, b.getId());
 		assertEquals(true, a.getId().equals(c.getId()));
 		assertEquals(false, a.getTitle().equals(c.getTitle()));
 	}
 
-	@Test
-	public void testUpdateReferencedEntity() {
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
-		c.getBoss().setName("Master");
-		sessionFactory.getCurrentSession().save(dormancy.merge(c, (Employee) query.setParameter("id", 3L).uniqueResult()));
-
-		Employee z = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
-		assertEquals("Master", z.getBoss().getName());
-	}
-
-	@Ignore
-	@Test
-	public void testModifyCollection() throws SQLException {
-		Session session = sessionFactory.getCurrentSession();
-		session.setFlushMode(FlushMode.MANUAL);
-
-		Query query = session.createQuery("FROM Employee e LEFT JOIN FETCH e.colleagues LEFT JOIN FETCH e.employees WHERE id = :id");
-		Employee a = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
-		Employee b = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
-		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
-		Employee d = new Employee("Newbie", a);
-		assertEquals(1, a.getEmployees().size());
-		assertEquals(true, a.getEmployees().contains(b));
-
-		a.getEmployees().remove(b);
-		b.getEmployees().remove(c);
-		b.setBoss(b);
-		session.merge(b);
-
-		a.getEmployees().add(c);
-		a.getEmployees().add(d);
-		c.setBoss(a);
-		d.setBoss(a);
-
-		Employee merge = dormancy.merge(a, (Employee) query.setParameter("id", 1L).uniqueResult());
-		session.save(merge);
-		session.flush();
-	}
-
-
-	@Test
-	public void testModifyCollectionNew() throws SQLException {
-		dormancy.getConfig().setCloneObjects(true);
-
-		Session session = sessionFactory.getCurrentSession();
-
-		HibernateCallback<Application> hibernateCallback = new HibernateCallback<Application>() {
-			@Override
-			public Application doInHibernate(Session session) {
-				return (Application) session.createQuery("SELECT a FROM Application a JOIN FETCH a.employees WHERE a.id = 1").uniqueResult();
-			}
-		};
-
-		Application app = dormancy.clone(hibernateCallback.doInHibernate(session));
-		app.getEmployees().clear();
-		app.getEmployees().add(service.load(Employee.class, 1L));
-		Application merge = dormancy.merge(app, hibernateCallback);
-
-		assertEquals(describe(app), describe(merge));
-
-		assertEquals(false, isManaged(app.getEmployees(), session));
-		assertEquals(true, isManaged(merge.getEmployees(), session));
-
-		assertEquals("A", app.getEmployees().iterator().next().getName());
-		assertEquals("A", merge.getEmployees().iterator().next().getName());
-
-		assertEquals("A", service.load(Employee.class, 1L).getName());
-		assertEquals("B", service.load(Employee.class, 2L).getName());
-		assertEquals("C", service.load(Employee.class, 3L).getName());
-	}
-
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testEmbeddedId() throws Exception {
+		if (isJpa()) {
+			return;
+		}
+
 		EmbeddedIdEntity entity = new EmbeddedIdEntity();
 		entity.setEmbeddableEntity(new EmbeddableEntity());
 		entity.setValue("test");
 
-		sessionFactory.getCurrentSession().save(entity);
-		sessionFactory.getCurrentSession().flush();
+		genericService.save(entity);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().flush();
 		Map<String, String> expected = BeanUtils.describe(entity);
 
 		EmbeddedIdEntity clone = dormancy.clone(entity);
 		assertEquals(expected, BeanUtils.describe(clone));
 
-		sessionFactory.getCurrentSession().clear();
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		EmbeddedIdEntity merge = dormancy.merge(clone);
 		assertNotSame(entity, merge);
 		assertEquals(expected, BeanUtils.describe(merge));
+	}
+
+	@Test
+	public void testEntityNotExists() {
+		Book book;
+		try {
+			book = genericService.load(Book.class, Long.MAX_VALUE);
+		} catch (EntityNotFoundException e) {
+			// The persistence provider runtime is permitted to throw the EntityNotFoundException when getReference is called.
+			return;
+		}
+		assertNotNull(book);
+		assertEquals(true, dormancy.getUtils().isJavassistProxy(book.getClass()));
+		assertNull(dormancy.clone(book));
 	}
 }

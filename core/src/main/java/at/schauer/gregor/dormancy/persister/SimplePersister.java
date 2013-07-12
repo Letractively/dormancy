@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.Dormancy;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.PropertyNotFoundException;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -69,7 +68,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 				Object dbVal = dormancy.getUtils().getPropertyValue(null, dbObj, field.getName());
 				Object trVal = dormancy.clone_(dbVal, tree);
 				dormancy.getUtils().setPropertyValue(null, trObj, field.getName(), trVal);
-			} catch (PropertyNotFoundException e) {
+			} catch (Exception e) {
 				// Ignore properties that cannot be copied i.e., because they are added at runtime by Javassist
 			}
 		}

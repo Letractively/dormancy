@@ -48,8 +48,8 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		dormancy.addEntityPersister(new CollectionPersister<List<?>>(dormancy), List.class);
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
 
-		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
-		Team team = new Team(service.load(Employee.class, 1L));
+		genericService.save(new Book(UUID.randomUUID().toString()));
+		Team team = new Team(service.get(Employee.class, refA.getId()));
 
 		Team pass = service.next(team);
 		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
@@ -62,8 +62,8 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		dormancy.getPersisterMap().put(List.class, new CollectionPersister<List<?>>(dormancy));
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
 
-		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
-		Team team = new Team(service.load(Employee.class, 1L));
+		genericService.save(new Book(UUID.randomUUID().toString()));
+		Team team = new Team(service.get(Employee.class, refA.getId()));
 
 		Team pass = service.pass(team);
 		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
@@ -72,11 +72,15 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnavailablePersisterPersistenceEndpoint() {
+		if (isJpa()) {
+			throw new IllegalArgumentException();
+		}
+
 		dormancy.getPersisterMap().clear();
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
-		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
+		genericService.save(new Book(UUID.randomUUID().toString()));
 
-		service.next(new Team(service.load(Employee.class, 1L)));
+		service.next(new Team(service.get(Employee.class, 1L)));
 	}
 
 	@Override

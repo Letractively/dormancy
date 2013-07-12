@@ -74,9 +74,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		PARAMETERS, RESULT, BOTH
 	}
 
-	@Nonnull
 	protected Dormancy dormancy;
-	@Nonnull
 	protected Mode mode = Mode.RESULT;
 	protected BeanFactory beanFactory;
 

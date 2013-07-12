@@ -19,9 +19,8 @@ import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.container.Team;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.SessionFactory;
+import at.schauer.gregor.dormancy.util.JpaProviderUtils;
+import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ import java.util.List;
  * @author Gregor Schauer
  */
 @Transactional
-public class ServiceImpl implements Service {
+public class ServiceImpl implements GenericService {
 	@Inject
 	SessionFactory sessionFactory;
 	@Inject
@@ -62,32 +61,58 @@ public class ServiceImpl implements Service {
 
 	@Override
 	@SuppressWarnings("unchecked")
+	public <T extends Serializable> T get(Class<T> type, Long id) {
+		return (T) sessionFactory.getCurrentSession().get(type, id);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends Serializable> T load(Class<T> type, Long id) {
 		return (T) sessionFactory.getCurrentSession().load(type, id);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<Application> list() {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Application.class);
-		return criteria.list();
-	}
-
-	@Override
 	public Team next(Team team) {
-		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(load(Employee.class, team.getEmployees().iterator().next().getId() + 1))));
+		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(get(Employee.class, team.getEmployees().iterator().next().getId() + 1))));
 		return team;
 	}
 
 	@Override
 	public Team prev(Team team) {
-		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(load(Employee.class, team.getEmployees().iterator().next().getId() - 1))));
+		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(get(Employee.class, team.getEmployees().iterator().next().getId() - 1))));
 		return team;
 	}
 
 	@Override
 	public Team pass(Team team) {
-		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(load(Employee.class, team.getEmployees().iterator().next().getId()))));
+		team.setEmployees(new ArrayList<Employee>(Collections.singletonList(get(Employee.class, team.getEmployees().iterator().next().getId()))));
 		return team;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> List<T> list(Class<T> type) {
+		return sessionFactory.getCurrentSession().createCriteria(type).list();
+	}
+
+	@Override
+	public <T extends Serializable> T singleResult(Class<T> type, String qlString, Object... args) {
+		List<T> list = list(type, qlString, args);
+		if (list.size() != 1) {
+			throw new NonUniqueResultException(list.size());
+		}
+		return list.get(0);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> List<T> list(Class<T> type, String qlString, Object... args) {
+		if (!JpaProviderUtils.isJpaEclipseLink()) {
+			qlString = qlString.replaceFirst("\\?\\d", "?");
+		}
+		Query query = sessionFactory.getCurrentSession().createQuery(qlString);
+		for (int i = 0; i < args.length; i++) {
+			query.setParameter(i, args[i]);
+		}
+		return query.list();
 	}
 }

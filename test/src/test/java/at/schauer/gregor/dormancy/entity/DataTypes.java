@@ -15,9 +15,7 @@
  */
 package at.schauer.gregor.dormancy.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -104,6 +102,7 @@ public class DataTypes implements Serializable {
 		this.string = string;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDate() {
 		return date;
 	}

@@ -22,10 +22,10 @@ import org.springframework.core.convert.TypeDescriptor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMode.FIELD;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.FIELD;
 
 /**
- * Uses the provided {@link PropertyAccessStrategy} to determine how to access the properties of a certain object.
+ * Uses the provided {@link AbstractPropertyAccessStrategy} to determine how to access the properties of a certain object.
  * <p/>
  * If a property should be accessed, this implementation performs a lookup of the appropriate strategy for
  * the requested property. Afterwards, another {@link PropertyAccessor} is used for accessing it.<br/>
@@ -34,15 +34,15 @@ import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMod
  * caused by invoking getter or setter methods.
  *
  * @author Gregor Schauer
- * @since 1.1.2
+ * @since 2.0.0
  */
 public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
-	protected PropertyAccessStrategy strategy;
+	protected AbstractPropertyAccessStrategy strategy;
 	protected ConfigurablePropertyAccessor fieldAccessor;
 	protected BeanWrapper propertyAccessor;
 	protected Object target;
 
-	public StrategyPropertyAccessor(@Nonnull Object target, @Nonnull PropertyAccessStrategy strategy) {
+	public StrategyPropertyAccessor(@Nonnull Object target, @Nonnull AbstractPropertyAccessStrategy strategy) {
 		this.target = target;
 		this.strategy = strategy;
 	}
@@ -87,7 +87,7 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 
 	/**
 	 * Returns the appropriate {@link PropertyAccessor} to use for accessing the given named property.<br/>
-	 * The decision is made by using the provided {@link PropertyAccessStrategy}.
+	 * The decision is made by using the provided {@link AbstractPropertyAccessStrategy}.
 	 *
 	 * @param propertyName the name of the property to access
 	 * @return the property accessor to use
@@ -96,7 +96,7 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	 */
 	@Nonnull
 	public PropertyAccessor getPropertyAccessor(@Nonnull String propertyName) {
-		PropertyAccessStrategy.AccessMode accessMode = strategy.getAccessMode(propertyName);
+		AbstractPropertyAccessStrategy.AccessMode accessMode = strategy.getAccessMode(propertyName);
 		return accessMode == FIELD ? getFieldAccessor() : getPropertyAccessor();
 	}
 

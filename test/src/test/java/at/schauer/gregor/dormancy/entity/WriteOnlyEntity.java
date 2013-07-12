@@ -25,14 +25,14 @@ import javax.persistence.Id;
 @Entity
 public class WriteOnlyEntity {
 	public Long id;
-	public String value;
+	public long time;
 
 	public WriteOnlyEntity() {
 	}
 
-	public WriteOnlyEntity(Long id, String value) {
+	public WriteOnlyEntity(Long id, long time) {
 		this.id = id;
-		this.value = value;
+		this.time = time;
 	}
 
 	@Id
@@ -45,11 +45,11 @@ public class WriteOnlyEntity {
 		this.id = id;
 	}
 
-	public String getValue() {
-		throw new UnsupportedOperationException();
+	private long getTime() {
+		return time;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setTime(long time) {
+		this.time = time;
 	}
 }

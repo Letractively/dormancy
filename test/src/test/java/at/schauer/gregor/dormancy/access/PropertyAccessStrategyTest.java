@@ -19,8 +19,7 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import org.junit.Test;
 
-import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMode.FIELD;
-import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMode.PROPERTY;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 public class PropertyAccessStrategyTest {
 	@Test
 	public void testApplication() {
-		PropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Application.class);
+		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Application.class);
 		assertEquals(PROPERTY, strategy.getDefaultAccessMode());
 		assertEquals(PROPERTY, strategy.getAccessMode("id"));
 		assertEquals(FIELD, strategy.getAccessMode("lastUpdate"));
@@ -37,14 +36,14 @@ public class PropertyAccessStrategyTest {
 
 	@Test
 	public void testBook() {
-		PropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
+		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
 		assertEquals(FIELD, strategy.getAccessMode("id"));
 		assertEquals(FIELD, strategy.getAccessMode("title"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidProperty() {
-		PropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
+		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
 		strategy.getAccessMode("");
 	}
 }

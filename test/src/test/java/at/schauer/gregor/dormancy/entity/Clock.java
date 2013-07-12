@@ -15,9 +15,7 @@
  */
 package at.schauer.gregor.dormancy.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -31,6 +29,7 @@ public class Clock implements Serializable {
 	@Id
 	@GeneratedValue
 	public Long id;
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date date;
 	public java.sql.Date sqlDate;
 	public Timestamp timestamp;
@@ -95,10 +94,6 @@ public class Clock implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int result = id.hashCode();
-		result = 31 * result + date.hashCode();
-		result = 31 * result + sqlDate.hashCode();
-		result = 31 * result + timestamp.hashCode();
-		return result;
+		return id != null ? id.hashCode() : System.identityHashCode(this);
 	}
 }

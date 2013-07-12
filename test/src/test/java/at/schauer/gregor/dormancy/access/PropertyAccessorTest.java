@@ -15,18 +15,13 @@
  */
 package at.schauer.gregor.dormancy.access;
 
-import at.schauer.gregor.dormancy.entity.Application;
-import at.schauer.gregor.dormancy.entity.ReadOnlyEntity;
-import at.schauer.gregor.dormancy.entity.WriteOnlyEntity;
+import at.schauer.gregor.dormancy.entity.*;
 import at.schauer.gregor.dormancy.util.DormancyUtils;
-import org.apache.commons.lang.reflect.ConstructorUtils;
-import org.hibernate.SessionFactory;
+import com.google.common.base.Throwables;
 import org.junit.Test;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.MethodInvocationException;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyValue;
+import org.springframework.beans.*;
+
+import java.lang.reflect.Constructor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -35,20 +30,25 @@ import static org.junit.Assert.assertSame;
  * @author Gregor Schauer
  */
 public class PropertyAccessorTest {
-	static DormancyUtils utils;
+	DormancyUtils utils;
 
-	static {
-		try {
-			utils = (DormancyUtils) ConstructorUtils.invokeConstructor(DormancyUtils.class, new Object[]{null}, new Class[]{SessionFactory.class});
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	@SuppressWarnings("unchecked")
+	public DormancyUtils getUtils() {
+		if (utils == null) {
+			try {
+				Constructor<DormancyUtils> ctor = (Constructor<DormancyUtils>) DormancyUtils.class.getConstructors()[0];
+				utils = BeanUtils.instantiateClass(ctor, new Object[]{null});
+			} catch (Exception e) {
+				throw Throwables.propagate(e);
+			}
 		}
+		return utils;
 	}
 
 	@Test
 	public void testApplication() {
 		Application application = new Application();
-		PropertyAccessor accessor = new StrategyPropertyAccessor(application, utils.getAccessTypeStrategy(AopUtils.getTargetClass(application)));
+		PropertyAccessor accessor = new StrategyPropertyAccessor(application, getUtils().getAccessTypeStrategy(application.getClass()));
 		assertSame(Long.class, accessor.getPropertyType("id"));
 		assertSame(Long.class, accessor.getPropertyTypeDescriptor("id").getType());
 		assertSame(String.class, accessor.getPropertyType("name"));
@@ -66,8 +66,8 @@ public class PropertyAccessorTest {
 
 	@Test(expected = MethodInvocationException.class)
 	public void testReadOnlyEntity() {
-		Object entity = new ReadOnlyEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, utils.getAccessTypeStrategy(AopUtils.getTargetClass(entity)));
+		Object entity = new UnsupportedWriteEntity(1L, "val");
+		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getAccessTypeStrategy(entity.getClass()));
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
@@ -82,8 +82,8 @@ public class PropertyAccessorTest {
 
 	@Test(expected = InvalidPropertyException.class)
 	public void testWriteOnlyEntity() {
-		Object entity = new WriteOnlyEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, utils.getAccessTypeStrategy(AopUtils.getTargetClass(entity)));
+		Object entity = new UnsupportedReadEntity(1L, "val");
+		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getAccessTypeStrategy(entity.getClass()));
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 

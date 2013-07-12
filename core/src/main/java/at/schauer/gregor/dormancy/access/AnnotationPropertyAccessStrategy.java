@@ -15,9 +15,6 @@
  */
 package at.schauer.gregor.dormancy.access;
 
-import org.apache.commons.collections.MapUtils;
-import org.springframework.util.Assert;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.beans.PropertyDescriptor;
@@ -25,34 +22,22 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-import static at.schauer.gregor.dormancy.access.PropertyAccessStrategy.AccessMode.*;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.*;
 import static org.apache.commons.lang.StringUtils.upperCase;
 import static org.springframework.beans.BeanUtils.findPropertyForMethod;
 import static org.springframework.core.annotation.AnnotationUtils.getValue;
 import static org.springframework.util.ReflectionUtils.*;
 
 /**
- * Determines how to access entity properties based on various criteria defined by the persistence provider.
+ * Determines how to access entity properties based on annotations located on them.
  *
  * @author Gregor Schauer
- * @since 1.1.2
+ * @since 2.0.0
  */
-public abstract class PropertyAccessStrategy {
+public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyAccessStrategy {
 	protected static Class<? extends Annotation>[] accessAnnotations;
 	protected static Class<? extends Annotation>[] idAnnotations;
-	protected Map<String, AccessMode> propertyAccessTypeMap = new HashMap<String, AccessMode>();
-
-	/**
-	 * The access type
-	 */
-	public enum AccessMode {
-		PROPERTY, FIELD
-	}
-
-	protected AccessMode defaultAccessMode;
 
 	/**
 	 * Creates a new strategy instance.
@@ -60,7 +45,7 @@ public abstract class PropertyAccessStrategy {
 	 * @param entityType the type of the entity
 	 * @see #initialize(Class)
 	 */
-	protected PropertyAccessStrategy(@Nonnull Class<?> entityType) {
+	protected AnnotationPropertyAccessStrategy(@Nonnull Class<?> entityType) {
 		initialize(entityType);
 	}
 
@@ -124,43 +109,11 @@ public abstract class PropertyAccessStrategy {
 					Annotation annotation = getAnnotation(method, getAccessAnnotations());
 
 					// If a annotation was found, map the access type to the appropriate mode. Otherwise, use the default mode for the type.
-					AccessMode accessMode = annotation != null ? valueOf(upperCase((String) getValue(annotation))) : finalEntityAccessMode;
+					AccessMode accessMode = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessMode;
 					propertyAccessTypeMap.put(descriptor.getName(), accessMode);
 				}
 			});
 		}
-	}
-
-	/**
-	 * Returns the default access mode for the entity type.
-	 *
-	 * @return the access mode
-	 */
-	@Nullable
-	public AccessMode getDefaultAccessMode() {
-		return defaultAccessMode;
-	}
-
-	/**
-	 * Sets the default access mode for the entity type.
-	 *
-	 * @param defaultAccessMode the mode to set
-	 */
-	protected void setDefaultAccessMode(@Nullable AccessMode defaultAccessMode) {
-		this.defaultAccessMode = defaultAccessMode;
-	}
-
-	/**
-	 * Returns the {@link AccessMode} for the named property.
-	 *
-	 * @param propertyName the name of the property
-	 * @return the access mode to use
-	 */
-	@Nonnull
-	public AccessMode getAccessMode(@Nonnull String propertyName) {
-		AccessMode accessMode = (AccessMode) MapUtils.getObject(propertyAccessTypeMap, propertyName, null);
-		Assert.notNull(accessMode, "Cannot find property named '" + propertyName + "'");
-		return accessMode;
 	}
 
 	/**

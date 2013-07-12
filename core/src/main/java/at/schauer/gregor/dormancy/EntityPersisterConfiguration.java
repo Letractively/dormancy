@@ -33,7 +33,7 @@ public class EntityPersisterConfiguration {
 	 */
 	private Boolean checkVersion;
 	/**
-	 * Automatically flushes the current session after cloning
+	 * Automatically flushes the current persistence context after cloning
 	 */
 	private Boolean flushAutomatically;
 	/**
