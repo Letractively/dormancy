@@ -15,6 +15,8 @@
  */
 package at.schauer.gregor.dormancy.persistence;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -32,11 +34,13 @@ public class JpaPersistenceUnitProvider implements PersistenceUnitProvider<Entit
 	protected EntityManagerFactory emf;
 	protected EntityManager em;
 
+	@Nullable
 	@Override
 	public EntityManagerFactory getPersistenceUnit() {
 		return emf;
 	}
 
+	@Nonnull
 	@Override
 	public JpaPersistenceContext getPersistenceContextProvider() {
 		if (persistenceContext == null) {
@@ -46,8 +50,9 @@ public class JpaPersistenceUnitProvider implements PersistenceUnitProvider<Entit
 		return persistenceContext;
 	}
 
+	@Nullable
 	@Override
-	public EntityType getMetadata(Class<?> clazz) {
+	public EntityType getMetadata(@Nonnull Class<?> clazz) {
 		try {
 			return emf.getMetamodel().entity(clazz);
 		} catch (Exception e) {
@@ -56,12 +61,12 @@ public class JpaPersistenceUnitProvider implements PersistenceUnitProvider<Entit
 	}
 
 	@PersistenceUnit
-	public void setEntityManagerFactory(EntityManagerFactory emf) {
+	public void setEntityManagerFactory(@Nonnull EntityManagerFactory emf) {
 		this.emf = emf;
 	}
 
 	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
+	public void setEntityManager(@Nonnull EntityManager em) {
 		this.em = em;
 		getPersistenceContextProvider().setEntityManager(em);
 	}

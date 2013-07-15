@@ -80,7 +80,7 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		dormancy.addEntityPersister(NoOpPersister.getInstance());
 		genericService.save(new Book(UUID.randomUUID().toString()));
 
-		service.next(new Team(service.get(Employee.class, 1L)));
+		service.next(new Team(service.get(Employee.class, refA.getId())));
 	}
 
 	@Override

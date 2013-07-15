@@ -32,8 +32,10 @@ import java.util.Map;
  */
 public class CollectionPersister<C extends Collection> extends AbstractContainerPersister<C> {
 	@Inject
+	@SuppressWarnings("unchecked")
 	public CollectionPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
+		supportedTypes = new Class[]{Collection.class};
 	}
 
 	@Nullable
@@ -108,6 +110,6 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 
 	@Override
 	public Class<?>[] getSupportedTypes() {
-		return new Class[]{Collection.class};
+		return supportedTypes;
 	}
 }

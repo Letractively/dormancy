@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class DirectFieldAccessorPersisterTest extends PersisterTest<DirectFieldAccessorPersister<Application>> {
+public class DirectFieldAccessorPersisterTest extends AbstractPersisterTest<DirectFieldAccessorPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

@@ -22,11 +22,11 @@ import at.schauer.gregor.dormancy.persister.EntityPersister;
 import at.schauer.gregor.dormancy.service.GenericService;
 import at.schauer.gregor.dormancy.service.Service;
 import at.schauer.gregor.dormancy.service.ServiceImpl;
+import at.schauer.gregor.dormancy.util.ClassLookup;
+import at.schauer.gregor.dormancy.util.JpaProviderUtils;
 import org.aopalliance.aop.Advice;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.hibernate.dialect.HSQLDialect;
-import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
+import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -54,7 +55,7 @@ import java.util.Properties;
 @ComponentScan(value = "at.schauer.gregor.dormancy.persister",
 		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
 public class DormancySpringConfig {
-	public static final Level LOG_LEVEL = Level.TRACE;
+	public static final Level LOG_LEVEL = Level.WARN;
 	@Inject
 	ApplicationContext ctx;
 
@@ -77,10 +78,15 @@ public class DormancySpringConfig {
 	@Bean
 	public FactoryBean<EntityManagerFactory> entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setPersistenceProviderClass(HibernatePersistence.class);
+		entityManagerFactory.setPersistenceProviderClass(ClassLookup.<PersistenceProvider>forName(
+				JpaProviderUtils.isEclipseLink()
+						? "org.eclipse.persistence.jpa.PersistenceProvider"
+						: "org.hibernate.ejb.HibernatePersistence"));
 		entityManagerFactory.setDataSource(dataSource());
 		entityManagerFactory.setPackagesToScan(DormancySpringConfig.class.getPackage().getName());
 		entityManagerFactory.setJpaProperties(jpaProperties());
+		// Uncomment the following line to enable load-time weaving for EclipseLink
+		// entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
 		return entityManagerFactory;
 	}
 
@@ -99,13 +105,17 @@ public class DormancySpringConfig {
 	@Bean
 	public Properties jpaProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("eclipselink.weaving", "false");
-		properties.setProperty("eclipselink.ddl-generation", "create-tables");
-		properties.setProperty("hibernate.dialect", HSQLDialect.class.getName());
-		properties.setProperty("hibernate.show_sql", "false");
-		properties.setProperty("hibernate.hbm2ddl.auto", "create");
-		properties.setProperty("current_session_context_class", "thread");
-		properties.setProperty("javax.persistence.validation.mode", "none");
+		if (JpaProviderUtils.isEclipseLink()) {
+			// Comment the following line to enable load-time weaving for EclipseLink
+			properties.setProperty("eclipselink.weaving", "false");
+			properties.setProperty("eclipselink.ddl-generation", "create-tables");
+		} else {
+			properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+			properties.setProperty("hibernate.show_sql", "false");
+			properties.setProperty("hibernate.hbm2ddl.auto", "create");
+			properties.setProperty("current_session_context_class", "thread");
+			properties.setProperty("javax.persistence.validation.mode", "none");
+		}
 		return properties;
 	}
 

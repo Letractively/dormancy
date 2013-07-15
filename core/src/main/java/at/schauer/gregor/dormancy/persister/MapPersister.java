@@ -31,8 +31,10 @@ import java.util.Map;
  */
 public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 	@Inject
+	@SuppressWarnings("unchecked")
 	public MapPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
+		supportedTypes = new Class[]{Map.class};
 	}
 
 	@Nullable
@@ -115,6 +117,6 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 
 	@Override
 	public Class<?>[] getSupportedTypes() {
-		return new Class[]{Map.class};
+		return supportedTypes;
 	}
 }

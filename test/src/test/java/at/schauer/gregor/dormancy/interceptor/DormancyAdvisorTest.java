@@ -16,7 +16,6 @@
 package at.schauer.gregor.dormancy.interceptor;
 
 import at.schauer.gregor.dormancy.Dormancy;
-import at.schauer.gregor.dormancy.DormancySpringConfig;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
 import at.schauer.gregor.dormancy.service.Service;
@@ -62,8 +61,9 @@ public class DormancyAdvisorTest {
 	@Test
 	@Transactional
 	public void test() {
-		sessionFactory.getCurrentSession().save(new Book(UUID.randomUUID().toString()));
-		assertNotNull(service.get(Book.class, 1L));
+		Book refBook = new Book(UUID.randomUUID().toString());
+		sessionFactory.getCurrentSession().save(refBook);
+		assertNotNull(service.get(Book.class, refBook.getId()));
 	}
 
 	@Test

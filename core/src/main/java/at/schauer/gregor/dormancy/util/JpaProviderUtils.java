@@ -48,10 +48,10 @@ public class JpaProviderUtils {
 	protected static final String JPA_ECLIPSE_LINK_SET = "org.eclipse.persistence.indirection.IndirectSet";
 	protected static final String JPA_ECLIPSE_LINK_MAP = "org.eclipse.persistence.indirection.IndirectMap";
 
-	protected static final Class<?> PERSISTENT_COLLECTION = ClassLookup.find(HIBERNATE_4_COLLECTION, HIBERNATE_3_COLLECTION, JPA_ECLIPSE_LINK_COLLECTION).orThrow(new IllegalStateException("No supported persistence provider found")).get();
-	protected static final Class<?> PERSISTENT_LIST = ClassLookup.find(HIBERNATE_4_LIST, HIBERNATE_3_LIST, JPA_ECLIPSE_LINK_LIST).orThrow(new IllegalStateException("No supported persistence provider found")).get();
-	protected static final Class<?> PERSISTENT_SET = ClassLookup.find(HIBERNATE_4_SET, HIBERNATE_3_SET, JPA_ECLIPSE_LINK_SET).orThrow(new IllegalStateException("No supported persistence provider found")).get();
-	protected static final Class<?> PERSISTENT_MAP = ClassLookup.find(HIBERNATE_4_MAP, HIBERNATE_3_MAP, JPA_ECLIPSE_LINK_MAP).orThrow(new IllegalStateException("No supported persistence provider found")).get();
+	protected static final Class<?> PERSISTENT_COLLECTION = ClassLookup.find(JPA_ECLIPSE_LINK_COLLECTION, HIBERNATE_4_COLLECTION, HIBERNATE_3_COLLECTION).orThrow(new IllegalStateException("No supported persistence provider found")).get();
+	protected static final Class<?> PERSISTENT_LIST = ClassLookup.find(JPA_ECLIPSE_LINK_LIST, HIBERNATE_4_LIST, HIBERNATE_3_LIST).orThrow(new IllegalStateException("No supported persistence provider found")).get();
+	protected static final Class<?> PERSISTENT_SET = ClassLookup.find(JPA_ECLIPSE_LINK_SET, HIBERNATE_4_SET, HIBERNATE_3_SET).orThrow(new IllegalStateException("No supported persistence provider found")).get();
+	protected static final Class<?> PERSISTENT_MAP = ClassLookup.find(JPA_ECLIPSE_LINK_MAP, HIBERNATE_4_MAP, HIBERNATE_3_MAP).orThrow(new IllegalStateException("No supported persistence provider found")).get();
 
 	/**
 	 * Returns {@code true} if Hibernate 3 collections are found in the classpath.
@@ -76,7 +76,7 @@ public class JpaProviderUtils {
 	 *
 	 * @return {@code true} if EclipseLink is available, {@code false} otherwise
 	 */
-	public static boolean isJpaEclipseLink() {
+	public static boolean isEclipseLink() {
 		return getPersistentCollectionClass().getName().equals(JPA_ECLIPSE_LINK_COLLECTION);
 	}
 

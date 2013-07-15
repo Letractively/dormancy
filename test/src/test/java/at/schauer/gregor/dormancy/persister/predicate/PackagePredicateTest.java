@@ -19,7 +19,7 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
 import at.schauer.gregor.dormancy.persister.DirectFieldAccessorPersister;
-import at.schauer.gregor.dormancy.persister.PersisterTest;
+import at.schauer.gregor.dormancy.persister.AbstractPersisterTest;
 import at.schauer.gregor.dormancy.persister.PredicatePersister;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class PackagePredicateTest extends PersisterTest<PredicatePersister<Object, PackagePredicate>> {
+public class PackagePredicateTest extends AbstractPersisterTest<PredicatePersister<Object, PackagePredicate>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

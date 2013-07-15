@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
-import org.hibernate.Session;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;
@@ -28,36 +27,35 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Gregor Schauer
  */
-public class MapPersisterTest extends PersisterTest<MapPersister> {
+public class MapPersisterTest extends AbstractPersisterTest<MapPersister> {
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new MapPersister(dormancy);
-		persister.setSessionFactory(persistenceUnitProvider);
+		persister.setPersistentUnitProvider(persistenceUnitProvider);
 	}
 
 	@Test
 	public void testEntity() {
-		Session session = sessionFactory.getCurrentSession();
-		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getLongMap(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(a.getLongMap().keySet().iterator().next(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(a.getLongMap().values().iterator().next(), session));
+		CollectionEntity a = genericService.get(CollectionEntity.class, refCollectionEntity.getId());
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getLongMap(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(a.getLongMap().keySet().iterator().next(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(a.getLongMap().values().iterator().next(), persistenceUnitProvider));
 
 		Map clone = (Map) persister.clone(a.getLongMap());
-		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(clone.keySet().iterator().next(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(clone.values().iterator().next(), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.keySet().iterator().next(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.values().iterator().next(), persistenceUnitProvider));
 
 		Map merge = (Map) persister.merge(clone);
-		assertEquals(false, AbstractDormancyTest.isManaged(merge, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.keySet().iterator().next(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.values().iterator().next(), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.keySet().iterator().next(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.values().iterator().next(), persistenceUnitProvider));
 
 		merge = (Map) persister.merge(clone, a.getLongMap());
-		assertEquals(true, AbstractDormancyTest.isManaged(merge, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.keySet().iterator().next(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.values().iterator().next(), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.keySet().iterator().next(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.values().iterator().next(), persistenceUnitProvider));
 	}
 }

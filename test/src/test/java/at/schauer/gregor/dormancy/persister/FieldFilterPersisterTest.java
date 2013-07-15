@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class FieldFilterPersisterTest extends PersisterTest<FieldFilterPersister<Application>> {
+public class FieldFilterPersisterTest extends AbstractPersisterTest<FieldFilterPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

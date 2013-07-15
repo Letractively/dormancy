@@ -15,7 +15,7 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import at.schauer.gregor.dormancy.access.AnnotationPropertyAccessStrategy;
+import at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy;
 import at.schauer.gregor.dormancy.access.JpaAccessTypeStrategy;
 import at.schauer.gregor.dormancy.access.StrategyPropertyAccessor;
 import at.schauer.gregor.dormancy.persistence.JpaPersistenceUnitProvider;
@@ -26,13 +26,16 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessor;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
@@ -52,22 +55,76 @@ import java.lang.reflect.Field;
 public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, EntityManager, EntityType<?>,
 		JpaPersistenceUnitProvider> {
 
-	public DormancyUtils(JpaPersistenceUnitProvider persistenceProvider) {
-		super(persistenceProvider);
+	@Inject
+	public DormancyUtils(@Nonnull JpaPersistenceUnitProvider persistenceUnitProvider) {
+		super(persistenceUnitProvider);
 	}
 
 	@Nullable
 	@Override
-	public EntityType<?> getClassMetadata(@Nullable Class<?> clazz) {
-		return persistenceUnitProvider.getMetadata(clazz);
+	public EntityType<?> getMetadata(@Nullable Class<?> clazz) {
+		return clazz != null ? persistenceUnitProvider.getMetadata(clazz) : null;
+	}
+
+	/**
+	 * @see EntityType#getJavaType()
+	 */
+	@Nonnull
+	@Override
+	public Class<?> getMappedClass(@Nonnull EntityType<?> metadata) {
+		return metadata.getJavaType();
+	}
+
+	@Nonnull
+	@Override
+	public String getEntityName(@Nonnull Class<?> clazz) {
+		EntityType<?> metadata = getMetadata(clazz);
+		return metadata != null ? metadata.getName() : clazz.getSimpleName();
+	}
+
+	@Nullable
+	@Override
+	protected String getIdentifierPropertyName(@Nonnull Class<?> clazz) {
+		EntityType<?> metadata = getMetadata(clazz);
+		return metadata != null ? metadata.getId(metadata.getIdType().getJavaType()).getName() : null;
 	}
 
 	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> Serializable getIdentifier(@Nonnull EntityType<?> metadata, @Nonnull T bean) {
-		SingularAttribute<? super T, ?> idAttribute = (SingularAttribute<? super T, ?>) metadata.getId(metadata.getIdType().getJavaType());
-		return (Serializable) getPropertyValue(metadata, bean, idAttribute.getName());
+		if (metadata.hasSingleIdAttribute()) {
+			SingularAttribute<? super T, ?> idAttribute = (SingularAttribute<? super T, ?>) metadata.getId(metadata.getIdType().getJavaType());
+			return (Serializable) getPropertyValue(metadata, bean, idAttribute.getName());
+		} else {
+			Serializable idClass = null;
+			for (SingularAttribute<?, ?> idClassAttribute : metadata.getIdClassAttributes()) {
+				if (idClass == null) {
+					Class<?> idClassType = idClassAttribute.getJavaMember().getDeclaringClass();
+					idClass = (Serializable) BeanUtils.instantiateClass(idClassType);
+				}
+				Object value = getPropertyValue(metadata, bean, idClassAttribute.getName());
+				IntrospectorUtils.setValue(idClass, idClassAttribute.getName(), value);
+			}
+			return idClass;
+		}
+	}
+
+	@Override
+	public boolean isVersioned(@Nonnull EntityType<?> metadata) {
+		return metadata.hasVersionAttribute();
+	}
+
+	@Nullable
+	@Override
+	public String getVersionPropertyName(@Nonnull EntityType<?> metadata) {
+		if (metadata.hasVersionAttribute()) {
+			SingularAttribute<?, Long> version = metadata.getVersion(Long.class);
+			if (version != null) {
+				return version.getName();
+			}
+		}
+		return null;
 	}
 
 	@Nullable
@@ -81,40 +138,10 @@ public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, E
 		IntrospectorUtils.setValue(bean, propertyName, value);
 	}
 
-	@Nullable
-	@Override
-	public Class<?> getMappedClass(@Nonnull EntityType<?> metadata) {
-		return metadata.getJavaType();
-	}
-
-	@Override
-	public boolean isPersistentCollection(@Nullable Object obj) {
-		return obj != null && JpaProviderUtils.getPersistentCollectionClass().isAssignableFrom(obj.getClass());
-	}
-
-	@Override
-	public boolean isInitializedPersistentCollection(@Nullable Object obj) {
-		return isPersistentCollection(obj) && PersistentCollection.class.cast(obj).wasInitialized();
-	}
-
-	@Nonnull
-	@Override
-	public String getEntityName(@Nonnull Class<?> clazz) {
-		EntityType<?> metadata = getClassMetadata(clazz);
-		return metadata != null ? metadata.getName() : clazz.getSimpleName();
-	}
-
-	@Nullable
-	@Override
-	protected String getIdentifierPropertyName(@Nonnull Class<?> clazz) {
-		EntityType<?> metadata = getClassMetadata(clazz);
-		return metadata != null ? metadata.getId(metadata.getIdType().getJavaType()).getName() : null;
-	}
-
 	@Nonnull
 	@Override
 	public Class<?> getPropertyType(@Nonnull Class<?> clazz, @Nonnull String propertyName) {
-		EntityType<?> metadata = getClassMetadata(clazz);
+		EntityType<?> metadata = getMetadata(clazz);
 		if (metadata != null) {
 			try {
 				Attribute attribute = metadata.getAttribute(propertyName);
@@ -128,26 +155,35 @@ public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, E
 		return ReflectionUtils.findField(clazz, propertyName).getType();
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
-	protected AnnotationPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz) {
-		return new JpaAccessTypeStrategy(clazz);
-	}
-
-	@Override
-	public boolean isVersioned(@Nonnull EntityType<?> metadata) {
-		return metadata.hasVersionAttribute();
-	}
-
-	@Override
-	public String getVersionPropertyName(@Nonnull EntityType<?> metadata) {
-		if (metadata.hasVersionAttribute()) {
-			SingularAttribute<?, Long> version = metadata.getVersion(Long.class);
-			if (version != null) {
-				return version.getName();
+	public PropertyAccessor getPropertyAccessor(@Nullable EntityType<?> metadata, @Nonnull Object obj) {
+		if (metadata == null) {
+			return PropertyAccessorFactory.forDirectFieldAccess(obj);
+		}
+		if (isJavassistProxy(obj.getClass())) {
+			// If the object is a proxy, attempt to find its LazyInitializer
+			Field handlerField = ReflectionUtils.findField(obj.getClass(), "handler");
+			if (handlerField != null) {
+				// If the LazyInitializer is available, obtain the underlying object
+				LazyInitializer lazyInitializer = (LazyInitializer) ReflectionTestUtils.getField(obj, "handler");
+				// Initialize it if necessary and return a DirectFieldAccessor for the nested object
+				obj = lazyInitializer.getImplementation();
+			} else {
+				/*
+				 * Otherwise log a warning message because this is very unlikely to happen or even impossible.
+				 * However, instead of throwing an exception, property access is used as a fallback solution.
+				 */
+				Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
 			}
 		}
-		return null;
+		return new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
+	}
+
+	@Nonnull
+	@Override
+	protected AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz) {
+		return new JpaAccessTypeStrategy(clazz);
 	}
 
 	@Nullable
@@ -166,104 +202,120 @@ public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, E
 	@SuppressWarnings("unchecked")
 	public <K> K persist(@Nonnull Object obj) {
 		getPersistenceContext().persist(obj);
-		return (K) getIdentifier(getClassMetadata(obj), obj);
-	}
-
-	@Nonnull
-	@Override
-	public EntityManager getPersistenceContext() {
-		return this.persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext();
-	}
-
-	@Nullable
-	@Override
-	public PropertyAccessor getPropertyAccessor(@Nullable EntityType<?> metadata, @Nonnull Object obj) {
-		if (metadata != null) {
-			if (isJavassistProxy(obj.getClass())) {
-				// If the object is a proxy, attempt to find its LazyInitializer
-				Field handlerField = ReflectionUtils.findField(obj.getClass(), "handler");
-				if (handlerField != null) {
-					// If the LazyInitializer is available, obtain the underlying object
-					LazyInitializer lazyInitializer = (LazyInitializer) ReflectionTestUtils.getField(obj, "handler");
-					// Initialize it if necessary and return a DirectFieldAccessor for the nested object
-					obj = lazyInitializer.getImplementation();
-				} else {
-					/*
-					 * Otherwise log a warning message because this is very unlikely to happen or even impossible.
-					 * However, instead of throwing an exception, property access is used as a fallback solution.
-					 */
-					Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
-				}
-			}
-		}
-		return new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
+		return (K) getIdentifier(getMetadata(obj), obj);
 	}
 
 	/**
-	 * Throws a {@link org.hibernate.TransientObjectException} indicating that the object has no valid identifier.
-	 *
-	 * @param object the object
+	 * @see #isInitialized(Object)
+	 * @see HibernateProxy
 	 */
 	@Override
-	public void throwNullIdentifierException(@Nonnull Object object) {
+	public boolean isProxy(@Nullable Object obj) {
+		return obj instanceof HibernateProxy;
+	}
+
+	/**
+	 * @see Hibernate#isInitialized(Object)
+	 */
+	@Override
+	public boolean isInitialized(@Nullable Object obj) {
+		return Hibernate.isInitialized(obj);
+	}
+
+	@Override
+	public boolean isUninitialized(@Nonnull String propertyName, @Nonnull Object dbObj, @Nonnull Object dbValue, @Nullable Object trValue) {
+		HibernateProxy hibernateProxy = HibernateProxy.class.cast(dbValue);
+		LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
+		if (lazyInitializer.isUninitialized()) {
+			// If property is loaded lazily, the value of the given object must be null
+			if (trValue != null) {
+				throw throwLazyPropertyNotNullException(trValue, dbObj, propertyName);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isPersistentCollection(@Nullable Object obj) {
+		return obj instanceof PersistentCollection;
+	}
+
+	/**
+	 * @see PersistentCollection#wasInitialized()
+	 */
+	@Override
+	public boolean isInitializedPersistentCollection(@Nullable Object obj) {
+		return isPersistentCollection(obj) && PersistentCollection.class.cast(obj).wasInitialized();
+	}
+
+	/**
+	 * Throws an {@link IllegalStateException} indicating that the object has no valid identifier.
+	 *
+	 * @throws IllegalStateException the exception
+	 */
+	@Override
+	public RuntimeException throwNullIdentifierException(@Nonnull Object object) {
 		throw new IllegalStateException("The given object has a null identifier: " + getEntityName(getClass(object)));
 	}
 
 	/**
-	 * Throws {@link org.hibernate.TransientObjectException} indicating that the object must be saved manually before continuing.
+	 * Throws an {@link IllegalStateException} indicating that the object must be saved manually before continuing.
 	 *
-	 * @param object the object
+	 * @throws IllegalStateException the exception
 	 */
 	@Override
-	public void throwUnsavedTransientInstanceException(@Nonnull Object object) {
+	public RuntimeException throwUnsavedTransientInstanceException(@Nonnull Object object) {
 		throw new IllegalStateException(
 				"object references an unsaved transient instance - save the transient instance before flushing: " +
 						getEntityName(getClass(object))
 		);
 	}
 
+	/**
+	 * Throws an {@link PropertyValueException} when a lazy property holds a value while {@code null} was expected.
+	 *
+	 * @throws PropertyValueException the exception
+	 */
 	@Override
-	public void throwLazyPropertyNotNull(Object trValue, Object dbObj, String propertyName) {
+	public RuntimeException throwLazyPropertyNotNullException(@Nonnull Object trValue, @Nonnull Object dbObj, @Nonnull String propertyName) {
 		throw new PropertyValueException("Property is loaded lazily. Therefore it must be null but was: " + trValue,
 				getEntityName(getClass(dbObj)), propertyName);
 	}
 
+	/**
+	 * Throws an {@link OptimisticLockException} when an optimistic locking conflict occurs.
+	 *
+	 * @throws OptimisticLockException the exception
+	 */
 	@Override
-	public void throwStaleObjectStateException(Object dbValue, Serializable identifier) {
+	public RuntimeException throwOptimisticLockException(@Nonnull Object dbValue, @Nonnull Serializable identifier) {
 		throw new OptimisticLockException(String.format("Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [%s#%s]", getEntityName(getClass(dbValue)), identifier));
 	}
 
+	/**
+	 * Throws an {@link EntityNotFoundException} when an entity reference is accessed but the entity does not exist.
+	 *
+	 * @throws EntityNotFoundException the exception
+	 */
 	@Override
-	public void throwObjectNotFoundException(Serializable identifier, Object trObj) {
+	public RuntimeException throwEntityNotFoundException(@Nonnull Serializable identifier, @Nonnull Object trObj) {
 		throw new EntityNotFoundException(String.format("No row with the given identifier exists: [%s#%s]", getClass(trObj).getSimpleName(), identifier));
 	}
 
+	/**
+	 * Throws a {@link PropertyValueException} when a property is not accessible or holds an unexpected value.
+	 *
+	 * @throws PropertyValueException the exception
+	 */
 	@Override
-	public void throwPropertyValueException(String message, Object bean) {
+	public RuntimeException throwPropertyValueException(@Nonnull String message, @Nonnull Object bean) {
 		throw new PropertyValueException(message, getEntityName(bean.getClass()), getIdentifierPropertyName(bean.getClass()));
 	}
 
+	@Nonnull
 	@Override
-	public boolean isInitialized(Object obj) {
-		return Hibernate.isInitialized(obj);
-	}
-
-	@Override
-	public boolean isProxy(Object dbValue) {
-		return dbValue instanceof HibernateProxy;
-	}
-
-	@Override
-	public boolean isUninitialized(String propertyName, Object dbObj, Object dbValue, Object trValue) {
-		HibernateProxy hibernateProxy = HibernateProxy.class.cast(dbValue);
-		LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
-		if (lazyInitializer.isUninitialized()) {
-			// If property is loaded lazily, the value of the given object must be null
-			if (trValue != null) {
-				throwLazyPropertyNotNull(trValue, dbObj, propertyName);
-			}
-			return true;
-		}
-		return false;
+	public EntityManager getPersistenceContext() {
+		return persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext();
 	}
 }

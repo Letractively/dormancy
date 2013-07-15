@@ -57,7 +57,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	protected void initialize(@Nonnull Class<?> entityType) {
 		// Retrieve the default access type for the entity type by looking up access annotations on type level
 		Annotation accessType = getAnnotation(entityType, getAccessAnnotations());
-		AccessMode entityAccessMode = accessType != null ? valueOf((String) getValue(accessType)) : null;
+		AccessMode entityAccessMode = accessType != null ? valueOf(upperCase(String.valueOf(getValue(accessType)))) : null;
 
 		// If the entity type does not define a default access type, scan for methods annotated with an ID annotation
 		if (entityAccessMode == null) {
@@ -91,7 +91,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					Annotation annotation = getAnnotation(field, getAccessAnnotations());
 
 					// If a annotation was found, map the access type to the appropriate mode. Otherwise, use the default mode for the type.
-					AccessMode accessMode = annotation != null ? valueOf(upperCase((String) getValue(annotation))) : finalEntityAccessMode;
+					AccessMode accessMode = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessMode;
 					propertyAccessTypeMap.put(field.getName(), accessMode);
 				}
 			});

@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Employee;
-import org.hibernate.Session;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;
@@ -29,13 +28,13 @@ import static org.junit.Assert.*;
 /**
  * @author Gregor Schauer
  */
-public class SetPersisterTest extends PersisterTest<CollectionPersister<Set>> {
+public class SetPersisterTest extends AbstractPersisterTest<CollectionPersister<Set>> {
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new CollectionPersister<Set>(dormancy);
-		persister.setSessionFactory(persistenceUnitProvider);
+		persister.setPersistentUnitProvider(persistenceUnitProvider);
 		persister.setConfig(dormancy.getConfig());
 	}
 
@@ -58,19 +57,18 @@ public class SetPersisterTest extends PersisterTest<CollectionPersister<Set>> {
 
 	@Test
 	public void testEntity() {
-		Session session = sessionFactory.getCurrentSession();
-		Employee a = (Employee) session.get(Employee.class, 2L);
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getEmployees(), session));
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getEmployees().iterator().next(), session));
+		Employee a = genericService.get(Employee.class, refBoss.getId());
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getEmployees(), persistenceUnitProvider));
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getEmployees().iterator().next(), persistenceUnitProvider));
 
 		Set clone = persister.clone(a.getEmployees());
-		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
-		assertEquals(false, AbstractDormancyTest.isProxy(clone.iterator().next(), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isProxy(clone.iterator().next(), persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext()));
 
 		Set merge = persister.merge(clone);
-		assertEquals(true, AbstractDormancyTest.isManaged(merge.iterator().next(), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.iterator().next(), persistenceUnitProvider));
 
 		merge = persister.merge(clone, a.getEmployees());
-		assertEquals(true, AbstractDormancyTest.isManaged(merge.iterator().next(), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.iterator().next(), persistenceUnitProvider));
 	}
 }

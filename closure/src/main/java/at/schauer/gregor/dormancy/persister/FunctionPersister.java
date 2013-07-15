@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Uses {@link Function Functions} for cloning/merging of {@link Iterable Iterables} containing Hibernate entities.
+ * Uses {@link Function Functions} for cloning/merging of {@link Iterable Iterables} containing JPA entities.
  *
  * @author Gregor Schauer
  */

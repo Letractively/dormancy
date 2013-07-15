@@ -27,7 +27,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -102,7 +101,7 @@ public class DormancySpringConfig {
 	@Bean
 	public Properties hibernateProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.dialect", HSQLDialect.class.getName());
+		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
 		properties.setProperty("hibernate.show_sql", "false");
 		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		properties.setProperty("current_session_context_class", "thread");

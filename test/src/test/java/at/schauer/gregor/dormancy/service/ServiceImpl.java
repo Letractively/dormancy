@@ -106,7 +106,7 @@ public class ServiceImpl implements GenericService {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Serializable> List<T> list(Class<T> type, String qlString, Object... args) {
-		if (!JpaProviderUtils.isJpaEclipseLink()) {
+		if (!JpaProviderUtils.isEclipseLink()) {
 			qlString = qlString.replaceFirst("\\?\\d", "?");
 		}
 		Query query = sessionFactory.getCurrentSession().createQuery(qlString);

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Gregor Schauer
  */
-public class FunctionPersisterTest extends PersisterTest<FunctionPersister<Employee>> {
+public class FunctionPersisterTest extends AbstractPersisterTest<FunctionPersister<Employee>> {
 	@Override
 	@PostConstruct
 	public void postConstruct() {
@@ -38,14 +38,14 @@ public class FunctionPersisterTest extends PersisterTest<FunctionPersister<Emplo
 
 	@Test
 	public void testClone() {
-		Employee b = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
+		Employee b = genericService.get(Employee.class, refBoss.getId());
 		Iterable<?> e = persister.clone(b.getEmployees());
 		assertEquals(1, Iterables.size(e));
 	}
 
 	@Test
 	public void testMerge() {
-		Employee bp = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
+		Employee bp = genericService.get(Employee.class, refBoss.getId());
 		assertEquals(1, bp.getEmployees().size());
 		Employee bt = dormancy.clone(bp);
 		assertNotNull(bt);
@@ -63,7 +63,7 @@ public class FunctionPersisterTest extends PersisterTest<FunctionPersister<Emplo
 
 	@Test
 	public void testMergeTogether() {
-		Employee bp = (Employee) sessionFactory.getCurrentSession().get(Employee.class, 2L);
+		Employee bp = genericService.get(Employee.class, refBoss.getId());
 		assertEquals(1, bp.getEmployees().size());
 		Employee bt = dormancy.clone(bp);
 		assertNotNull(bt);

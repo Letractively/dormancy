@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.persister;
 
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
-import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,12 +29,12 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.1.0
  */
-public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
+public class ArrayPersisterTest extends AbstractPersisterTest<ArrayPersister<Object>> {
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
-		persister = new ArrayPersister(dormancy);
+		persister = new ArrayPersister<Object>(dormancy);
 	}
 
 	@Before
@@ -50,8 +49,7 @@ public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
 
 	@Test
 	public void test() throws Exception {
-		Session session = sessionFactory.getCurrentSession();
-		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
+		CollectionEntity a = genericService.get(CollectionEntity.class, refCollectionEntity.getId());
 		Object[] array = {0, "", a};
 
 		Object[] clone = (Object[]) persister.clone(array);
@@ -60,8 +58,8 @@ public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
 		assertSame(array[1], clone[1]);
 		assertNotSame(array[2], clone[2]);
 
-		assertEquals(true, AbstractDormancyTest.isManaged(array[2], session));
-		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], session));
+		assertEquals(true, AbstractDormancyTest.isManaged(array[2], persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], persistenceUnitProvider));
 
 		Object[] merge = (Object[]) persister.merge(clone);
 		assertNotSame(array, merge);
@@ -70,8 +68,8 @@ public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
 		assertSame(clone[1], merge[1]);
 		assertNotSame(clone[2], merge[2]);
 
-		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], session));
-		assertEquals(true, AbstractDormancyTest.isManaged(merge[2], session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], persistenceUnitProvider));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge[2], persistenceUnitProvider));
 
 		merge = (Object[]) persister.merge(clone, array);
 		assertNotSame(array, merge);
@@ -80,7 +78,7 @@ public class ArrayPersisterTest extends PersisterTest<ArrayPersister> {
 		assertSame(clone[1], merge[1]);
 		assertNotSame(clone[2], merge[2]);
 
-		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], session));
-		assertEquals(true, AbstractDormancyTest.isManaged(merge[2], session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone[2], persistenceUnitProvider));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge[2], persistenceUnitProvider));
 	}
 }
