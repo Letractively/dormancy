@@ -18,6 +18,7 @@ package at.schauer.gregor.dormancy;
 import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import at.schauer.gregor.dormancy.persister.*;
 import at.schauer.gregor.dormancy.util.AbstractDormancyUtils;
+import at.schauer.gregor.dormancy.util.EntityCallback;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -71,17 +72,24 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	@PostConstruct
 	@SuppressWarnings("unchecked")
 	public void initialize() {
-		try {
-			Class<?> type = getClass().getClassLoader().loadClass("at.schauer.gregor.dormancy.util.DormancyUtils");
-			utils = (AbstractDormancyUtils) ConstructorUtils.invokeConstructor(type, persistenceUnitProvider);
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		// Initialize JPA provider specific DormancyUtils
+		if (utils == null) {
+			try {
+				Class<?> type = getClass().getClassLoader().loadClass("at.schauer.gregor.dormancy.util.DormancyUtils");
+				utils = (AbstractDormancyUtils) ConstructorUtils.invokeConstructor(type, persistenceUnitProvider);
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
+
+		// Ensure that a configuration is provided
 		if (config == null) {
 			config = new EntityPersisterConfiguration();
 		}
+
+		// Register all default entity persisters if necessary
 		if (registerDefaultEntityPersisters) {
 			addEntityPersister(ArrayPersister.class);
 			addEntityPersister(CollectionPersister.class);
@@ -133,7 +141,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		}
 
 		// Retrieve the Hibernate class metadata (if available)
-		PMD metadata = utils.getClassMetadata(dbObj);
+		PMD metadata = utils.getMetadata(dbObj);
 
 		// Process the properties
 		String[] propertyNames = utils.getPropertyNames(dbObj);
@@ -141,7 +149,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		try {
 			dbPropertyAccessor = utils.getPropertyAccessor(metadata, dbObj);
 		} catch (Exception e) {
-			logger.warn("Cannot access object " + ObjectUtils.identityToString(dbObj), e);
+			logger.warn(String.format("Cannot access object %s: %s", ObjectUtils.identityToString(dbObj), ExceptionUtils.getMessage(e)));
 			tree.put(dbObj, null);
 			return null;
 		}
@@ -229,7 +237,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		}
 
 		// Verify that the given object is a non-null managed entity.
-		PMD metadata = utils.getClassMetadata(trObj);
+		PMD metadata = utils.getMetadata(trObj);
 		if (metadata == null) {
 			return trObj;
 		}
@@ -246,7 +254,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 				identifier = utils.getIdentifier(metadata, trObj);
 			} else {
 				// Otherwise throw an exception indicating that the entity should have be saved before
-				utils.throwNullIdentifierException(trObj);
+				throw utils.throwNullIdentifierException(trObj);
 			}
 		}
 
@@ -254,10 +262,24 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		T dbObj = (T) utils.find(utils.getClass(trObj), identifier);
 		if (dbObj == null) {
 			// Throw an exception indicating that the persistent object cannot be retrieved.
-			utils.throwObjectNotFoundException(identifier, trObj);
+			throw utils.throwEntityNotFoundException(identifier, trObj);
 		}
 
 		return merge_(trObj, dbObj, tree);
+	}
+
+	/**
+	 * Invokes the given {@link EntityCallback} and passes its result to {@link #merge(Object, Object)}.
+	 *
+	 * @param trObj    the object to merge
+	 * @param callback the callback to execute
+	 * @return the merged object
+	 * @see #merge(Object, Object)
+	 */
+	@Nullable
+	public <T> T merge(@Nullable T trObj, @Nonnull EntityCallback<T, PU, PC, PMD> callback) {
+		T dbObj = trObj == null ? null : callback.<T>work(persistenceUnitProvider);
+		return merge(trObj, dbObj);
 	}
 
 	@Nullable
@@ -288,7 +310,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		tree.put(trObj, dbObj);
 
 		// Verify that the given object is a non-null managed entity or it is not necessary to merge it
-		PMD metadata = utils.getClassMetadata(trObj);
+		PMD metadata = utils.getMetadata(trObj);
 		if (metadata == null || trObj == dbObj) {
 			return trObj;
 		}
@@ -304,7 +326,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 			Object dbValue = dbPropertyAccessor.getPropertyValue(utils.getVersionPropertyName(metadata));
 			Object trValue = trPropertyAccessor.getPropertyValue(utils.getVersionPropertyName(metadata));
 			if (dbValue != null && !dbValue.equals(trValue)) {
-				utils.throwStaleObjectStateException(dbValue, identifier);
+				throw utils.throwOptimisticLockException(dbValue, identifier);
 			}
 		}
 
@@ -327,7 +349,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 				if (!utils.isInitializedPersistentCollection(dbValue)) {
 					// If property is loaded lazily, the value of the given object must be null or empty
 					if (trValue != null && trValue != dbValue && CollectionUtils.size(trValue) > 0) {
-						utils.throwLazyPropertyNotNull(trValue, dbObj, propertyName);
+						throw utils.throwLazyPropertyNotNullException(trValue, dbObj, propertyName);
 					}
 					continue;
 				}
@@ -343,7 +365,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 					}
 				} else if (trValue != dbValue) {
 					// Get the identifier of the associated transient object
-					PMD valueMetadata = utils.getClassMetadata(dbValue);
+					PMD valueMetadata = utils.getMetadata(dbValue);
 					Serializable trValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, trValue));
 					// Get the identifier of the associated persistent object
 					Serializable dbValueId = Serializable.class.cast(utils.getIdentifier(valueMetadata, dbValue));
@@ -356,7 +378,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 							trValue = utils.find(trValue.getClass(), trValueId);
 						} else {
 							// Otherwise throw an exception indicating that the entity should have been saved before
-							utils.throwUnsavedTransientInstanceException(trValue);
+							throw utils.throwUnsavedTransientInstanceException(trValue);
 						}
 					} else if (!trValueId.equals(dbValueId)) {
 						// Load the entity with the given identifier
@@ -483,7 +505,16 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setApplicationContext(@Nonnull ApplicationContext applicationContext) {
+		Map<String, AbstractDormancyUtils> utilsMap = applicationContext.getBeansOfType(AbstractDormancyUtils.class);
+		if (utilsMap.size() > 1) {
+			throw new IllegalStateException(String.format("Cannot initialize %s: Multiple beans of type %s found: %s",
+					getClass(), AbstractDormancyUtils.class.getName(), utilsMap.keySet()));
+		} else if (utilsMap.size() == 1) {
+			this.utils = utilsMap.get(utilsMap.keySet().iterator().next());
+		}
+
 		initialize();
 		// Retrieve all AbstractEntityPersisters from the application context and register them
 		Map<String, AbstractEntityPersister> map = applicationContext.getBeansOfType(AbstractEntityPersister.class);

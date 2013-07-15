@@ -17,7 +17,6 @@ package at.schauer.gregor.dormancy.sample;
 
 import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.persister.EntityPersister;
-import org.hibernate.dialect.HSQLDialect;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -70,7 +69,7 @@ public class SampleSpringConfig {
 	@Bean
 	public Properties hibernateProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.dialect", HSQLDialect.class.getName());
+		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
 		properties.setProperty("hibernate.show_sql", "false");
 		properties.setProperty("current_session_context_class", "thread");
 		properties.setProperty("hibernate.hbm2ddl.auto", "create");

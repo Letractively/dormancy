@@ -20,6 +20,7 @@ import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.DataTypes;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persistence.JpaPersistenceUnitProvider;
+import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import at.schauer.gregor.dormancy.service.GenericService;
 import at.schauer.gregor.dormancy.service.Service;
 import org.apache.commons.beanutils.BeanUtils;
@@ -109,12 +110,16 @@ public abstract class AbstractDormancyTest {
 		}
 	}
 
-	public static boolean isManaged(@Nonnull Object entity, @Nonnull JpaPersistenceUnitProvider persistenceUnitProvider) {
+	public static boolean isManaged(@Nonnull Object entity, @Nonnull PersistenceUnitProvider<EntityManagerFactory, EntityManager, EntityType<?>> persistenceUnitProvider) {
 		return isManaged(entity, persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext());
 	}
 
 	public static boolean isManaged(@Nonnull Object entity, @Nonnull EntityManager entityManager) {
-		return entityManager.isOpen() && entityManager.contains(entity) || isProxy(entity, entityManager);
+		try {
+			return isProxy(entity, entityManager) || (entityManager.isOpen() && entityManager.contains(entity));
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public static boolean isProxy(@Nonnull Object entity, @Nonnull EntityManager entityManager) {

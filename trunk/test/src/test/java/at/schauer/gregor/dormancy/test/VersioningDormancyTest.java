@@ -88,13 +88,13 @@ public class VersioningDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testNonVersioning() {
-		Book book = service.get(Book.class, 1L);
+		Book book = service.get(Book.class, refBook.getId());
 		book.setTitle(UUID.randomUUID().toString());
 		service.save(book);
 
 		String title = UUID.randomUUID().toString();
 		book.setTitle(title);
 		service.save(book);
-		assertEquals(title, service.get(Book.class, 1L).getTitle());
+		assertEquals(title, service.get(Book.class, refBook.getId()).getTitle());
 	}
 }

@@ -31,7 +31,7 @@ import static org.junit.Assert.assertSame;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class PredicatePersisterTest extends PersisterTest<PredicatePersister<Application, Predicate>> {
+public class PredicatePersisterTest extends AbstractPersisterTest<PredicatePersister<Application, Predicate>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

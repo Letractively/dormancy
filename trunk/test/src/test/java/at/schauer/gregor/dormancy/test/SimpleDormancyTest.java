@@ -260,6 +260,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testCompare() throws Exception {
+		dormancy.getConfig().setCloneObjects(true);
 		Book a = genericService.get(Book.class, refBook.getId());
 		Book b = service.get(Book.class, refBook.getId());
 		assertNotSame(a, b);
@@ -339,6 +340,54 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		EmbeddedIdEntity merge = dormancy.merge(clone);
 		assertNotSame(entity, merge);
 		assertEquals(expected, BeanUtils.describe(merge));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIdClass() throws Exception {
+		Long timestamp = System.currentTimeMillis();
+		Long id = 1L;
+		IdClassEntity entity = new IdClassEntity();
+		entity.setValue("");
+		entity.setId(id);
+		entity.setTimestamp(timestamp);
+
+		genericService.save(entity);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().flush();
+		Map<String, String> expected = BeanUtils.describe(entity);
+
+		IdClassEntity clone = dormancy.clone(entity);
+		assertEquals(expected, BeanUtils.describe(clone));
+
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+		IdClassEntity merge = dormancy.merge(clone);
+		assertNotSame(entity, merge);
+		assertEquals(expected, BeanUtils.describe(merge));
+
+		IdClassPk identifier = (IdClassPk) dormancy.getUtils().getIdentifier(dormancy.getUtils().getMetadata(entity), entity);
+		IdClassPk identifierValue = (IdClassPk) dormancy.getUtils().getIdentifierValue(dormancy.getUtils().getMetadata(entity), entity);
+		assertNotSame(identifier, identifierValue);
+		assertEquals(id, identifier.id);
+		assertEquals(timestamp, identifier.timestamp);
+	}
+
+	@Test
+	public void testMappedSuperclass() throws Exception {
+		MappedSuperclassEntity refA = new MappedSuperclassEntity();
+		MappedSuperclassEntity refB = new MappedSuperclassEntity();
+		refA.setValue("");
+		refB.setValue("");
+
+		genericService.save(refA);
+		genericService.save(refB);
+		refA.setNext(refB);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().flush();
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+
+		MappedSuperclassEntity a = genericService.get(MappedSuperclassEntity.class, refA.getId());
+		assertNotNull(a.getValue());
+		assertEquals(true, isManaged(a, persistenceUnitProvider));
+		assertNotNull(a.getNext());
 	}
 
 	@Test

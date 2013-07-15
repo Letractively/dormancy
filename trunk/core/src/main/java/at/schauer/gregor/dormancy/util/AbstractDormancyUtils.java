@@ -21,6 +21,7 @@ import org.springframework.beans.PropertyAccessor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -44,7 +45,8 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 		idClass = ClassLookup.find(javaxPersistenceId).orThrow("Cannot find class: %s", javaxPersistenceId).get();
 	}
 
-	protected AbstractDormancyUtils(PUP persistenceUnitProvider) {
+	@Inject
+	protected AbstractDormancyUtils(@Nonnull PUP persistenceUnitProvider) {
 		this.persistenceUnitProvider = persistenceUnitProvider;
 	}
 
@@ -77,8 +79,8 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 				}
 			} else {
 				// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
-				PMD objMetadata = getClassMetadata(obj);
-				Object objIdentifier = getIdentifier(objMetadata, obj);
+				PMD objMetadata = getMetadata(obj);
+				Serializable objIdentifier = getIdentifier(objMetadata, obj);
 
 				// For every object in the collection, check if the type matches and if the identifier is equal
 				for (Object elem : collection) {
@@ -101,12 +103,12 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 *
 	 * @param obj the object to retrieve ClassMetadata for
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
-	 * @see #getClassMetadata(Class)
+	 * @see #getMetadata(Class)
 	 * @see #getClass(Object)
 	 */
 	@Nullable
-	public PMD getClassMetadata(@Nullable Object obj) {
-		return obj != null ? getClassMetadata(getClass(obj)) : null;
+	public PMD getMetadata(@Nullable Object obj) {
+		return obj != null ? getMetadata(getClass(obj)) : null;
 	}
 
 	/**
@@ -116,83 +118,7 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
 	 */
 	@Nullable
-	public abstract PMD getClassMetadata(@Nullable Class<?> clazz);
-
-	/**
-	 * Attempts to get the identifier of the given object by using the provided persistence metadata or
-	 * {@link PropertyAccessor}.
-	 *
-	 * @param metadata the ClassMetadata of the object (may be null)
-	 * @param bean     the object
-	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifierValue(PMD, Object)
-	 */
-	@Nullable
-	public abstract <T> Serializable getIdentifier(@Nonnull PMD metadata, @Nonnull T bean);
-
-	/**
-	 * Retrieves the identifier of the given object by using the provided persistence metadata or
-	 * {@link PropertyAccessor}.
-	 * If the identifier cannot be retrieved, an exception is thrown.
-	 *
-	 * @param metadata the ClassMetadata of the object (may be null)
-	 * @param bean     the object
-	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
-	 * @see #getIdentifier(PMD, Object)
-	 */
-	@Nonnull
-	public <T> Serializable getIdentifierValue(@Nonnull PMD metadata, @Nonnull T bean) {
-		Serializable identifier = getIdentifier(metadata, bean);
-		if (identifier == null) {
-			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
-			throwPropertyValueException("Cannot read identifier", bean);
-		}
-		return identifier;
-	}
-
-	/**
-	 * Retrieves the property of the given object.
-	 *
-	 * @param metadata     the ClassMetadata of the object (may be null)
-	 * @param bean         the object
-	 * @param propertyName the name of the property
-	 * @return the property
-	 * @see PropertyAccessor#getPropertyValue(String)
-	 */
-	@Nullable
-	public abstract Object getPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName);
-
-	/**
-	 * Sets the property of the given object.
-	 *
-	 * @param metadata     the ClassMetadata of the object (may be null)
-	 * @param bean         the object
-	 * @param propertyName the name of the property
-	 * @param value        the value to set
-	 * @see PropertyAccessor#setPropertyValue(String, Object)
-	 */
-	public abstract void setPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
-
-	/**
-	 * Returns the entity name of the given class.<br/>
-	 * The entity name is the unique name of the entity in the meta-model or the simple class name if the type is not
-	 * known by the meta-model.
-	 *
-	 * @param clazz the type
-	 * @return the entity name of the class
-	 */
-	@Nonnull
-	public abstract String getEntityName(@Nonnull Class<?> clazz);
-
-	/**
-	 * Returns the name of the identifier property of the given type.<br/>
-	 * If the type has no identifier property e.g., it is not an entity, {@code null} is returned instead.
-	 *
-	 * @param clazz the type
-	 * @return the identifier property name or {@code null} if there is no identifier property
-	 */
-	@Nullable
-	protected abstract String getIdentifierPropertyName(@Nonnull Class<?> clazz);
+	public abstract PMD getMetadata(@Nullable Class<?> clazz);
 
 	/**
 	 * Gets the unproxified type of the given object.
@@ -227,36 +153,101 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 * @param metadata the class metadata
 	 * @return the persistent class, or {@code null}
 	 */
-	@Nullable
+	@Nonnull
 	public abstract Class<?> getMappedClass(@Nonnull PMD metadata);
 
 	/**
-	 * Checks if the given class is a proxy of a persistent object that has been generated by using Javassist.
+	 * Returns the entity name of the given class.<br/>
+	 * The entity name is the unique name of the entity in the meta-model or the simple class name if the type is not
+	 * known by the meta-model.
 	 *
-	 * @param clazz the class to check
-	 * @return {@code true} if the given class is a Javassist proxy.
+	 * @param clazz the type
+	 * @return the entity name of the class
 	 */
-	public boolean isJavassistProxy(@Nonnull Class<?> clazz) {
-		return clazz.getSimpleName().contains("$$_javassist");
+	@Nonnull
+	public abstract String getEntityName(@Nonnull Class<?> clazz);
+
+	/**
+	 * Returns the name of the identifier property of the given type.<br/>
+	 * If the type has no identifier property e.g., it is not an entity, {@code null} is returned instead.
+	 *
+	 * @param clazz the type
+	 * @return the identifier property name or {@code null} if there is no identifier property
+	 */
+	@Nullable
+	protected abstract String getIdentifierPropertyName(@Nonnull Class<?> clazz);
+
+	/**
+	 * Attempts to get the identifier of the given object by using the provided persistence metadata or
+	 * {@link PropertyAccessor}.
+	 *
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifierValue(PMD, Object)
+	 */
+	@Nullable
+	public abstract <T> Serializable getIdentifier(@Nonnull PMD metadata, @Nonnull T bean);
+
+	/**
+	 * Retrieves the identifier of the given object by using the provided persistence metadata or
+	 * {@link PropertyAccessor}.
+	 * If the identifier cannot be retrieved, an exception is thrown.
+	 *
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifier(PMD, Object)
+	 */
+	@Nonnull
+	public <T> Serializable getIdentifierValue(@Nonnull PMD metadata, @Nonnull T bean) {
+		Serializable identifier = getIdentifier(metadata, bean);
+		if (identifier == null) {
+			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
+			throw throwPropertyValueException("Cannot read identifier", bean);
+		}
+		return identifier;
 	}
 
 	/**
-	 * Checks if the given object is a persistent collection.
+	 * Returns whether the Hibernate entity associated with the given metadata is versioned.<br/>
 	 *
-	 * @param obj the object to check
-	 * @return {@code true} if the object is a persistent collection, {@code false} otherwise
-	 * @see #isInitializedPersistentCollection(Object)
+	 * @param metadata the metadata
+	 * @return {@link true}
 	 */
-	public abstract boolean isPersistentCollection(@Nullable Object obj);
+	public abstract boolean isVersioned(@Nonnull PMD metadata);
 
 	/**
-	 * Checks if the given object is an initialized persistent collection.
+	 * Returns the name of the property of the entity used for versioning (if available).
 	 *
-	 * @param obj the object to check
-	 * @return {@code true} if the object is an initialized persistent collection, {@code false} otherwise
-	 * @see #isPersistentCollection(Object)
+	 * @param metadata the metadata
+	 * @return the name of the version property or {@code null} if the entity is not versioned
 	 */
-	public abstract boolean isInitializedPersistentCollection(@Nullable Object obj);
+	@Nullable
+	public abstract String getVersionPropertyName(@Nonnull PMD metadata);
+
+	/**
+	 * Retrieves the property of the given object.
+	 *
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
+	 * @return the property
+	 * @see PropertyAccessor#getPropertyValue(String)
+	 */
+	@Nullable
+	public abstract Object getPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName);
+
+	/**
+	 * Sets the property of the given object.
+	 *
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
+	 * @param value        the value to set
+	 * @see PropertyAccessor#setPropertyValue(String, Object)
+	 */
+	public abstract void setPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
 
 	/**
 	 * Returns the property names of the given object.
@@ -342,21 +333,66 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	protected abstract AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz);
 
 	/**
-	 * Returns whether the Hibernate entity associated with the given metadata is versioned.<br/>
+	 * Checks if the given object is a proxy maintained by the JPA provider.
 	 *
-	 * @param metadata the metadata
-	 * @return {@link true}
+	 * @param obj the object to check
+	 * @return {@code true} if the object is a JPA entity proxy, {@code false} otherwise
+	 * @see #isInitialized(Object)
 	 */
-	public abstract boolean isVersioned(@Nonnull PMD metadata);
+	public abstract boolean isProxy(@Nullable Object obj);
 
 	/**
-	 * Returns the name of the property of the entity used for versioning (if available).
+	 * Check if the proxy or persistent collection is initialized.<br/>
+	 * If the objects is neither an entity nor a persistent collection e.g., a {@link String}, {@code true} is returned.
 	 *
-	 * @param metadata the metadata
-	 * @return the name of the version property or {@code null} if the entity is not versioned
+	 * @param obj the object to check
+	 * @return {@code true} if the argument is already initialized, or is not a proxy or collection
 	 */
-	@Nullable
-	public abstract String getVersionPropertyName(@Nonnull PMD metadata);
+	public abstract boolean isInitialized(@Nullable Object obj);
+
+	/**
+	 * Checks if a certain property of a JPA entity proxy is uninitialized and the corresponding value of the transient
+	 * entity is {@code null}.<br/>
+	 * If the property of the persistent entity is uninitialized, it is assumed to be loaded lazily. Thus the property
+	 * of the transient entity must be {@code null}. If is is not, an exception is thrown.
+	 *
+	 * @param propertyName the name of the property to check
+	 * @param dbObj        the persistent entity
+	 * @param dbValue      the value of the persistent entity
+	 * @param trValue      the value of the transient entity
+	 * @return {@code true} if it is uninitialized, {@code false} otherwise
+	 * @throws RuntimeException if the property of the persistent entity is uninitialized but the transient value is not {@code null}
+	 * @see #throwLazyPropertyNotNullException(Object, Object, String)
+	 */
+	public abstract boolean isUninitialized(@Nonnull String propertyName, @Nonnull Object dbObj, @Nonnull Object dbValue, @Nullable Object trValue);
+
+	/**
+	 * Checks if the given class is a proxy of a persistent object that has been generated by using Javassist.
+	 *
+	 * @param clazz the class to check
+	 * @return {@code true} if the given class is a Javassist proxy.
+	 */
+	public boolean isJavassistProxy(@Nonnull Class<?> clazz) {
+		return clazz.getSimpleName().contains("$$_javassist");
+	}
+
+	/**
+	 * Checks if the given object is a persistent collection.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the object is a persistent collection, {@code false} otherwise
+	 * @see #isInitializedPersistentCollection(Object)
+	 */
+	public abstract boolean isPersistentCollection(@Nullable Object obj);
+
+	/**
+	 * Checks if the given object is an initialized persistent collection.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the object is an initialized persistent collection, {@code false} otherwise
+	 * @see #isPersistentCollection(Object)
+	 */
+	public abstract boolean isInitializedPersistentCollection(@Nullable Object obj);
 
 	/**
 	 * Return the persistent instance of the given entity class with the given identifier, or {@code null} if there is
@@ -389,28 +425,69 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	public abstract <K> K persist(@Nonnull Object obj);
 
 	/**
+	 * Throws an exception indicating that the object must be saved manually before continuing.
+	 *
+	 * @param object the object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwUnsavedTransientInstanceException(@Nonnull Object object);
+
+	/**
+	 * Throws an exception indicating that the object has no valid identifier.
+	 *
+	 * @param object the object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwNullIdentifierException(@Nonnull Object object);
+
+	/**
+	 * Throws an exception when a lazy property holds a value while {@code null} was expected.
+	 *
+	 * @param trValue      the transient value (that should be {@code null})
+	 * @param dbObj        the persistent entity
+	 * @param propertyName the name of the property
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwLazyPropertyNotNullException(@Nonnull Object trValue, @Nonnull Object dbObj, @Nonnull String propertyName);
+
+	/**
+	 * Throws an exception when an optimistic locking conflict occurs.
+	 *
+	 * @param dbValue    the persistent value causing the conflict
+	 * @param identifier the identifier of the entity
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwOptimisticLockException(@Nonnull Object dbValue, @Nonnull Serializable identifier);
+
+	/**
+	 * Throws an exception when an entity reference is accessed but the entity does not exist.
+	 *
+	 * @param identifier the identifier of the entity attempted to retrieve
+	 * @param trObj      the transient object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwEntityNotFoundException(@Nonnull Serializable identifier, @Nonnull Object trObj);
+
+	/**
+	 * Throws an exception when a property is not accessible or holds an unexpected value.
+	 *
+	 * @param message the detail message
+	 * @param bean    the bean caused the exception
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwPropertyValueException(@Nonnull String message, @Nonnull Object bean);
+
+	/**
 	 * Obtains the current persistence context.
 	 *
 	 * @return the persistence context to use
 	 */
 	@Nonnull
 	public abstract PC getPersistenceContext();
-
-	public abstract void throwUnsavedTransientInstanceException(@Nonnull Object object);
-
-	public abstract void throwNullIdentifierException(@Nonnull Object object);
-
-	public abstract void throwLazyPropertyNotNull(Object trValue, Object dbObj, String propertyName);
-
-	public abstract void throwStaleObjectStateException(Object dbValue, Serializable identifier);
-
-	public abstract void throwObjectNotFoundException(Serializable identifier, Object trObj);
-
-	public abstract void throwPropertyValueException(String message, Object bean);
-
-	public abstract boolean isInitialized(Object obj);
-
-	public abstract boolean isProxy(Object dbValue);
-
-	public abstract boolean isUninitialized(String propertyName, Object dbObj, Object dbValue, Object trValue);
 }

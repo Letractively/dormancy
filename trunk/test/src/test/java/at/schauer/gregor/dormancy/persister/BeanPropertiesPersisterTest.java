@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.1
  */
-public class BeanPropertiesPersisterTest extends PersisterTest<BeanPropertiesPersister<Application>> {
+public class BeanPropertiesPersisterTest extends AbstractPersisterTest<BeanPropertiesPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

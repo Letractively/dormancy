@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class BeanPropertyAccessorPersisterTest extends PersisterTest<BeanPropertyAccessorPersister<Application>> {
+public class BeanPropertyAccessorPersisterTest extends AbstractPersisterTest<BeanPropertyAccessorPersister<Application>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 
 	@Override

@@ -15,7 +15,6 @@
  */
 package at.schauer.gregor.dormancy.util;
 
-import com.google.common.base.Throwables;
 import org.apache.commons.lang.ArrayUtils;
 
 import javax.annotation.Nonnull;
@@ -61,6 +60,7 @@ public final class ClassLookup {
 	 * @param names the full-qualified names of the classes to lookup
 	 * @return the newly created instance
 	 */
+	@Nonnull
 	public static ClassLookup find(@Nullable String... names) {
 		return new ClassLookup(names);
 	}
@@ -138,7 +138,10 @@ public final class ClassLookup {
 			}
 		}
 		if (exception != null) {
-			throw Throwables.propagate(exception);
+			if (exception instanceof RuntimeException) {
+				throw (RuntimeException) exception;
+			}
+			throw new RuntimeException(exception);
 		}
 		return (Class<T>) defaultClass;
 	}

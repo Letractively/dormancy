@@ -146,22 +146,21 @@ public class EntityPersisterConfiguration {
 	}
 
 	/**
-	 * Returns whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} are replaced with
-	 * empty collections or maps or with {@code null}.
+	 * Returns whether persistent collections are replaced with empty collections or maps or with {@code null}.
 	 *
 	 * @return {@code true} if empty collections should be created, {@code false} otherwise
 	 */
+	@Nonnull
 	public Boolean getCreateEmptyCollections() {
 		return createEmptyCollections == null ? parent.getCreateEmptyCollections() : createEmptyCollections;
 	}
 
 	/**
-	 * Sets whether {@link org.hibernate.collection.PersistentCollection PersistentCollections} should be replaced with
-	 * empty collections or maps or with {@code null}.
+	 * Sets whether persistent collections should be replaced with empty collections or maps or with {@code null}.
 	 *
 	 * @param createEmptyCollections {@code true} if empty collections should be created, {@code false} otherwise
 	 */
-	public void setCreateEmptyCollections(Boolean createEmptyCollections) {
+	public void setCreateEmptyCollections(@Nullable Boolean createEmptyCollections) {
 		this.createEmptyCollections = createEmptyCollections;
 	}
 }

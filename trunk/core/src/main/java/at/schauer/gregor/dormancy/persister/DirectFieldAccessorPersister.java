@@ -41,7 +41,6 @@ public class DirectFieldAccessorPersister<C> extends AbstractPropertyAccessorPer
 	/**
 	 * @param target the object to create a BeanWrapper for
 	 * @return the BeanWrapper
-	 * @inheritDoc
 	 * @see PropertyAccessorFactory#forDirectFieldAccess(Object)
 	 */
 	@Nonnull

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static at.schauer.gregor.dormancy.AbstractDormancyTest.describe;
@@ -33,8 +33,8 @@ import static org.junit.Assert.assertEquals;
  * @author Gregor Schauer
  * @since 1.0.3
  */
-public class SimplePersisterTest extends PersisterTest<SimplePersister<Object>> {
-	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
+public class SimplePersisterTest extends AbstractPersisterTest<SimplePersister<Object>> {
+	Application app = new Application("app", null, new LinkedHashSet<Employee>(), "secret");
 
 	@Override
 	@PostConstruct
@@ -48,8 +48,8 @@ public class SimplePersisterTest extends PersisterTest<SimplePersister<Object>> 
 	@Test
 	@Transactional
 	public void test() {
-		sessionFactory.getCurrentSession().save(app);
-
+		genericService.save(app);
+		app = genericService.load(Application.class, app.getId());
 
 		Object clone = persister.clone(app);
 		assertEquals(describe(app), describe(clone));

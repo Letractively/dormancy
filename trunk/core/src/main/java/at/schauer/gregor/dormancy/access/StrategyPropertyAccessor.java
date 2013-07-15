@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.FIELD;
 
 /**
- * Uses the provided {@link AbstractPropertyAccessStrategy} to determine how to access the properties of a certain object.
+ * Uses the provided {@link AbstractPropertyAccessStrategy} to determine how to access an object´s properties.
  * <p/>
  * If a property should be accessed, this implementation performs a lookup of the appropriate strategy for
  * the requested property. Afterwards, another {@link PropertyAccessor} is used for accessing it.<br/>

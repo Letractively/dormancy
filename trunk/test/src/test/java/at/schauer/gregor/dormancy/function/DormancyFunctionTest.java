@@ -58,10 +58,11 @@ public class DormancyFunctionTest {
 	@Test
 	public void test() {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(new Employee("A", null));
+		Employee refA = new Employee("A", null);
+		session.save(refA);
 		session.flush();
 
-		Employee employee = (Employee) session.get(Employee.class, 1L);
+		Employee employee = (Employee) session.get(Employee.class, refA.getId());
 		FunctionContext<Employee> context = cloneFunction.apply(new FunctionContext<Employee>(employee));
 		assertEquals(false, context.getTree().isEmpty());
 		assertEquals(true, AbstractDormancyTest.isManaged(employee, session));

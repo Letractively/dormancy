@@ -23,7 +23,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
 
@@ -36,11 +35,11 @@ public class ManipulationDormancyTest extends AbstractDormancyTest {
 	@Test
 	public void testUpdateReferencedEntity() {
 		Query query = sessionFactory.getCurrentSession().createQuery("FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = :id");
-		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
+		Employee c = dormancy.clone((Employee) query.setParameter("id", refC.getId()).uniqueResult());
 		c.getBoss().setName("Master");
-		genericService.save(dormancy.merge(c, (Employee) query.setParameter("id", 3L).uniqueResult()));
+		genericService.save(dormancy.merge(c, (Employee) query.setParameter("id", refC.getId()).uniqueResult()));
 
-		Employee z = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
+		Employee z = dormancy.clone((Employee) query.setParameter("id", refC.getId()).uniqueResult());
 		assertEquals("Master", z.getBoss().getName());
 	}
 
@@ -51,9 +50,9 @@ public class ManipulationDormancyTest extends AbstractDormancyTest {
 		session.setFlushMode(FlushMode.MANUAL);
 
 		Query query = session.createQuery("FROM Employee e LEFT JOIN FETCH e.colleagues LEFT JOIN FETCH e.employees WHERE id = :id");
-		Employee a = dormancy.clone((Employee) query.setParameter("id", 1L).uniqueResult());
-		Employee b = dormancy.clone((Employee) query.setParameter("id", 2L).uniqueResult());
-		Employee c = dormancy.clone((Employee) query.setParameter("id", 3L).uniqueResult());
+		Employee a = dormancy.clone((Employee) query.setParameter("id", refA.getId()).uniqueResult());
+		Employee b = dormancy.clone((Employee) query.setParameter("id", refB.getId()).uniqueResult());
+		Employee c = dormancy.clone((Employee) query.setParameter("id", refC.getId()).uniqueResult());
 		Employee d = new Employee("Newbie", a);
 		assertEquals(1, a.getEmployees().size());
 		assertEquals(true, a.getEmployees().contains(b));
@@ -68,7 +67,7 @@ public class ManipulationDormancyTest extends AbstractDormancyTest {
 		c.setBoss(a);
 		d.setBoss(a);
 
-		Employee merge = dormancy.merge(a, (Employee) query.setParameter("id", 1L).uniqueResult());
+		Employee merge = dormancy.merge(a, (Employee) query.setParameter("id", refA.getId()).uniqueResult());
 		session.save(merge);
 		session.flush();
 	}
@@ -77,11 +76,11 @@ public class ManipulationDormancyTest extends AbstractDormancyTest {
 	public void testModifyCollectionNew() throws SQLException {
 		dormancy.getConfig().setCloneObjects(true);
 
-		Application app = (Application) genericService.singleResult(Application.class, "SELECT a FROM Application a JOIN FETCH a.employees WHERE a.id = ?", refApp.getId());
+		Application app = genericService.singleResult(Application.class, "SELECT a FROM Application a JOIN FETCH a.employees WHERE a.id = ?", refApp.getId());
 
 		Application clone = dormancy.clone(app);
 		clone.getEmployees().clear();
-		clone.getEmployees().add(service.get(Employee.class, 1L));
+		clone.getEmployees().add(service.get(Employee.class, refA.getId()));
 		Application merge = dormancy.merge(clone, app);
 
 		assertEquals(describe(clone), describe(merge));
@@ -92,8 +91,8 @@ public class ManipulationDormancyTest extends AbstractDormancyTest {
 		assertEquals("A", clone.getEmployees().iterator().next().getName());
 		assertEquals("A", merge.getEmployees().iterator().next().getName());
 
-		assertEquals("A", service.get(Employee.class, 1L).getName());
-		assertEquals("B", service.get(Employee.class, 2L).getName());
-		assertEquals("C", service.get(Employee.class, 3L).getName());
+		assertEquals("A", service.get(Employee.class, refA.getId()).getName());
+		assertEquals("B", service.get(Employee.class, refB.getId()).getName());
+		assertEquals("C", service.get(Employee.class, refC.getId()).getName());
 	}
 }

@@ -84,7 +84,7 @@ public class ContainerPersisterDormancyTest extends AbstractDormancyTest {
 
 	@Test
 	public void testContainerWithoutCustomPersister() {
-		Book book = service.get(Book.class, 1L);
+		Book book = service.get(Book.class, refBook.getId());
 		Box custom = new Box(book);
 		assertSame(Book.class, custom.getBook().getClass());
 

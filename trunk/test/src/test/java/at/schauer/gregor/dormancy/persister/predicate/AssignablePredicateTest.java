@@ -19,8 +19,8 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
+import at.schauer.gregor.dormancy.persister.AbstractPersisterTest;
 import at.schauer.gregor.dormancy.persister.DirectFieldAccessorPersister;
-import at.schauer.gregor.dormancy.persister.PersisterTest;
 import at.schauer.gregor.dormancy.persister.PredicatePersister;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 1.0.2
  */
-public class AssignablePredicateTest extends PersisterTest<PredicatePersister<Object, AssignablePredicate>> {
+public class AssignablePredicateTest extends AbstractPersisterTest<PredicatePersister<Object, AssignablePredicate>> {
 	Application app = new Application("app", null, Collections.<Employee>emptySet(), "secret");
 	Book book = new Book("Title");
 

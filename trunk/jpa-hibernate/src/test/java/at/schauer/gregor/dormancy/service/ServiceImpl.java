@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Gregor Schauer
@@ -50,24 +51,43 @@ public class ServiceImpl implements GenericService {
 	public void doNothing() {
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Serializable save(Serializable obj) {
 		Class<?> clazz = obj.getClass();
 		while (clazz.getSimpleName().contains("$$_javassist_")) {
 			clazz = clazz.getSuperclass();
 		}
+
 		EntityType<?> entityType = emf.getMetamodel().entity(clazz);
-		SingularAttribute<?, ?> idAttribute = entityType.getId(entityType.getIdType().getJavaType());
-		Object id = ReflectionTestUtils.getField(obj, idAttribute.getName());
-
-		if (id == null) {
-			em.persist(obj);
+		if (entityType.hasSingleIdAttribute()) {
+			SingularAttribute<?, ?> idAttribute = entityType.getId(entityType.getIdType().getJavaType());
+			Object id = ReflectionTestUtils.getField(obj, idAttribute.getName());
+			if (id == null) {
+				em.persist(obj);
+			} else {
+				em.merge(obj);
+			}
+			em.flush();
+			return (Serializable) ReflectionTestUtils.getField(obj, idAttribute.getName());
 		} else {
-			em.merge(obj);
+			Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) entityType.getIdClassAttributes();
+			boolean isNew = false;
+			for (SingularAttribute<?, ?> idClassAttribute : idClassAttributes) {
+				Object id = ReflectionTestUtils.getField(obj, idClassAttribute.getName());
+				if (id == null) {
+					isNew = true;
+					break;
+				}
+			}
+			if (isNew) {
+				em.persist(obj);
+			} else {
+				em.merge(obj);
+			}
+			em.flush();
+			return (Serializable) entityType.getIdClassAttributes();
 		}
-
-		em.flush();
-		return (Serializable) ReflectionTestUtils.getField(obj, idAttribute.getName());
 	}
 
 	@Override

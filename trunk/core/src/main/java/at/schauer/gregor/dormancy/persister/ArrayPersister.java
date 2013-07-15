@@ -38,7 +38,7 @@ import java.util.Map;
  */
 public class ArrayPersister<C> extends AbstractContainerPersister<C> implements DynamicEntityPersister<C> {
 	@Inject
-	public ArrayPersister(@Nonnull Dormancy dormancy) {
+	public ArrayPersister(@Nonnull Dormancy<?, ?, ?> dormancy) {
 		super(dormancy);
 	}
 

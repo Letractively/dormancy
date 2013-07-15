@@ -38,7 +38,6 @@ public class BeanPropertyAccessorPersister<C> extends AbstractPropertyAccessorPe
 	/**
 	 * @param target the object to create a BeanWrapper for
 	 * @return the BeanWrapper
-	 * @inheritDoc
 	 * @see PropertyAccessorFactory#forBeanPropertyAccess(Object)
 	 */
 	@Nonnull
@@ -50,7 +49,6 @@ public class BeanPropertyAccessorPersister<C> extends AbstractPropertyAccessorPe
 	/**
 	 * @param propertyAccessor the PropertyAccessor
 	 * @return the property names
-	 * @inheritDoc
 	 * @see org.springframework.beans.BeanWrapper#getPropertyDescriptors()
 	 */
 	@Nonnull

@@ -94,10 +94,11 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?";
 		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
-		c.getEmployees().add(new Employee("D", c));
+		Employee refD = new Employee("D", c);
+		c.getEmployees().add(refD);
 		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
 
-		Employee d = service.get(Employee.class, 4L);
+		Employee d = service.get(Employee.class, refD.getId());
 		assertNotNull(d);
 	}
 
@@ -108,10 +109,11 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 
 		String qlString = "SELECT e FROM Employee e LEFT JOIN FETCH e.employees WHERE e.id = ?";
 		Employee c = dormancy.clone(genericService.singleResult(Employee.class, qlString, refC.getId()));
-		c.setBoss(new Employee("D", c));
+		Employee refD = new Employee("D", c);
+		c.setBoss(refD);
 		dormancy.merge(c, genericService.singleResult(Employee.class, qlString, refC.getId()));
 
-		Employee d = service.get(Employee.class, 4L);
+		Employee d = service.get(Employee.class, refD.getId());
 		assertNotNull(d);
 	}
 

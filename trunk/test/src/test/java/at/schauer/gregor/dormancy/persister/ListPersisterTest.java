@@ -19,7 +19,6 @@ import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.Session;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;
@@ -32,13 +31,13 @@ import static org.junit.Assert.*;
 /**
  * @author Gregor Schauer
  */
-public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> {
+public class ListPersisterTest extends AbstractPersisterTest<CollectionPersister<List>> {
 	@Override
 	@PostConstruct
 	public void postConstruct() {
 		super.postConstruct();
 		persister = new CollectionPersister<List>(dormancy);
-		persister.setSessionFactory(persistenceUnitProvider);
+		persister.setPersistentUnitProvider(persistenceUnitProvider);
 		persister.setConfig(dormancy.getConfig());
 	}
 
@@ -62,43 +61,41 @@ public class ListPersisterTest extends PersisterTest<CollectionPersister<List>> 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testEntity() throws Exception {
-		Session session = sessionFactory.getCurrentSession();
-		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
+		CollectionEntity a = genericService.get(CollectionEntity.class, refCollectionEntity.getId());
 		assertEquals(false, a.getBooks().isEmpty());
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks(), session));
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks().get(0), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks(), persistenceUnitProvider));
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getBooks().get(0), persistenceUnitProvider));
 
 		List<Book> clone = persister.clone(a.getBooks());
-		assertEquals(false, AbstractDormancyTest.isProxy(clone, session));
-		assertEquals(false, AbstractDormancyTest.isProxy(clone.get(0), session));
+		assertEquals(false, AbstractDormancyTest.isProxy(clone, persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext()));
+		assertEquals(false, AbstractDormancyTest.isProxy(clone.get(0), persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext()));
 		List<Book> copy = Arrays.<Book>asList((Book) BeanUtils.cloneBean(clone.get(0)));
 
 		List<Book> merge = persister.merge(clone);
-		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), persistenceUnitProvider));
 
 		merge = persister.merge(copy, a.getBooks());
-		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge.get(0), persistenceUnitProvider));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testNonEntity() {
-		Session session = sessionFactory.getCurrentSession();
-		CollectionEntity a = (CollectionEntity) session.get(CollectionEntity.class, 1L);
+		CollectionEntity a = genericService.get(CollectionEntity.class, refCollectionEntity.getId());
 		assertEquals(false, a.getIntegers().isEmpty());
-		assertEquals(true, AbstractDormancyTest.isManaged(a.getIntegers(), session));
-		assertEquals(false, AbstractDormancyTest.isManaged(a.getIntegers().get(0), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(a.getIntegers(), persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(a.getIntegers().get(0), persistenceUnitProvider));
 
 		List<Integer> clone = persister.clone(a.getIntegers());
-		assertEquals(false, AbstractDormancyTest.isManaged(clone, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(clone.get(0), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(clone.get(0), persistenceUnitProvider));
 
 		List<Integer> merge = persister.merge(clone);
-		assertEquals(false, AbstractDormancyTest.isManaged(merge, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), session));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), persistenceUnitProvider));
 
 		merge = persister.merge(clone, a.getIntegers());
-		assertEquals(true, AbstractDormancyTest.isManaged(merge, session));
-		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), session));
+		assertEquals(true, AbstractDormancyTest.isManaged(merge, persistenceUnitProvider));
+		assertEquals(false, AbstractDormancyTest.isManaged(merge.get(0), persistenceUnitProvider));
 	}
 }

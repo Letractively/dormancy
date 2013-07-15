@@ -38,9 +38,7 @@ public class AssignablePredicate implements Predicate, Serializable {
 	}
 
 	/**
-	 * @param object the object to evaluate, should not be changed
-	 * @return {@code true} or {@code false}
-	 * @inheritDoc
+	 * @return {@code true} if the parameter is assignable to at least one of the given types, {@code false} otherwise
 	 * @see ClassUtils#isAssignable(Class, Class)
 	 */
 	@Override

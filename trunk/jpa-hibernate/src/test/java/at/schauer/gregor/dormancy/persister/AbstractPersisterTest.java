@@ -20,10 +20,9 @@ import at.schauer.gregor.dormancy.DormancySpringConfig;
 import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import at.schauer.gregor.dormancy.entity.Employee;
+import at.schauer.gregor.dormancy.persistence.JpaPersistenceUnitProvider;
 import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.metadata.ClassMetadata;
+import at.schauer.gregor.dormancy.service.GenericService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -33,8 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.metamodel.EntityType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,41 +50,46 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = DormancySpringConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Transactional
-public abstract class PersisterTest<T extends AbstractEntityPersister> {
+public abstract class AbstractPersisterTest<T extends AbstractEntityPersister> {
 	@Inject
-	protected Dormancy<?, ?, ?> dormancy;
+	protected Dormancy<EntityManagerFactory, EntityManager, EntityType<?>> dormancy;
 	@Inject
-	protected SessionFactory sessionFactory;
+	protected JpaPersistenceUnitProvider persistenceUnitProvider;
 	@Inject
-	protected PersistenceUnitProvider<Session, ClassMetadata, ?> persistenceUnitProvider;
+	protected GenericService genericService;
 	protected T persister;
+
+	// Data
+	protected final Book refBook = new Book("Book");
+	protected final CollectionEntity refCollectionEntity = new CollectionEntity();
+	protected final Employee refManager = new Employee("Manager", null);
+	protected final Employee refBoss = new Employee("Boss", refManager);
+	protected final Employee refWorker = new Employee("Worker", refBoss);
 
 	@PostConstruct
 	public void postConstruct() {
-		Session session = sessionFactory.openSession();
+		EntityManager em = persistenceUnitProvider.getPersistenceUnit().createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+		transaction.begin();
 
-		Book book = new Book("Book");
-		CollectionEntity collectionEntity = new CollectionEntity();
-		collectionEntity.setIntegers(Arrays.asList(1, 2, 3));
-		collectionEntity.setBooks(Collections.singletonList(book));
-		collectionEntity.setLongMap(Collections.singletonMap(1L, 2L));
-		collectionEntity.setBookMap(Collections.singletonMap(1L, book));
+		refCollectionEntity.setIntegers(Arrays.asList(1, 2, 3));
+		refCollectionEntity.setBooks(new ArrayList<Book>(Collections.singletonList(refBook)));
+		refCollectionEntity.setLongMap(new LinkedHashMap<Long, Long>(Collections.singletonMap(1L, 2L)));
+		refCollectionEntity.setBookMap(new LinkedHashMap<Long, Book>(Collections.singletonMap(1L, refBook)));
 
-		Employee manager = new Employee("Manager", null);
-		Employee boss = new Employee("Boss", manager);
-		Employee worker = new Employee("Worker", boss);
+		em.persist(refBook);
+		em.persist(refCollectionEntity);
 
-		session.save(book);
-		session.save(collectionEntity);
+		em.persist(refManager);
+		em.persist(refBoss);
+		em.persist(refWorker);
 
-		session.save(manager);
-		session.save(boss);
-		session.save(worker);
+		refManager.getEmployees().add(refBoss);
+		refBoss.getEmployees().add(refWorker);
+		em.flush();
 
-		manager.getEmployees().add(boss);
-		boss.getEmployees().add(worker);
-		session.flush();
-		session.close();
+		transaction.commit();
+		em.close();
 	}
 
 	@Test

@@ -58,7 +58,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
-			genericService.get(Employee.class, 2L);
+			genericService.get(Employee.class, refB.getId());
 			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 		}
 
@@ -69,7 +69,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	@Test(timeout = 300)
 	public void testClone() {
 		Perform perform = getAnnotation();
-		Employee b = genericService.get(Employee.class, 2L);
+		Employee b = genericService.get(Employee.class, refB.getId());
 		assertNotNull(b);
 
 		long start = System.currentTimeMillis();
@@ -84,7 +84,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	@Test(timeout = 400)
 	public void testMerge() {
 		Perform perform = getAnnotation();
-		Employee b = service.get(Employee.class, 2L);
+		Employee b = service.get(Employee.class, refB.getId());
 		assertNotNull(b);
 
 
@@ -99,10 +99,10 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 	@Perform(name = "Dormancy.merge(Object, Object)", n = 100)
 	@Test(timeout = 1000)
-	public void nbtestMergeTogether() {
+	public void testMergeTogether() {
 		Perform perform = getAnnotation();
-		Employee bp = genericService.get(Employee.class, 2L);
-		Employee bt = service.get(Employee.class, 2L);
+		Employee bp = genericService.get(Employee.class, refB.getId());
+		Employee bt = service.get(Employee.class, refB.getId());
 		assertNotNull(bp);
 
 		long start = System.currentTimeMillis();
