@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.util;
+package at.schauer.gregor.dormancy.persister.callback;
 
 import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public abstract class EntityCallback<T, PU, PC, PMD> {
+public interface EntityCallback<T, PU, PC, PMD> {
 	/**
 	 * Gets called by {@link at.schauer.gregor.dormancy.Dormancy#merge(Object, EntityCallback)} with an active
 	 * persistence context.<br/>
@@ -34,5 +34,5 @@ public abstract class EntityCallback<T, PU, PC, PMD> {
 	 * @return the result of the invocation
 	 */
 	@Transactional
-	public abstract T work(PersistenceUnitProvider<PU, PC, PMD> persistenceUnitProvider);
+	T work(PersistenceUnitProvider<PU, PC, PMD> persistenceUnitProvider);
 }

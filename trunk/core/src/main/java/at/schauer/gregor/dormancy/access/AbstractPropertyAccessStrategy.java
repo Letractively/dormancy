@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Gregor Schauer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.schauer.gregor.dormancy.access;
 
 import org.apache.commons.collections.MapUtils;
@@ -15,16 +30,19 @@ import java.util.Map;
  * @since 2.0.0
  */
 public abstract class AbstractPropertyAccessStrategy {
-	protected Map<String, AccessMode> propertyAccessTypeMap = new HashMap<String, AccessMode>();
+	protected Map<String, AccessType> propertyAccessTypeMap = new HashMap<String, AccessType>();
 
 	/**
 	 * The access type.
 	 */
-	public enum AccessMode {
-		PROPERTY, FIELD
+	public enum AccessType {
+		/** Property-based access is used. */
+		PROPERTY,
+		/** Field-based access is used. */
+		FIELD
 	}
 
-	protected AccessMode defaultAccessMode;
+	protected AccessType defaultAccessType;
 
 	/**
 	 * Returns the default access mode for the entity type.
@@ -32,29 +50,29 @@ public abstract class AbstractPropertyAccessStrategy {
 	 * @return the access mode
 	 */
 	@Nullable
-	public AccessMode getDefaultAccessMode() {
-		return defaultAccessMode;
+	public AccessType getDefaultAccessType() {
+		return defaultAccessType;
 	}
 
 	/**
 	 * Sets the default access mode for the entity type.
 	 *
-	 * @param defaultAccessMode the mode to set
+	 * @param defaultAccessType the mode to set
 	 */
-	protected void setDefaultAccessMode(@Nullable AccessMode defaultAccessMode) {
-		this.defaultAccessMode = defaultAccessMode;
+	protected void setDefaultAccessType(@Nullable AccessType defaultAccessType) {
+		this.defaultAccessType = defaultAccessType;
 	}
 
 	/**
-	 * Returns the {@link AccessMode} for the named property.
+	 * Returns the {@link at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessType} for the named property.
 	 *
 	 * @param propertyName the name of the property
 	 * @return the access mode to use
 	 */
 	@Nonnull
-	public AccessMode getAccessMode(@Nonnull String propertyName) {
-		AccessMode accessMode = (AccessMode) MapUtils.getObject(propertyAccessTypeMap, propertyName, null);
-		Assert.notNull(accessMode, "Cannot find property named '" + propertyName + "'");
-		return accessMode;
+	public AccessType getAccessType(@Nonnull String propertyName) {
+		AccessType accessType = (AccessType) MapUtils.getObject(propertyAccessTypeMap, propertyName, null);
+		Assert.notNull(accessType, "Cannot find property named '" + propertyName + "'");
+		return accessType;
 	}
 }

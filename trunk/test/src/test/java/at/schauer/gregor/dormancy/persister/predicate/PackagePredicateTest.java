@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package at.schauer.gregor.dormancy.persister.predicate;
 import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persister.AbstractEntityPersister;
-import at.schauer.gregor.dormancy.persister.DirectFieldAccessorPersister;
 import at.schauer.gregor.dormancy.persister.AbstractPersisterTest;
+import at.schauer.gregor.dormancy.persister.DirectFieldAccessorPersister;
 import at.schauer.gregor.dormancy.persister.PredicatePersister;
 import org.junit.Test;
 

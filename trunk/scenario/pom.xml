@@ -17,6 +17,7 @@
 		<dependency>
 			<groupId>at.schauer.gregor.dormancy</groupId>
 			<artifactId>dormancy-hibernate3</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -67,7 +68,7 @@
 
 
 	<properties>
-		<gwt.version>2.5.0</gwt.version>
+		<gwt.version>2.5.1</gwt.version>
 	</properties>
 
 </project>

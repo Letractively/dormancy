@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package at.schauer.gregor.dormancy.scenario.server.dao;
 import at.schauer.gregor.dormancy.Dormancy;
 import at.schauer.gregor.dormancy.scenario.shared.model.Employee;
 import org.hibernate.SessionFactory;
+import org.hibernate.metadata.ClassMetadata;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -30,9 +31,9 @@ import java.util.ArrayList;
 @Transactional
 public class DormancyScenarioDao {
 	@Inject
-	private SessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 	@Inject
-	private Dormancy dormancy;
+	Dormancy<SessionFactory, SessionFactory, ClassMetadata> dormancy;
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Employee> listEmployees() {

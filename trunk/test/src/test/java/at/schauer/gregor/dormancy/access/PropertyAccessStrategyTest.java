@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,31 +19,33 @@ import at.schauer.gregor.dormancy.entity.Application;
 import at.schauer.gregor.dormancy.entity.Book;
 import org.junit.Test;
 
-import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.*;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessType.FIELD;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessType.PROPERTY;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Gregor Schauer
+ * @since 2.0.0
  */
 public class PropertyAccessStrategyTest {
 	@Test
 	public void testApplication() {
 		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Application.class);
-		assertEquals(PROPERTY, strategy.getDefaultAccessMode());
-		assertEquals(PROPERTY, strategy.getAccessMode("id"));
-		assertEquals(FIELD, strategy.getAccessMode("lastUpdate"));
+		assertEquals(PROPERTY, strategy.getDefaultAccessType());
+		assertEquals(PROPERTY, strategy.getAccessType("id"));
+		assertEquals(FIELD, strategy.getAccessType("lastUpdate"));
 	}
 
 	@Test
 	public void testBook() {
 		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
-		assertEquals(FIELD, strategy.getAccessMode("id"));
-		assertEquals(FIELD, strategy.getAccessMode("title"));
+		assertEquals(FIELD, strategy.getAccessType("id"));
+		assertEquals(FIELD, strategy.getAccessType("title"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidProperty() {
 		AbstractPropertyAccessStrategy strategy = new HibernatePropertyAccessStrategy(Book.class);
-		strategy.getAccessMode("");
+		strategy.getAccessType("");
 	}
 }

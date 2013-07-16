@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import at.schauer.gregor.dormancy.entity.Book;
 import at.schauer.gregor.dormancy.entity.CollectionEntity;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persistence.JpaPersistenceUnitProvider;
-import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
 import at.schauer.gregor.dormancy.service.GenericService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

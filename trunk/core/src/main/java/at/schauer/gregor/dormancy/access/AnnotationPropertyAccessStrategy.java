@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.*;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessType.*;
 import static org.apache.commons.lang.StringUtils.upperCase;
 import static org.springframework.beans.BeanUtils.findPropertyForMethod;
 import static org.springframework.core.annotation.AnnotationUtils.getValue;
@@ -57,15 +57,15 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	protected void initialize(@Nonnull Class<?> entityType) {
 		// Retrieve the default access type for the entity type by looking up access annotations on type level
 		Annotation accessType = getAnnotation(entityType, getAccessAnnotations());
-		AccessMode entityAccessMode = accessType != null ? valueOf(upperCase(String.valueOf(getValue(accessType)))) : null;
+		AccessType entityAccessType = accessType != null ? valueOf(upperCase(String.valueOf(getValue(accessType)))) : null;
 
 		// If the entity type does not define a default access type, scan for methods annotated with an ID annotation
-		if (entityAccessMode == null) {
+		if (entityAccessType == null) {
 			Method[] methods = getAllDeclaredMethods(entityType);
 			for (Method method : methods) {
 				// If a method is annotated with a ID annotation, property access is used by default
 				if (getAnnotation(method, getIdAnnotations()) != null) {
-					entityAccessMode = PROPERTY;
+					entityAccessType = PROPERTY;
 					break;
 				}
 			}
@@ -75,14 +75,14 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 		 * If the determination of the default access type was not successful so far i.e., because there is a field
 		 * annotated with the ID annotation, use field access by default
 		 */
-		if (entityAccessMode == null) {
-			entityAccessMode = FIELD;
+		if (entityAccessType == null) {
+			entityAccessType = FIELD;
 		}
-		setDefaultAccessMode(entityAccessMode);
-		final AccessMode finalEntityAccessMode = entityAccessMode;
+		setDefaultAccessType(entityAccessType);
+		final AccessType finalEntityAccessType = entityAccessType;
 
 		// Determine whether some properties must be accessed differently
-		if (getDefaultAccessMode() == FIELD) {
+		if (getDefaultAccessType() == FIELD) {
 			// If field access is used by default, scan for fields annotated with an access annotation
 			doWithFields(entityType, new FieldCallback() {
 				@Override
@@ -91,8 +91,8 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					Annotation annotation = getAnnotation(field, getAccessAnnotations());
 
 					// If a annotation was found, map the access type to the appropriate mode. Otherwise, use the default mode for the type.
-					AccessMode accessMode = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessMode;
-					propertyAccessTypeMap.put(field.getName(), accessMode);
+					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
+					propertyAccessTypeMap.put(field.getName(), accessType);
 				}
 			});
 		} else {
@@ -109,8 +109,8 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					Annotation annotation = getAnnotation(method, getAccessAnnotations());
 
 					// If a annotation was found, map the access type to the appropriate mode. Otherwise, use the default mode for the type.
-					AccessMode accessMode = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessMode;
-					propertyAccessTypeMap.put(descriptor.getName(), accessMode);
+					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
+					propertyAccessTypeMap.put(descriptor.getName(), accessType);
 				}
 			});
 		}

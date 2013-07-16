@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package at.schauer.gregor.dormancy.access;
 
-import at.schauer.gregor.dormancy.entity.*;
+import at.schauer.gregor.dormancy.entity.Application;
+import at.schauer.gregor.dormancy.entity.UnsupportedReadEntity;
+import at.schauer.gregor.dormancy.entity.UnsupportedWriteEntity;
 import at.schauer.gregor.dormancy.util.DormancyUtils;
 import com.google.common.base.Throwables;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import static org.junit.Assert.assertSame;
 
 /**
  * @author Gregor Schauer
+ * @since 2.0.0
  */
 public class PropertyAccessorTest {
 	DormancyUtils utils;
