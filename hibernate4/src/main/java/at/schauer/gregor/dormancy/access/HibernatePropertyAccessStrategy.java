@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package at.schauer.gregor.dormancy.access;
-
-import org.hibernate.annotations.AccessType;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Access;

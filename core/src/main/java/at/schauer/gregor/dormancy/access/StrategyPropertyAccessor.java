@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessMode.FIELD;
+import static at.schauer.gregor.dormancy.access.AbstractPropertyAccessStrategy.AccessType.FIELD;
 
 /**
  * Uses the provided {@link AbstractPropertyAccessStrategy} to determine how to access an object´s properties.
@@ -96,8 +96,8 @@ public class StrategyPropertyAccessor extends AbstractPropertyAccessor {
 	 */
 	@Nonnull
 	public PropertyAccessor getPropertyAccessor(@Nonnull String propertyName) {
-		AbstractPropertyAccessStrategy.AccessMode accessMode = strategy.getAccessMode(propertyName);
-		return accessMode == FIELD ? getFieldAccessor() : getPropertyAccessor();
+		AbstractPropertyAccessStrategy.AccessType accessType = strategy.getAccessType(propertyName);
+		return accessType == FIELD ? getFieldAccessor() : getPropertyAccessor();
 	}
 
 	/**

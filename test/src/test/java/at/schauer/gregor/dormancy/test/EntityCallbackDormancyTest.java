@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package at.schauer.gregor.dormancy.test;
 import at.schauer.gregor.dormancy.AbstractDormancyTest;
 import at.schauer.gregor.dormancy.entity.Employee;
 import at.schauer.gregor.dormancy.persistence.PersistenceUnitProvider;
-import at.schauer.gregor.dormancy.util.EntityCallback;
+import at.schauer.gregor.dormancy.persister.callback.EntityCallback;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
@@ -35,10 +35,11 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Gregor Schauer
+ * @since 2.0.0
  */
-public class HibernateCallbackDormancyTest extends AbstractDormancyTest {
+public class EntityCallbackDormancyTest extends AbstractDormancyTest {
 	@Test
-	public void testHibernateCallback() throws SQLException {
+	public void testEntityCallback() throws SQLException {
 		EntityCallback<Employee, SessionFactory, Session, ClassMetadata> callback = new EntityCallback<Employee, SessionFactory, Session, ClassMetadata>() {
 			@Override
 			public Employee work(PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider) {
