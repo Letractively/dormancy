@@ -18,6 +18,7 @@ package at.dormancy;
 import at.dormancy.entity.Application;
 import at.dormancy.entity.Book;
 import at.dormancy.entity.DataTypes;
+import at.dormancy.entity.Employee;
 import at.dormancy.persistence.JpaPersistenceUnitProvider;
 import at.dormancy.persistence.PersistenceUnitProvider;
 import at.dormancy.service.GenericService;

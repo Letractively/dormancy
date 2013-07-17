@@ -16,6 +16,7 @@
 package at.dormancy.persister.predicate;
 
 import at.dormancy.entity.Application;
+import at.dormancy.entity.Employee;
 import at.dormancy.persister.AbstractEntityPersister;
 import at.dormancy.persister.AbstractPersisterTest;
 import at.dormancy.persister.DirectFieldAccessorPersister;

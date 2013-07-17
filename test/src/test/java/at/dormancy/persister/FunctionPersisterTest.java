@@ -15,6 +15,7 @@
  */
 package at.dormancy.persister;
 
+import at.dormancy.entity.Employee;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 

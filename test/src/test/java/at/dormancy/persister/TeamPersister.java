@@ -17,6 +17,7 @@ package at.dormancy.persister;
 
 import at.dormancy.Dormancy;
 import at.dormancy.container.Team;
+import at.dormancy.entity.Employee;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
