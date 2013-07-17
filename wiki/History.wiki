@@ -1,9 +1,23 @@
-#summary Dormancy 1.0 Release
+#summary Dormancy Release Notes
 
 == Changes ==
 
 
 =======
+=== 2.0.0 (2012-07-15) ===
+	* Completely rewritten Dormancy core
+	* Added JPA (Hibernate and !EclipseLink) support
+	* Added support for `@IdClass`
+	* Bean property access now takes care of `@Access` and `@AccessType`
+	* Improved support for version columns
+	* Introduced `StrategyPropertyAccessor` for custom bean property access
+	* Introduced `EntityCallback`
+	* Removed support for Spring´s `HibernateCallback`
+	* Updated libraries:
+		* AspectJ to version 1.7.3
+		* JUnit to version 4.11
+		* Spring to version 3.2.0
+
 === 1.1.1 (2012-12-31) ===
 	* Added configuration flag `createEmptyCollections`
 	* Dormancy now creates empty collections when cloning uninitialized `PersistentCollection`s by default

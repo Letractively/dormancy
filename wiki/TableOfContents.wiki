@@ -1,18 +1,19 @@
 #summary documentation outline for docreader
 	* User's Guide
-		* [Motivation Motivation]
+		* [Motivation]
 		* [GettingStarted Getting Started]
 		* [GettingDormancy Getting Dormancy]
-		* [Architecture Architecture]
+		* [Architecture]
 		* [UsingSpring Using Spring]
-		* [ComplexQueries Complex Queries]
 	* Advanced Topics
 		* [AOPSupport AOP Support]
+		* [ComplexQueries Complex Queries]
+	* Customizing Dormancy
 		* [CustomEntityPersisters Custom EntityPersisters]
-		* [EntityPersisterConfiguration Configuration]
 		* [ContextFunction Using ContextFunctions]
+		* [EntityPersisterConfiguration Configuration]
 	* Community
-		* [Contribute Contribute]
-	* [History History]
+		* [Contribute]
+	* [History]
 	* [https://dormancy.googlecode.com/svn/report/coverage/index.html Code Coverage]
 	* [FrequentlyAskedQuestions Frequently Asked Questions]

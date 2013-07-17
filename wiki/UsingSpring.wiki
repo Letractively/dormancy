@@ -4,7 +4,7 @@
 = Getting started with Spring =
 
 Dormancy provides great integration with Spring.
-Another huge benefit is that Spring can initialize all `EntityPersister`s as well as a `SessionFactory`.
+Another huge benefit is that Spring can initialize all `EntityPersister`s as well as a `SessionFactory` or `EntityManagerFactory`.
 
 To make this more clearly, here is an example of how Spring can be used to serialize a custom class:
 
@@ -14,14 +14,14 @@ Spring scans for `EntityPersister`s in the classpath and registers them for the 
 
 {{{
 <ctx:component-scan base-package="org.acme" use-default-filters="false">
-	<ctx:include-filter type="assignable" expression="at.schauer.gregor.dormancy.persister.EntityPersister"/>
+	<ctx:include-filter type="assignable" expression="at.dormancy.persister.EntityPersister"/>
 </ctx:component-scan>
 }}}
 
 Next, a `Dormancy` instance has to be configured.
 
 {{{
-<bean class="at.schauer.gregor.dormancy.Dormancy"/>
+<bean class="at.dormancy.Dormancy"/>
 }}}
 
 Several properties can also be set declarativly if necessary.
@@ -29,9 +29,9 @@ Several properties can also be set declarativly if necessary.
 The following listing outlines a alternative configuration:
 
 {{{
-<bean class="at.schauer.gregor.dormancy.Dormancy">
+<bean class="at.dormancy.Dormancy">
 	<property name="config">
-		<bean class="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
+		<bean class="at.dormancy.EntityPersisterConfiguration">
 			<!-- Advice Dormancy to ignore the version attribute -->
 			<property name="versionChecking" value="false"/>
 		</bean>
@@ -46,7 +46,7 @@ The following listing outlines a alternative configuration:
 Furthermore, the initial entity persister mapping can be defined by declaring a map with the object type as the key and the `EntityPersister` as the value.
 
 {{{
-<bean class="at.schauer.gregor.dormancy.Dormancy">
+<bean class="at.dormancy.Dormancy">
 	<property name="persisterMap">
 		<map>
 			<entry key="org.acme.model.Customer">

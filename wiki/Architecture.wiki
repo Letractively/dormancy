@@ -9,11 +9,11 @@ Further details about implementing `EntityPersister`s for specific entities can 
 
 == Typical Scenario ==
 
-When the GWT `RemoteServiceServlet` receives a client request, it creates Java objects for the parameters and invokes the desired method of a `RemoteService`. For every Hibernate entity received, Dormancy retrieves the persistent entity from the database (if possible) and seamlessly merges both object graphs by copying the modified properties. Afterwards, the objects can be processed in the business logic layer.
+When the GWT `RemoteServiceServlet` receives a client request, it creates Java objects for the parameters and invokes the desired method of a `RemoteService`. For every JPA entity received, Dormancy retrieves the persistent entity from the database (if possible) and seamlessly merges both object graphs by copying the modified properties. Afterwards, the objects can be processed in the business logic layer.
 
-Since the objects are attached Hibernate entities, they may be Hibernate proxies or contain proxies that do the lazy loading of persistent collections if necessary. Moreover, any changes made to the objects are committed as soon as the Hibernate `Session` containing the persistent entities is flushed successfully.
+Since the objects are attached JPA entities, they may be proxies or contain proxies that do the lazy loading of persistent collections if necessary. Moreover, any changes made to the objects are committed as soon as the Hibernate `Session` or the `EntityManager` containing the persistent entities is flushed successfully.
 
-In the end, if some Hibernate entities should be returned to the client, Dormancy transparently does all necessary operations i.e., cloning object graphs recursively and removing unserializable Hibernate proxies, so that they can be serialized to the client as usual.
+In the end, if some JPA entities should be returned to the client, Dormancy transparently does all necessary operations i.e., cloning object graphs recursively and removing unserializable Hibernate proxies, so that they can be serialized to the client as usual.
 
 The following picture outlines the previously mentioned steps:
 

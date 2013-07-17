@@ -68,7 +68,7 @@ The `merge(T, Map<Object, Object>)` method retrieves the `User` entity with the 
 }}}
 
 The `merge_(T, T, Map<Object, Object>)` copies all properties except the identifier (`username`) and the `password` from the transient object to the persistent object previously loaded.
-Thus the persistent object is attached to the current Hibernate session and all property changes are applied to it.
+Thus the persistent object is attached to the current persistence context and all property changes are applied to it.
 
 {{{
 	@Override

@@ -9,11 +9,11 @@ You can simply download `dormancy-core-<version>-dist.zip` and `dormancy-hiberna
 Furthermore, you can download `dormancy-closure-<version>-dist.zip`, which contains closure like functions for building extensions fast and easily.
 They contain all dependencies required for Dormancy including Hibernate. However, you can of course replace the shipped JARs with the desired version.
 
-The file `dormancy-<version>.zip` contains all Dormancy modules (including `closure`, `hibernate3` and `hibernate4`) but contains no dependencies.
+The file `dormancy-<version>.zip` contains all Dormancy modules (including `closure`, `hibernate3`, `hibernate4`, `jpa-hibernate` and `jpa-eclipselink`) but contains no dependencies.
 Please also refer to the next question.
 
 === I maintain the libraries myself. Which third-party JARs do I need? ===
-Basically, this depends on the Hibernate version an the features you want to use. In general, you will need the following libraries:
+Basically, this depends on the JPA provider and the features you want to use. In general, you will need the following libraries:
 || antlr								|| antlr								|| 2.7.7			||
 || aopalliance							|| aopalliance							|| 1.0				||
 || asm									|| asm									|| 3.3.1			||
@@ -30,29 +30,34 @@ Basically, this depends on the Hibernate version an the features you want to use
 || log4j								|| log4j								|| 1.2.17			||
 || org.aspectj							|| aspectjrt							|| 1.7.1			||
 || org.aspectj							|| aspectjweaver						|| 1.7.1			||
+|| org.eclipse.persistence				|| org.eclipse.persistence.asm			|| 2.5.0			||
+|| org.eclipse.persistence				|| org.eclipse.persistence.antlr		|| 2.5.0			||
+|| org.eclipse.persistence				|| org.eclipse.persistence.core			|| 2.5.0			||
+|| org.eclipse.persistence				|| org.eclipse.persistence.jpa			|| 2.5.0			||
+|| org.eclipse.persistence				|| org.eclipse.persistence.jpa.jpql		|| 2.5.0			||
 || org.hibernate.common					|| hibernate-commons-annotations		|| 4.0.1.Final		||
 || org.hibernate						|| ejb3-persistence						|| 1.0.2.GA			||
 || org.hibernate						|| hibernate-annotations				|| 3.4.0.GA			||
 || org.hibernate						|| hibernate-commons-annotations		|| 3.1.0.GA			||
 || org.hibernate						|| hibernate-core						|| 3.3.2.GA			||
-|| org.hibernate						|| hibernate-core						|| 4.1.8.Final		||
+|| org.hibernate						|| hibernate-core						|| 4.2.0.Final		||
 || org.hibernate.javax.persistence		|| hibernate-jpa-2.0-api				|| 1.0.0.Final		||
 || org.javassist						|| javassist							|| 3.16.1-GA		||
 || org.jboss.logging					|| jboss-logging						|| 3.1.0.CR2		||
 || org.jboss.spec.javax.transaction		|| jboss-transaction-api_1.1_spec		|| 1.0.0.Final		||
 || org.slf4j							|| slf4j-api							|| 1.5.8			||
-|| org.springframework					|| spring-aop							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-asm							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-beans							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-context						|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-core							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-expression					|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-jdbc							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-orm							|| 3.1.0.RELEASE	||
-|| org.springframework					|| spring-tx							|| 3.1.0.RELEASE	||
+|| org.springframework					|| spring-aop							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-asm							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-beans							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-context						|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-core							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-expression					|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-jdbc							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-orm							|| 3.2.0.RELEASE	||
+|| org.springframework					|| spring-tx							|| 3.2.0.RELEASE	||
 
 === Which JPA providers are supported? ===
-Currently Dormancy supports only Hibernate 3 and Hibernate 4.
+Currently Dormancy supports Hibernate 3, Hibernate 4 and EclipseLink.
 There are no plans to support other JPA providers in the near future.
 However, if you plan to adapt Dormancy to support another JPA implementation or persistence framework, please let me know.
 
@@ -71,21 +76,37 @@ All modules are hosted on Google Code. To use the repository in your project, si
 }}}
 
 === Which modules do I need? ===
-You basically need `dormancy-hibernate3` or `dormancy-hibernate4` depending on the Hibernate version you use.
+You basically need one of `dormancy-hibernate3`, `dormancy-hibernate4`, `dormancy-jpa-hibernate` or `dormancy-jpa-eclipselink` depending on the JPA provider you use.
 Therefore, the appropriate dependency has to be added to the `pom.xml`:
 {{{
 <dependency>
-	<groupId>at.schauer.gregor.dormancy</groupId>
+	<groupId>at.dormancy</groupId>
 	<artifactId>dormancy-hibernate3</artifactId>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
 </dependency>
 }}}
 or
 {{{
 <dependency>
-	<groupId>at.schauer.gregor.dormancy</groupId>
+	<groupId>at.dormancy</groupId>
 	<artifactId>dormancy-hibernate4</artifactId>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
+</dependency>
+}}}
+or
+{{{
+<dependency>
+	<groupId>at.dormancy</groupId>
+	<artifactId>dormancy-jpa-hibernate</artifactId>
+	<version>2.0.0</version>
+</dependency>
+}}}
+or
+{{{
+<dependency>
+	<groupId>at.dormancy</groupId>
+	<artifactId>dormancy-jpa-eclipselink</artifactId>
+	<version>2.0.0</version>
 </dependency>
 }}}
 The `dormancy-core` module and all required dependencies are included automatically.
