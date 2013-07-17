@@ -6,7 +6,7 @@
 
 	<tx:annotation-driven proxy-target-class="true" order="0"/>
 
-	<ctx:component-scan base-package="at.schauer.gregor.dormancy.scenario">
+	<ctx:component-scan base-package="at.dormancy.scenario">
 		<ctx:include-filter type="annotation" expression="org.springframework.transaction.annotation.Transactional" />
 	</ctx:component-scan>
 
@@ -15,7 +15,7 @@
 	</bean>
 
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" lazy-init="false">
-		<property name="packagesToScan" value="at.schauer.gregor.dormancy.scenario.shared.model"/>
+		<property name="packagesToScan" value="at.dormancy.scenario.shared.model"/>
 		<property name="hibernateProperties" ref="hibernateProperties"/>
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -42,17 +42,17 @@
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
 
 	<aop:config>
-		<aop:pointcut id="persistenceEndpoint" expression="within(at.schauer.gregor.dormancy..server..*)"/>
+		<aop:pointcut id="persistenceEndpoint" expression="within(at.dormancy..server..*)"/>
 		<aop:advisor advice-ref="dormancyAspect" pointcut-ref="persistenceEndpoint" order="1000"/>
 	</aop:config>
 
-	<bean id="dormancyAspect" class="at.schauer.gregor.dormancy.interceptor.DormancyAdvisor">
+	<bean id="dormancyAspect" class="at.dormancy.aop.DormancyAdvisor">
 		<constructor-arg ref="dormancy"/>
 	</bean>
 
-	<bean id="dormancy" class="at.schauer.gregor.dormancy.Dormancy">
+	<bean id="dormancy" class="at.dormancy.Dormancy">
 		<property name="config">
-			<bean class="at.schauer.gregor.dormancy.EntityPersisterConfiguration">
+			<bean class="at.dormancy.EntityPersisterConfiguration">
 				<property name="saveNewEntities" value="true"/>
 			</bean>
 		</property>

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.client.ui;
+package at.dormancy.scenario.client.ui;
 
-import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioServiceAsync;
-import at.schauer.gregor.dormancy.scenario.shared.model.Employee;
+import at.dormancy.scenario.client.service.DormancyScenarioServiceAsync;
+import at.dormancy.scenario.shared.model.Employee;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;

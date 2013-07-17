@@ -9,11 +9,11 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	<servlet>
-		<servlet-name>at.schauer.gregor.dormancy.scenario.Scenario DormancyScenarioService</servlet-name>
-		<servlet-class>at.schauer.gregor.dormancy.scenario.server.service.DormancyScenarioServiceImpl</servlet-class>
+		<servlet-name>at.dormancy.scenario.Scenario DormancyScenarioService</servlet-name>
+		<servlet-class>at.dormancy.scenario.server.service.DormancyScenarioServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>at.schauer.gregor.dormancy.scenario.Scenario DormancyScenarioService</servlet-name>
+		<servlet-name>at.dormancy.scenario.Scenario DormancyScenarioService</servlet-name>
 		<url-pattern>/Scenario/DormancyScenarioService</url-pattern>
 	</servlet-mapping>
 </web-app>

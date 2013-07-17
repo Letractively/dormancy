@@ -1,6 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 			 xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-	<ui:with field="res" type="at.schauer.gregor.dormancy.scenario.client.ui.ResourceBundle"/>
+	<ui:with field="res" type="at.dormancy.scenario.client.ui.ResourceBundle"/>
 	<g:HTMLPanel styleName="{res.floatz.layout.box}">
 		<g:SimplePanel ui:field="mainPanel" styleName="{res.floatz.layout.l25}  {res.floatz.layout.box}"/>
 		<g:FormPanel styleName="{res.floatz.form.form} {res.floatz.layout.r75} {res.floatz.layout.box}">

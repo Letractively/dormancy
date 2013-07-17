@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.client.ui;
+package at.dormancy.scenario.client.ui;
 
-import at.schauer.gregor.dormancy.scenario.shared.model.Employee;
+import at.dormancy.scenario.shared.model.Employee;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.shared.model;
+package at.dormancy.scenario.shared.model;
 
 import javax.persistence.*;
 import java.io.Serializable;

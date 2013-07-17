@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.client.ui;
+package at.dormancy.scenario.client.ui;
 
 import com.floatzcss.gwt.client.resource.Floatz;
 import com.google.gwt.core.client.GWT;
