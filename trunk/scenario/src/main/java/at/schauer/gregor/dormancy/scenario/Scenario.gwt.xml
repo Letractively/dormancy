@@ -8,9 +8,9 @@
 	<source path="shared"/>
 
 	<!-- Specify the app entry point class.                   -->
-	<entry-point class='at.schauer.gregor.dormancy.scenario.client.Scenario'/>
+	<entry-point class='at.dormancy.scenario.client.Scenario'/>
 
 	<!-- Specify the app servlets.                   -->
-	<servlet path="/DormancyScenarioService" class="at.schauer.gregor.dormancy.scenario.server.service.DormancyScenarioServiceImpl"/>
+	<servlet path="/DormancyScenarioService" class="at.dormancy.scenario.server.service.DormancyScenarioServiceImpl"/>
 
 </module>

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.server.dao;
+package at.dormancy.scenario.server.dao;
 
-import at.schauer.gregor.dormancy.Dormancy;
-import at.schauer.gregor.dormancy.scenario.shared.model.Employee;
+import at.dormancy.Dormancy;
+import at.dormancy.scenario.shared.model.Employee;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.transaction.annotation.Transactional;

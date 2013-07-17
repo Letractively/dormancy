@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.server.service;
+package at.dormancy.scenario.server.service;
 
-import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioService;
-import at.schauer.gregor.dormancy.scenario.server.dao.DormancyScenarioDao;
-import at.schauer.gregor.dormancy.scenario.shared.model.Employee;
+import at.dormancy.scenario.client.service.DormancyScenarioService;
+import at.dormancy.scenario.server.dao.DormancyScenarioDao;
+import at.dormancy.scenario.shared.model.Employee;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;

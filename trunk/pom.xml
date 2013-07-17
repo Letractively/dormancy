@@ -4,7 +4,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>at.schauer.gregor.dormancy</groupId>
+	<groupId>at.dormancy</groupId>
 	<artifactId>dormancy</artifactId>
 	<packaging>pom</packaging>
 	<version>2.0.0</version>
@@ -42,7 +42,7 @@
 							<configuration>
 								<relocations>
 									<relocation>
-										<pattern>at.schauer.gregor.dormancy</pattern>
+										<pattern>at.dormancy</pattern>
 										<shadedPattern>at.dormancy</shadedPattern>
 									</relocation>
 								</relocations>
@@ -112,7 +112,7 @@
 						<artifactId>doclava</artifactId>
 						<version>1.0.5</version>
 					</docletArtifact>
-					<excludePackageNames>at.schauer.gregor.dormancy.sample.*</excludePackageNames>
+					<excludePackageNames>at.dormancy.sample.*</excludePackageNames>
 					<maxmemory>256m</maxmemory>
 					<useStandardDocletOptions>false</useStandardDocletOptions>
 				</configuration>
@@ -404,7 +404,7 @@
 			<dependencyManagement>
 				<dependencies>
 					<dependency>
-						<groupId>at.schauer.gregor.dormancy</groupId>
+						<groupId>at.dormancy</groupId>
 						<artifactId>dormancy-core</artifactId>
 						<version>${project.version}</version>
 						<exclusions>
@@ -415,7 +415,7 @@
 						</exclusions>
 					</dependency>
 					<dependency>
-						<groupId>at.schauer.gregor.dormancy</groupId>
+						<groupId>at.dormancy</groupId>
 						<artifactId>dormancy-closure</artifactId>
 						<version>${project.version}</version>
 						<exclusions>
@@ -446,7 +446,7 @@
 			<dependencyManagement>
 				<dependencies>
 					<dependency>
-						<groupId>at.schauer.gregor.dormancy</groupId>
+						<groupId>at.dormancy</groupId>
 						<artifactId>dormancy-core</artifactId>
 						<version>${project.version}</version>
 						<exclusions>
@@ -457,7 +457,7 @@
 						</exclusions>
 					</dependency>
 					<dependency>
-						<groupId>at.schauer.gregor.dormancy</groupId>
+						<groupId>at.dormancy</groupId>
 						<artifactId>dormancy-closure</artifactId>
 						<version>${project.version}</version>
 						<exclusions>

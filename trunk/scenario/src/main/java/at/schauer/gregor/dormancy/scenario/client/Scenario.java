@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.schauer.gregor.dormancy.scenario.client;
+package at.dormancy.scenario.client;
 
-import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioService;
-import at.schauer.gregor.dormancy.scenario.client.service.DormancyScenarioServiceAsync;
-import at.schauer.gregor.dormancy.scenario.client.ui.EmployeesPresenter;
-import at.schauer.gregor.dormancy.scenario.client.ui.EmployeesView;
+import at.dormancy.scenario.client.service.DormancyScenarioService;
+import at.dormancy.scenario.client.service.DormancyScenarioServiceAsync;
+import at.dormancy.scenario.client.ui.EmployeesPresenter;
+import at.dormancy.scenario.client.ui.EmployeesView;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
