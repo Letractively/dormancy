@@ -18,6 +18,7 @@ package at.dormancy.test;
 import at.dormancy.AbstractDormancyTest;
 import at.dormancy.Dormancy;
 import at.dormancy.aop.DormancyAdvisor;
+import at.dormancy.entity.Employee;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.log4j.Level;
@@ -25,6 +26,8 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.annotation.*;
 
 import static org.junit.Assert.assertNotNull;
 

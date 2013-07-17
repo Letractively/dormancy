@@ -16,6 +16,7 @@
 package at.dormancy.persister;
 
 import at.dormancy.entity.Application;
+import at.dormancy.entity.Employee;
 import org.junit.Test;
 
 import javax.annotation.PostConstruct;

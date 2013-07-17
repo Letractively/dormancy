@@ -19,6 +19,7 @@ import at.dormancy.AbstractDormancyTest;
 import at.dormancy.Dormancy;
 import at.dormancy.container.Team;
 import at.dormancy.entity.Book;
+import at.dormancy.entity.Employee;
 import at.dormancy.persister.CollectionPersister;
 import at.dormancy.persister.NoOpPersister;
 import at.dormancy.persister.TeamPersister;

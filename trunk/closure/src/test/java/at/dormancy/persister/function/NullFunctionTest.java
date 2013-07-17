@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.dormancy.function;
+package at.dormancy.persister.function;
 
 import at.dormancy.entity.Employee;
 import at.dormancy.persister.function.ConstantValueFunction;

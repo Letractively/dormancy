@@ -15,6 +15,8 @@
  */
 package at.dormancy.container;
 
+import at.dormancy.entity.Employee;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

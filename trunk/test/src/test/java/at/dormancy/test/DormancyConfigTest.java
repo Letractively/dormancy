@@ -18,6 +18,7 @@ package at.dormancy.test;
 import at.dormancy.AbstractDormancyTest;
 import at.dormancy.EntityPersisterConfiguration;
 import at.dormancy.entity.Book;
+import at.dormancy.entity.Employee;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
