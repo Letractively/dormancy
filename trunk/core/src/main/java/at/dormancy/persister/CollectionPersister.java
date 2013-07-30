@@ -22,7 +22,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Processes all types of {@link Collection}s by traversing them and invoking the desired operation of the appropriate
@@ -35,7 +37,8 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 	@SuppressWarnings("unchecked")
 	public CollectionPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
-		supportedTypes = new Class[]{Collection.class};
+		supportedTypes = new HashSet<Class<? extends C>>();
+		supportedTypes.add((Class<? extends C>) Collection.class);
 	}
 
 	@Nullable
@@ -109,7 +112,7 @@ public class CollectionPersister<C extends Collection> extends AbstractContainer
 	}
 
 	@Override
-	public Class<?>[] getSupportedTypes() {
+	public Set<Class<? extends C>> getSupportedTypes() {
 		return supportedTypes;
 	}
 }

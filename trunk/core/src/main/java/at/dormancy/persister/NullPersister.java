@@ -19,8 +19,7 @@ import at.dormancy.util.ClassLookup;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -30,8 +29,6 @@ import java.util.Map;
  * @since 1.0.2
  */
 public class NullPersister<C> extends AbstractEntityPersister<C> implements DynamicEntityPersister<C> {
-	protected List<Class<?>> classes = new ArrayList<Class<?>>();
-
 	protected static class NullPersisterHolder {
 		protected static final NullPersister instance = new NullPersister();
 	}
@@ -42,10 +39,13 @@ public class NullPersister<C> extends AbstractEntityPersister<C> implements Dyna
 		return NullPersisterHolder.instance;
 	}
 
+	@SuppressWarnings("unchecked")
 	public NullPersister() {
+		supportedTypes = new HashSet<Class<? extends C>>();
+
 		Class<?> lazyInitializer = ClassLookup.forName("org.hibernate.proxy.LazyInitializer");
 		if (lazyInitializer != null) {
-			classes.add(lazyInitializer);
+			supportedTypes.add((Class) lazyInitializer);
 		}
 	}
 
@@ -88,14 +88,6 @@ public class NullPersister<C> extends AbstractEntityPersister<C> implements Dyna
 
 	@Override
 	public boolean supports(@Nonnull Class<?> clazz) {
-		return classes.contains(clazz);
-	}
-
-	public List<Class<?>> getClasses() {
-		return classes;
-	}
-
-	public void setClasses(List<Class<?>> classes) {
-		this.classes = classes;
+		return supportedTypes.contains(clazz);
 	}
 }

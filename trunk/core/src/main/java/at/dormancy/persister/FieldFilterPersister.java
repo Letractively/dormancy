@@ -19,7 +19,6 @@ import at.dormancy.Dormancy;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,14 +26,16 @@ import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static org.springframework.util.ReflectionUtils.*;
+
 /**
- * Uses {@link org.springframework.util.ReflectionUtils.FieldFilter}s for determining the properties to process.<br/>
+ * Uses {@link FieldFilter}s for determining the properties to process.<br/>
  *
  * @author Gregor Schauer
  * @since 1.0.1
  */
 public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
-	protected List<ReflectionUtils.FieldFilter> fieldFilters;
+	protected List<FieldFilter> fieldFilters;
 
 	@Inject
 	public FieldFilterPersister(@Nonnull Dormancy dormancy) {
@@ -97,7 +98,7 @@ public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 	}
 
 	/**
-	 * Returns all fields matching at least one provided {@link org.springframework.util.ReflectionUtils.FieldFilter}.
+	 * Returns all fields matching at least one provided {@link FieldFilter}.
 	 *
 	 * @param obj the object to process
 	 * @param <T> the type of the object
@@ -106,8 +107,8 @@ public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 	@Nonnull
 	protected <T extends C> Set<Field> filter(@Nonnull T obj) {
 		final Set<Field> fields = new LinkedHashSet<Field>();
-		for (ReflectionUtils.FieldFilter filter : getFieldFilters()) {
-			ReflectionUtils.doWithFields(obj.getClass(), new ReflectionUtils.FieldCallback() {
+		for (FieldFilter filter : getFieldFilters()) {
+			doWithFields(obj.getClass(), new FieldCallback() {
 				@Override
 				public void doWith(@Nonnull Field field) {
 					field.setAccessible(true);
@@ -126,9 +127,9 @@ public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 	 * @return the field filters
 	 */
 	@Nonnull
-	public List<ReflectionUtils.FieldFilter> getFieldFilters() {
+	public List<FieldFilter> getFieldFilters() {
 		if (fieldFilters == null) {
-			fieldFilters = new ArrayList<ReflectionUtils.FieldFilter>();
+			fieldFilters = new ArrayList<FieldFilter>();
 		}
 		return fieldFilters;
 	}
@@ -138,7 +139,7 @@ public class FieldFilterPersister<C> extends GenericEntityPersister<C> {
 	 *
 	 * @param filters the field filters
 	 */
-	public void setFieldFilters(@Nullable ReflectionUtils.FieldFilter... filters) {
+	public void setFieldFilters(@Nullable FieldFilter... filters) {
 		getFieldFilters().clear();
 		if (ArrayUtils.isNotEmpty(filters)) {
 			CollectionUtils.addAll(getFieldFilters(), filters);

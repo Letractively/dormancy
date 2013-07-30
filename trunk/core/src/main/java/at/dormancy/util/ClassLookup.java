@@ -16,6 +16,7 @@
 package at.dormancy.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,6 +40,11 @@ public final class ClassLookup {
 
 	/**
 	 * Returns the {@link Class} object associated with the class or interface with the given name.
+	 * <p/>
+	 * If a {@link ClassNotFoundException} was thrown by the {@link ClassLoader} performing the lookup, it gets caught
+	 * gracefully and {@code null} is returned.<br/>
+	 * Any other serious exception such as {@link ExceptionInInitializerError} or {@link LinkageError} is forwarded to
+	 * the caller immediately.
 	 *
 	 * @param name the full-qualified name of the desired class.
 	 * @return the {@code Class} object for the class with the specified name or {@code null}.
@@ -48,7 +54,7 @@ public final class ClassLookup {
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> forName(@Nonnull String name) {
 		try {
-			return (Class<T>) Class.forName(name);
+			return (Class<T>) Class.forName(StringUtils.defaultIfEmpty(name, ""));
 		} catch (ClassNotFoundException e) {
 			return null;
 		}

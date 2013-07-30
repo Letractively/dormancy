@@ -19,6 +19,7 @@ import at.dormancy.persistence.PersistenceUnitProvider;
 import at.dormancy.persister.*;
 import at.dormancy.persister.callback.EntityCallback;
 import at.dormancy.util.AbstractDormancyUtils;
+import at.dormancy.util.ClassLookup;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -53,11 +54,11 @@ import java.util.Map;
  * @see EntityPersister
  */
 public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> implements ApplicationContextAware {
+	protected static final Logger logger = Logger.getLogger(Dormancy.class);
 	protected Map<Class<?>, AbstractEntityPersister<?>> persisterMap;
 	protected PersistenceUnitProvider<PU, PC, PMD> persistenceUnitProvider;
 	protected EntityPersisterConfiguration config;
 	protected AbstractDormancyUtils<PU, PC, PMD, PersistenceUnitProvider<PU, PC, PMD>> utils;
-	protected Logger logger = Logger.getLogger(Dormancy.class);
 	protected boolean registerDefaultEntityPersisters = true;
 
 	@Inject
@@ -74,14 +75,19 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	public void initialize() {
 		// Initialize JPA provider specific DormancyUtils
 		if (utils == null) {
-			try {
-				Class<?> type = getClass().getClassLoader().loadClass("at.dormancy.util.DormancyUtils");
-				utils = (AbstractDormancyUtils) ConstructorUtils.invokeConstructor(type, persistenceUnitProvider);
-			} catch (RuntimeException e) {
-				throw e;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			String className = "at.dormancy.util.DormancyUtils";
+			Class<?> type = ClassLookup.find(className).orThrow(
+					"Cannot initialize Dormancy: Missing class \"%s\"\n" +
+							"Please make sure that there is exactly one Dormancy backend in the classpath.\n" +
+							"Official implementations are:\n" +
+							"x) hibernate3\n" +
+							"x) hibernate4\n" +
+							"x) jpa-hibernate\n" +
+							"x) jpa-eclipselink\n", className).get();
+
+			Constructor<? extends AbstractDormancyUtils> ctor = ConstructorUtils.getAccessibleConstructor(
+					type, persistenceUnitProvider.getClass());
+			utils = BeanUtils.instantiateClass(ctor, persistenceUnitProvider);
 		}
 
 		// Ensure that a configuration is provided
@@ -155,6 +161,10 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		}
 		PropertyAccessor trPropertyAccessor = dbObj == trObj ? dbPropertyAccessor : utils.getPropertyAccessor(metadata, trObj);
 		for (String propertyName : propertyNames) {
+			if (utils.isTransient(dbObj, propertyName)) {
+				continue;
+			}
+
 			Object dbValue;
 			try {
 				dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
@@ -332,14 +342,19 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 
 		// Process the properties
 		for (int i = 0; i < propertyNames.length; i++) {
+			String propertyName = propertyNames[i];
+			// Skip transient properties
+			if (utils.isTransient(dbObj, propertyName)) {
+				continue;
+			}
+
 			// Do not apply the version property if version checking is enabled
 			String versionPropertyName = utils.getVersionPropertyName(metadata);
-			if (propertyNames[i].equals(versionPropertyName) && config.getCheckVersion()) {
+			if (propertyName.equals(versionPropertyName) && config.getCheckVersion()) {
 				continue;
 			}
 
 			// Read the property values
-			String propertyName = propertyNames[i];
 			Object trValue = trPropertyAccessor.getPropertyValue(propertyName);
 			Object dbValue = dbPropertyAccessor.getPropertyValue(propertyName);
 			Class<?> type = utils.getPropertyType(utils.getClass(dbObj), propertyName);
@@ -526,7 +541,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	/**
 	 * Registers the given {@link AbstractEntityPersister} for certain types.<br/>
 	 * The {@link AbstractEntityPersister} is registered for every type returned by
-	 * {@link at.dormancy.persister.AbstractEntityPersister#getSupportedTypes()} and the parameter types.
+	 * {@link AbstractEntityPersister#getSupportedTypes()} and the parameter types.
 	 * Furthermore, the type of the {@link AbstractEntityPersister} itself is registered so it can be used by in
 	 * {@link at.dormancy.aop.PersistenceEndpoint#types()}.
 	 *
@@ -535,7 +550,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	 * @see #addEntityPersister(Class, Class[])
 	 */
 	public void addEntityPersister(@Nonnull AbstractEntityPersister<?> entityPersister, @Nullable Class<?>... types) {
-		if (ArrayUtils.isNotEmpty(entityPersister.getSupportedTypes())) {
+		if (CollectionUtils.isNotEmpty(entityPersister.getSupportedTypes())) {
 			for (Class<?> type : entityPersister.getSupportedTypes()) {
 				getPersisterMap().put(type, entityPersister);
 			}
@@ -553,13 +568,13 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	/**
 	 * Registers an instance of the given {@link AbstractEntityPersister} type for certain types.<br/>
 	 * The {@link AbstractEntityPersister} is registered for every type returned by
-	 * {@link at.dormancy.persister.AbstractEntityPersister#getSupportedTypes()} and the parameter types.
+	 * {@link AbstractEntityPersister#getSupportedTypes()} and the parameter types.
 	 * Furthermore, the type of the {@link AbstractEntityPersister} itself is registered so it can be used by in
 	 * {@link at.dormancy.aop.PersistenceEndpoint#types()}.
 	 *
 	 * @param entityPersisterClass the type of the EntityPersister to register
 	 * @param types                the types of objects supported by the EntityPersister (may be {@code null})
-	 * @see #addEntityPersister(at.dormancy.persister.AbstractEntityPersister, Class[])
+	 * @see #addEntityPersister(AbstractEntityPersister, Class[])
 	 */
 	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class<?>... types) {
 		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);

@@ -18,6 +18,7 @@ package at.dormancy.util;
 import at.dormancy.access.AbstractPropertyAccessStrategy;
 import at.dormancy.persistence.PersistenceUnitProvider;
 import org.springframework.beans.PropertyAccessor;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,34 +69,29 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	@Nullable
 	@SuppressWarnings("unchecked")
 	public <T> T findPendant(@Nonnull T obj, @Nonnull Collection<?> collection) {
-		try {
-			Method method = obj.getClass().getMethod("equals", Object.class);
-			if (method.getDeclaringClass() != Object.class) {
-				// If the given object overrides the equals() method, invoke it for every object in the collection
-				for (Object elem : collection) {
-					if (obj.equals(elem) && collection.remove(elem)) {
-						return (T) elem;
-					}
-				}
-			} else {
-				// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
-				PMD objMetadata = getMetadata(obj);
-				Serializable objIdentifier = getIdentifier(objMetadata, obj);
-
-				// For every object in the collection, check if the type matches and if the identifier is equal
-				for (Object elem : collection) {
-					if (elem != null && elem.getClass() == obj.getClass()
-							&& objIdentifier.equals(getIdentifier(objMetadata, elem))
-							&& collection.remove(elem)) {
-						return (T) elem;
-					}
+		Method method = ReflectionUtils.findMethod(getClass(obj), "equals", Object.class);
+		if (method.getDeclaringClass() != Object.class) {
+			// If the given object overrides the equals() method, invoke it for every object in the collection
+			for (Object elem : collection) {
+				if (obj.equals(elem) && collection.remove(elem)) {
+					return (T) elem;
 				}
 			}
-			return null;
-		} catch (NoSuchMethodException e) {
-			// Must not happen because Object defines an equals() method
-			throw new RuntimeException(e);
+		} else {
+			// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
+			PMD objMetadata = getMetadata(obj);
+			Serializable objIdentifier = getIdentifier(objMetadata, obj);
+
+			// For every object in the collection, check if the type matches and if the identifier is equal
+			for (Object elem : collection) {
+				if (elem != null && elem.getClass() == obj.getClass()
+						&& objIdentifier.equals(getIdentifier(objMetadata, elem))
+						&& collection.remove(elem)) {
+					return (T) elem;
+				}
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -331,6 +327,17 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 */
 	@Nonnull
 	protected abstract AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz);
+
+	/**
+	 * Checks if the named property is transient.
+	 *
+	 * @param obj the object to check
+	 * @param propertyName the name of the property
+	 * @return {@code true} if the property is transient, {@code false} otherwise
+	 */
+	public boolean isTransient(@Nonnull Object obj, @Nonnull String propertyName) {
+		return getMetadata(obj) != null && !getAccessTypeStrategy(getClass(obj)).isProperty(propertyName);
+	}
 
 	/**
 	 * Checks if the given object is a proxy maintained by the JPA provider.

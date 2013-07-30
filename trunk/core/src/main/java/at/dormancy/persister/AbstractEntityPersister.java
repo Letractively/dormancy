@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Abstract implementation containing some convenience methods.
@@ -26,7 +27,7 @@ import java.util.Map;
  * @author Gregor Schauer
  */
 public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
-	protected Class<? extends C>[] supportedTypes;
+	protected Set<Class<? extends C>> supportedTypes;
 
 	@Nullable
 	@Override
@@ -93,7 +94,7 @@ public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
 	 * @return the supported types
 	 */
 	@Nullable
-	public Class<?>[] getSupportedTypes() {
+	public Set<Class<? extends C>> getSupportedTypes() {
 		return supportedTypes;
 	}
 
@@ -102,7 +103,7 @@ public abstract class AbstractEntityPersister<C> implements EntityPersister<C> {
 	 *
 	 * @param supportedTypes the supported types
 	 */
-	public void setSupportedTypes(@Nullable Class<? extends C>... supportedTypes) {
+	public void setSupportedTypes(@Nullable Set<Class<? extends C>> supportedTypes) {
 		this.supportedTypes = supportedTypes;
 	}
 }
