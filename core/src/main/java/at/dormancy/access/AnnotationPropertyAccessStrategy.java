@@ -15,6 +15,9 @@
  */
 package at.dormancy.access;
 
+import at.dormancy.persister.filter.NonTransientPropertyFilter;
+import org.apache.commons.lang.ArrayUtils;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.beans.PropertyDescriptor;
@@ -36,8 +39,10 @@ import static org.springframework.util.ReflectionUtils.*;
  * @since 2.0.0
  */
 public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyAccessStrategy {
-	protected static Class<? extends Annotation>[] accessAnnotations;
-	protected static Class<? extends Annotation>[] idAnnotations;
+	@SuppressWarnings("unchecked")
+	protected static Class<? extends Annotation>[] accessAnnotations = ArrayUtils.EMPTY_CLASS_ARRAY;
+	@SuppressWarnings("unchecked")
+	protected static Class<? extends Annotation>[] idAnnotations = ArrayUtils.EMPTY_CLASS_ARRAY;
 
 	/**
 	 * Creates a new strategy instance.
@@ -94,7 +99,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
 					propertyAccessTypeMap.put(field.getName(), accessType);
 				}
-			});
+			}, NonTransientPropertyFilter.getInstance());
 		} else {
 			// If property access is used by default, scan for methods annotated with an access annotation
 			doWithMethods(entityType, new MethodCallback() {
@@ -112,7 +117,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
 					propertyAccessTypeMap.put(descriptor.getName(), accessType);
 				}
-			});
+			}, NonTransientPropertyFilter.getInstance());
 		}
 	}
 
@@ -121,7 +126,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	 *
 	 * @return the access annotation type
 	 */
-	@Nullable
+	@Nonnull
 	public static Class<? extends Annotation>[] getAccessAnnotations() {
 		return accessAnnotations;
 	}
@@ -131,7 +136,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	 *
 	 * @return the identifier annotation types
 	 */
-	@Nullable
+	@Nonnull
 	public static Class<? extends Annotation>[] getIdAnnotations() {
 		return idAnnotations;
 	}

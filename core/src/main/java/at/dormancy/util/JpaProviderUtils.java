@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * </ul>
  *
  * @author Gregor Schauer
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class JpaProviderUtils {
 	protected static final String HIBERNATE_3_COLLECTION = "org.hibernate.collection.PersistentCollection";

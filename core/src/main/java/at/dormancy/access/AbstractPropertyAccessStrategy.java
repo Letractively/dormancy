@@ -64,15 +64,28 @@ public abstract class AbstractPropertyAccessStrategy {
 	}
 
 	/**
-	 * Returns the {@link at.dormancy.access.AbstractPropertyAccessStrategy.AccessType} for the named property.
+	 * Returns the {@link AccessType} for the named property.
 	 *
 	 * @param propertyName the name of the property
 	 * @return the access mode to use
 	 */
 	@Nonnull
 	public AccessType getAccessType(@Nonnull String propertyName) {
-		AccessType accessType = (AccessType) MapUtils.getObject(propertyAccessTypeMap, propertyName, null);
+		AccessType accessType = (AccessType) MapUtils.getObject(propertyAccessTypeMap, propertyName);
 		Assert.notNull(accessType, "Cannot find property named '" + propertyName + "'");
 		return accessType;
+	}
+
+	/**
+	 * Checks whether there is a an accessible property with the given name.
+	 * <p/>
+	 * This method returns {@code true} only if a property with the particular name was detected and its
+	 * {@link AccessType} was defined. In other words, for inaccessible properties this method returns {@code false}.
+	 *
+	 * @param propertyName the name of the property
+	 * @return {@code true} if the object has a property of that name, {@code false} otherwise
+	 */
+	public boolean isProperty(@Nonnull String propertyName) {
+		return MapUtils.getObject(propertyAccessTypeMap, propertyName) != null;
 	}
 }

@@ -77,7 +77,7 @@ public class PredicatePersister<C, P extends Predicate> extends AbstractEntityPe
 	}
 
 	protected <T extends C> boolean evaluate(T obj) {
-		return predicate != null ? predicate.evaluate(obj) : PredicateUtils.truePredicate().evaluate(obj);
+		return getPredicate() != null ? getPredicate().evaluate(obj) : PredicateUtils.truePredicate().evaluate(obj);
 	}
 
 	/**

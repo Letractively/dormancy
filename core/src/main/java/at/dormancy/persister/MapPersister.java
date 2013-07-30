@@ -21,11 +21,13 @@ import org.springframework.core.CollectionFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Processes all types of {@link java.util.Map}s by traversing them and invoking the desired operation of the
- * appropriate {@link EntityPersister} for all keys and values.
+ * Processes all types of {@link Map}s by traversing them and invoking the desired operation of the appropriate
+ * {@link EntityPersister} for all keys and values.
  *
  * @author Gregor Schauer
  */
@@ -34,7 +36,8 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 	@SuppressWarnings("unchecked")
 	public MapPersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
-		supportedTypes = new Class[]{Map.class};
+		supportedTypes = new HashSet<Class<? extends Map<?, ?>>>();
+		supportedTypes.add((Class) Map.class);
 	}
 
 	@Nullable
@@ -116,7 +119,7 @@ public class MapPersister extends AbstractContainerPersister<Map<?, ?>> {
 	}
 
 	@Override
-	public Class<?>[] getSupportedTypes() {
+	public Set<Class<? extends Map<?, ?>>> getSupportedTypes() {
 		return supportedTypes;
 	}
 }

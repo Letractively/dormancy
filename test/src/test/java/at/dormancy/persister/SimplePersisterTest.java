@@ -19,6 +19,7 @@ import at.dormancy.container.Holder;
 import at.dormancy.entity.Application;
 import at.dormancy.entity.Employee;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -66,12 +67,18 @@ public class SimplePersisterTest extends AbstractPersisterTest<SimplePersister<O
 		assertEquals(describe(applications), describe(merge));
 
 
-		app.setAuthKey(null);
+		ReflectionTestUtils.setField(app, "authKey", null);
 		Holder<Object> holder = new Holder<Object>(app);
 		clone = persister.clone(holder);
 		assertEquals(describe(holder), describe(clone));
 
 		merge = persister.merge(holder);
 		assertEquals(describe(holder), describe(merge));
+	}
+
+	@Test
+	public void testSupportedClasses() throws Exception {
+		assertEquals(false, persister.supports(Object.class));
+		assertEquals(true, persister.supports(Application.class));
 	}
 }

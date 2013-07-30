@@ -16,15 +16,14 @@
 package at.dormancy.persister;
 
 import at.dormancy.Dormancy;
+import at.dormancy.persister.filter.NonStaticFinalFieldFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +42,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 	@Inject
 	public SimplePersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
-		setFieldFilters(new ReflectionUtils.FieldFilter() {
-			@Override
-			public boolean matches(@Nonnull Field field) {
-				return !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers());
-			}
-		});
+		setFieldFilters(NonStaticFinalFieldFilter.getInstance());
 	}
 
 	@Nullable

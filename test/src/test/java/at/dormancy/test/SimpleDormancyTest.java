@@ -403,4 +403,26 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals(true, dormancy.getUtils().isJavassistProxy(book.getClass()));
 		assertNull(dormancy.clone(book));
 	}
+
+	@Test
+	public void testTransientProperty() {
+		dormancy.getConfig().setCloneObjects(true);
+		Credentials credentials = new Credentials("user", "secret");
+		genericService.save(credentials);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+
+		Credentials clone = dormancy.clone(credentials);
+		assertEquals(credentials.getUsername(), clone.getUsername());
+		assertNull(credentials.getPassword(), clone.getPassword());
+
+		Credentials merge = dormancy.merge(clone);
+		assertEquals(credentials.getUsername(), merge.getUsername());
+		assertNull(merge.getPassword());
+		dormancy.getConfig().setCloneObjects(false);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testInvalidIdentifier() throws Exception {
+		dormancy.getUtils().getIdentifierValue(dormancy.getUtils().getMetadata(Book.class), new Book());
+	}
 }
