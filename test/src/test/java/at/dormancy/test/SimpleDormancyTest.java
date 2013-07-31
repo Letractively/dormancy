@@ -16,6 +16,8 @@
 package at.dormancy.test;
 
 import at.dormancy.AbstractDormancyTest;
+import at.dormancy.access.AbstractPropertyAccessStrategy;
+import at.dormancy.access.AnnotationPropertyAccessStrategy;
 import at.dormancy.domain.DTO;
 import at.dormancy.domain.ReadOnlyDTO;
 import at.dormancy.domain.Stage;
@@ -23,6 +25,8 @@ import at.dormancy.domain.WriteOnlyDTO;
 import at.dormancy.entity.*;
 import at.dormancy.persister.AbstractEntityPersister;
 import at.dormancy.persister.NoOpPersister;
+import at.dormancy.persister.filter.NonStaticFinalFieldFilter;
+import at.dormancy.persister.filter.NonTransientPropertyFilter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.junit.Before;
@@ -30,6 +34,7 @@ import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.MethodInvocationException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
@@ -404,18 +409,45 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertNull(dormancy.clone(book));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testTransientProperty() {
+		Map<Class<?>, AbstractPropertyAccessStrategy> strategyMap = (Map<Class<?>, AbstractPropertyAccessStrategy>)
+				ReflectionTestUtils.getField(dormancy.getUtils(), "STRATEGY_MAP");
+
 		dormancy.getConfig().setCloneObjects(true);
 		Credentials credentials = new Credentials("user", "secret");
 		genericService.save(credentials);
 		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 
+
+		AnnotationPropertyAccessStrategy strategy = ReflectionTestUtils.invokeMethod(dormancy.getUtils(), "createStrategy", Credentials.class);
+		strategyMap.put(Credentials.class, strategy);
+
+		strategy.setPropertyFilter(NonStaticFinalFieldFilter.getInstance());
+		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
+		dormancy.getConfig().setSkipTransient(false);
+
 		Credentials clone = dormancy.clone(credentials);
 		assertEquals(credentials.getUsername(), clone.getUsername());
-		assertNull(credentials.getPassword(), clone.getPassword());
+		assertEquals(credentials.getPassword(), clone.getPassword());
 
 		Credentials merge = dormancy.merge(clone);
+		assertEquals(credentials.getUsername(), merge.getUsername());
+		assertEquals(credentials.getPassword(), merge.getPassword());
+
+
+		strategy.setPropertyFilter(NonTransientPropertyFilter.getInstance());
+		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
+		dormancy.getConfig().setSkipTransient(true);
+		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+
+
+		clone = dormancy.clone(credentials);
+		assertEquals(credentials.getUsername(), clone.getUsername());
+		assertNull(clone.getPassword());
+
+		merge = dormancy.merge(clone);
 		assertEquals(credentials.getUsername(), merge.getUsername());
 		assertNull(merge.getPassword());
 		dormancy.getConfig().setCloneObjects(false);

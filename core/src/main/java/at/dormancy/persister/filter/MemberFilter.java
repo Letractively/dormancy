@@ -13,39 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.dormancy.entity;
+package at.dormancy.persister.filter;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import static org.springframework.util.ReflectionUtils.FieldFilter;
+import static org.springframework.util.ReflectionUtils.MethodFilter;
 
 /**
+ * Callback used to filter fields or methods to be operated on by a field/method callback.
+ *
  * @author Gregor Schauer
+ * @since 2.0.0
  */
-@Entity
-public class Credentials implements Serializable {
-	String username;
-	String password;
-
-	private Credentials() {
-	}
-
-	public Credentials(String username, String password) {
-		this.username = username;
-		this.password = password;
-	}
-
-	@Id
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	@Access(AccessType.FIELD)
-	@Transient
-	public String getPassword() {
-		return password;
-	}
+public interface MemberFilter extends FieldFilter, MethodFilter {
 }

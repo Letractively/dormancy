@@ -20,16 +20,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import static org.springframework.util.ReflectionUtils.FieldFilter;
-import static org.springframework.util.ReflectionUtils.MethodFilter;
-
 /**
  * Selects {@link Field}s or {@link Method}s, which are not {@code static final}.
  *
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public class NonStaticFinalFieldFilter implements FieldFilter, MethodFilter {
+public class NonStaticFinalFieldFilter implements MemberFilter {
 	private static final NonStaticFinalFieldFilter INSTANCE = new NonStaticFinalFieldFilter();
 
 	public static NonStaticFinalFieldFilter getInstance() {

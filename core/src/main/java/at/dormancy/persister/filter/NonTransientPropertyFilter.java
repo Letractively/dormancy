@@ -21,15 +21,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import static org.springframework.util.ReflectionUtils.*;
-
 /**
  * Selects {@link Field}s or {@link Method}s not annotated with {@link javax.persistence.Transient}.
  *
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public class NonTransientPropertyFilter implements FieldFilter, MethodFilter {
+public class NonTransientPropertyFilter implements MemberFilter {
 	private static final NonTransientPropertyFilter INSTANCE = new NonTransientPropertyFilter();
 	private final Class<? extends Annotation> annotationType;
 
