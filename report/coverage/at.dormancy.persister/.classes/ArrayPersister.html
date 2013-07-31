@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ArrayPersister</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">at.dormancy.persister</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ArrayPersister (at.dormancy.persister)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ArrayPersister</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/ 29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2013 Gregor Schauer
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *      http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;package at.dormancy.persister;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;import at.dormancy.Dormancy;
+<i>19</i>&nbsp;import org.apache.commons.lang.ArrayUtils;
+<i>20</i>&nbsp;import org.springframework.util.CollectionUtils;
+<i>21</i>&nbsp;import org.springframework.util.ObjectUtils;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import javax.annotation.Nonnull;
+<i>24</i>&nbsp;import javax.annotation.Nullable;
+<i>25</i>&nbsp;import javax.inject.Inject;
+<i>26</i>&nbsp;import java.lang.reflect.Array;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.Collections;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;import java.util.Map;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Processes all types of arrays by traversing them and invoking the desired operation of the appropriate
+<i>34</i>&nbsp; * {@link EntityPersister} for all elements.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * @author Gregor Schauer
+<i>37</i>&nbsp; * @since 1.1.0
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public class ArrayPersister&lt;C&gt; extends AbstractContainerPersister&lt;C&gt; implements DynamicEntityPersister&lt;C&gt; {
+<i>40</i>&nbsp;	@Inject
+<i>41</i>&nbsp;	public ArrayPersister(@Nonnull Dormancy&lt;?, ?, ?&gt; dormancy) {
+<b class="fc"><i>42</i>&nbsp;		super(dormancy);</b>
+<b class="fc"><i>43</i>&nbsp;	}</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;	@Nullable
+<i>46</i>&nbsp;	@Override
+<i>47</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>48</i>&nbsp;	public &lt;T extends C&gt; C clone_(@Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>49</i>&nbsp;		if (dbObj == null) {</b>
+<b class="fc"><i>50</i>&nbsp;			return null;</b>
+<i>51</i>&nbsp;		}
+<b class="fc"><i>52</i>&nbsp;		List list = dormancy.clone_(CollectionUtils.arrayToList(dbObj), tree);</b>
+<b class="fc"><i>53</i>&nbsp;		C container = createContainer(dbObj);</b>
+<b class="fc"><i>54</i>&nbsp;		for (int i = 0; i &lt; list.size(); i++) {</b>
+<b class="fc"><i>55</i>&nbsp;			Array.set(container, i, list.get(i));</b>
+<i>56</i>&nbsp;		}
+<b class="fc"><i>57</i>&nbsp;		return container;</b>
+<i>58</i>&nbsp;	}
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;	@Nullable
+<i>61</i>&nbsp;	@Override
+<i>62</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>63</i>&nbsp;	public &lt;T extends C&gt; C merge_(@Nullable T trObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>64</i>&nbsp;		if (trObj == null) {</b>
+<b class="fc"><i>65</i>&nbsp;			return null;</b>
+<i>66</i>&nbsp;		}
+<b class="fc"><i>67</i>&nbsp;		List&lt;?&gt; list = dormancy.merge_(arrayToList(trObj), tree);</b>
+<b class="fc"><i>68</i>&nbsp;		C container = createContainer(trObj);</b>
+<b class="fc"><i>69</i>&nbsp;		for (int i = 0; i &lt; list.size(); i++) {</b>
+<b class="fc"><i>70</i>&nbsp;			Array.set(container, i, list.get(i));</b>
+<i>71</i>&nbsp;		}
+<b class="fc"><i>72</i>&nbsp;		return container;</b>
+<i>73</i>&nbsp;	}
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;	@Nullable
+<i>76</i>&nbsp;	@Override
+<i>77</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>78</i>&nbsp;	public &lt;T extends C&gt; C merge_(@Nullable T trObj, @Nullable T dbObj, @Nonnull Map&lt;Object, Object&gt; tree) {
+<b class="fc"><i>79</i>&nbsp;		if (trObj == null || dbObj == null) {</b>
+<b class="fc"><i>80</i>&nbsp;			return null;</b>
+<i>81</i>&nbsp;		}
+<b class="fc"><i>82</i>&nbsp;		List&lt;?&gt; list = dormancy.merge_(arrayToList(trObj), arrayToList(dbObj), tree);</b>
+<b class="fc"><i>83</i>&nbsp;		C container = createContainer(dbObj);</b>
+<b class="fc"><i>84</i>&nbsp;		for (int i = 0; i &lt; list.size(); i++) {</b>
+<b class="fc"><i>85</i>&nbsp;			Array.set(container, i, list.get(i));</b>
+<i>86</i>&nbsp;		}
+<b class="fc"><i>87</i>&nbsp;		return container;</b>
+<i>88</i>&nbsp;	}
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;	@Nonnull
+<i>91</i>&nbsp;	protected &lt;T extends C&gt; List&lt;?&gt; arrayToList(@Nonnull T array) {
+<b class="fc"><i>92</i>&nbsp;		ArrayList&lt;Object&gt; list = new ArrayList&lt;Object&gt;(ObjectUtils.toObjectArray(array).length);</b>
+<b class="fc"><i>93</i>&nbsp;		Collections.addAll(list, ObjectUtils.toObjectArray(array));</b>
+<b class="fc"><i>94</i>&nbsp;		return list;</b>
+<i>95</i>&nbsp;	}
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;	@Nonnull
+<i>98</i>&nbsp;	@Override
+<i>99</i>&nbsp;	@SuppressWarnings(&quot;unchecked&quot;)
+<i>100</i>&nbsp;	protected C createContainer(@Nonnull C container) {
+<b class="fc"><i>101</i>&nbsp;		Class&lt;?&gt; componentType = container.getClass().getComponentType();</b>
+<b class="fc"><i>102</i>&nbsp;		return (C) Array.newInstance(componentType, ArrayUtils.getLength(container));</b>
+<i>103</i>&nbsp;	}
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;	@Override
+<i>106</i>&nbsp;	public boolean supports(@Nonnull Class&lt;?&gt; clazz) {
+<b class="fc"><i>107</i>&nbsp;		return clazz.isArray();</b>
+<i>108</i>&nbsp;	}
+<i>109</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2013-07-31 23:31</div>
+</div>
+</body>
+</html>

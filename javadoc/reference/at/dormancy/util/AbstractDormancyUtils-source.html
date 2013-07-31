@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for Dormancy." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  AbstractDormancyUtils
+
+
+| Dormancy
+
+</title>
+<link href="../../../../assets/doclava-developer-docs.css" rel="stylesheet" type="text/css" />
+<link href="../../../../assets/customizations.css" rel="stylesheet" type="text/css" />
+<script src="../../../../assets/search_autocomplete.js" type="text/javascript"></script>
+<script src="../../../../assets/jquery-resizable.min.js" type="text/javascript"></script>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+<script src="../../../../assets/prettify.js" type="text/javascript"></script>
+<script type="text/javascript">
+  setToRoot("../../../", "../../../../assets/");
+</script>
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+<script src="../../../../assets/navtree_data.js" type="text/javascript"></script>
+<script src="../../../../assets/customizations.js" type="text/javascript"></script>
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">Dormancy</span>
+    
+    </div>
+    <div id="headerRight">
+      
+  <div id="search" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, '../../../')"
+                      onkeyup="return search_changed(event, false, '../../../')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
+                      </table>
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links"><nobr>
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a></nobr>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/package-summary.html">at.dormancy</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/access/package-summary.html">at.dormancy.access</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/aop/package-summary.html">at.dormancy.aop</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persistence/package-summary.html">at.dormancy.persistence</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persister/package-summary.html">at.dormancy.persister</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persister/callback/package-summary.html">at.dormancy.persister.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persister/filter/package-summary.html">at.dormancy.persister.filter</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persister/function/package-summary.html">at.dormancy.persister.function</a></li>
+    <li class="api apilevel-">
+  <a href="../../../at/dormancy/persister/predicate/package-summary.html">at.dormancy.persister.predicate</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../at/dormancy/util/package-summary.html">at.dormancy.util</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../at/dormancy/util/AbstractDormancyUtils.html">AbstractDormancyUtils</a>&lt;PU,&nbsp;PC,&nbsp;PMD,&nbsp;PUP&nbsp;extends&nbsp;<a href="../../../at/dormancy/persistence/PersistenceUnitProvider.html">PersistenceUnitProvider</a>&lt;PU,&nbsp;PC,&nbsp;PMD&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../at/dormancy/util/ClassLookup.html">ClassLookup</a></li>
+          <li class="api apilevel-"><a href="../../../at/dormancy/util/DormancyUtils.html">DormancyUtils</a></li>
+          <li class="api apilevel-"><a href="../../../at/dormancy/util/IntrospectorUtils.html">IntrospectorUtils</a></li>
+          <li class="api apilevel-"><a href="../../../at/dormancy/util/JpaProviderUtils.html">JpaProviderUtils</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links"><nobr>
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a></nobr>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="sum-details-links">
+
+<div>
+<a href="AbstractDormancyUtils.html">View Documentation</a>
+</div>
+
+
+</div><!-- end sum-details-links -->
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+     
+     
+    abstract
+    class
+<h1>AbstractDormancyUtils</h1>
+
+
+
+  
+    extends <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Object.html">Object</a><br/>
+  
+  
+  
+
+  
+  
+  
+
+
+</div><!-- end header -->
+<div id="jd-content">
+  <pre class="prettyprint">
+/*
+ * Copyright 2013 Gregor Schauer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package at.dormancy.util;
+
+import at.dormancy.access.AbstractPropertyAccessStrategy;
+import at.dormancy.persistence.PersistenceUnitProvider;
+import org.springframework.beans.PropertyAccessor;
+import org.springframework.util.ReflectionUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Common utility methods for Dormancy support code.
+ *
+ * @author Gregor Schauer
+ */
+public abstract class AbstractDormancyUtils&lt;PU, PC, PMD, PUP extends PersistenceUnitProvider&lt;PU, PC, PMD&gt;&gt; {
+	protected static final Map&lt;Class&lt;?&gt;, AbstractPropertyAccessStrategy&gt; STRATEGY_MAP = new HashMap&lt;Class&lt;?&gt;, AbstractPropertyAccessStrategy&gt;();
+	protected static final Class&lt;? extends Annotation&gt; idClass;
+	protected PUP persistenceUnitProvider;
+
+	static {
+		String javaxPersistenceId = "javax.persistence.Id";
+		idClass = ClassLookup.find(javaxPersistenceId).orThrow("Cannot find class: %s", javaxPersistenceId).get();
+	}
+
+	@Inject
+	protected AbstractDormancyUtils(@Nonnull PUP persistenceUnitProvider) {
+		this.persistenceUnitProvider = persistenceUnitProvider;
+	}
+
+	/**
+	 * Iterates over the given collection, looking for an object which is semantically equal to a certain object.&lt;br/&gt;
+	 * An object is semantically equal if one of the following conditions apply:
+	 * &lt;ul&gt;
+	 * &lt;li&gt;the given object overrides the {@link #equals(Object)} equals methods, which returns {@code true} for
+	 * another object&lt;/li&gt;
+	 * &lt;li&gt;the given object has a non-null identifier and its type as well as the identifier value is equals to the
+	 * type and identifier value of another object&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 *
+	 * @param obj        the object
+	 * @param collection the collection to traverse
+	 * @return the object found or {@code null} if the collection does not contain such an object
+	 * @see #getIdentifierValue(PMD, Object)
+	 */
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public &lt;T&gt; T findPendant(@Nonnull T obj, @Nonnull Collection&lt;?&gt; collection) {
+		Method method = ReflectionUtils.findMethod(getClass(obj), "equals", Object.class);
+		if (method.getDeclaringClass() != Object.class) {
+			// If the given object overrides the equals() method, invoke it for every object in the collection
+			for (Object elem : collection) {
+				if (obj.equals(elem) &amp;&amp; collection.remove(elem)) {
+					return (T) elem;
+				}
+			}
+		} else {
+			// Otherwise get the Hibernate metadata and a PropertyAccessor to get the identifier
+			PMD objMetadata = getMetadata(obj);
+			Serializable objIdentifier = getIdentifier(objMetadata, obj);
+
+			// For every object in the collection, check if the type matches and if the identifier is equal
+			for (Object elem : collection) {
+				if (elem != null &amp;&amp; elem.getClass() == obj.getClass()
+						&amp;&amp; objIdentifier.equals(getIdentifier(objMetadata, elem))
+						&amp;&amp; collection.remove(elem)) {
+					return (T) elem;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the persistence metadata associated with the given entity class.
+	 *
+	 * @param obj the object to retrieve ClassMetadata for
+	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
+	 * @see #getMetadata(Class)
+	 * @see #getClass(Object)
+	 */
+	@Nullable
+	public PMD getMetadata(@Nullable Object obj) {
+		return obj != null ? getMetadata(getClass(obj)) : null;
+	}
+
+	/**
+	 * Gets the persistence metadata associated with the given entity class.
+	 *
+	 * @param clazz the type to retrieve ClassMetadata for
+	 * @return the ClassMetadata or {@code null} if the type is not an Hibernate managed entity
+	 */
+	@Nullable
+	public abstract PMD getMetadata(@Nullable Class&lt;?&gt; clazz);
+
+	/**
+	 * Gets the unproxified type of the given object.
+	 *
+	 * @param proxy a persistable object or proxy
+	 * @return the true class of the instance
+	 */
+	@Nonnull
+	@SuppressWarnings("unchecked")
+	public &lt;T&gt; Class&lt;T&gt; getClass(@Nonnull Object proxy) {
+		return getClass(proxy.getClass());
+	}
+
+	/**
+	 * Gets the real type of the given class.
+	 *
+	 * @param clazz the type
+	 * @return the true class of the type
+	 */
+	@Nonnull
+	@SuppressWarnings("unchecked")
+	public &lt;T&gt; Class&lt;T&gt; getClass(@Nonnull Class&lt;?&gt; clazz) {
+		while (isJavassistProxy(clazz)) {
+			clazz = clazz.getSuperclass();
+		}
+		return (Class&lt;T&gt;) clazz;
+	}
+
+	/**
+	 * Returns the persistent class, or {@code null}.
+	 *
+	 * @param metadata the class metadata
+	 * @return the persistent class, or {@code null}
+	 */
+	@Nonnull
+	public abstract Class&lt;?&gt; getMappedClass(@Nonnull PMD metadata);
+
+	/**
+	 * Returns the entity name of the given class.&lt;br/&gt;
+	 * The entity name is the unique name of the entity in the meta-model or the simple class name if the type is not
+	 * known by the meta-model.
+	 *
+	 * @param clazz the type
+	 * @return the entity name of the class
+	 */
+	@Nonnull
+	public abstract String getEntityName(@Nonnull Class&lt;?&gt; clazz);
+
+	/**
+	 * Returns the name of the identifier property of the given type.&lt;br/&gt;
+	 * If the type has no identifier property e.g., it is not an entity, {@code null} is returned instead.
+	 *
+	 * @param clazz the type
+	 * @return the identifier property name or {@code null} if there is no identifier property
+	 */
+	@Nullable
+	protected abstract String getIdentifierPropertyName(@Nonnull Class&lt;?&gt; clazz);
+
+	/**
+	 * Attempts to get the identifier of the given object by using the provided persistence metadata or
+	 * {@link PropertyAccessor}.
+	 *
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifierValue(PMD, Object)
+	 */
+	@Nullable
+	public abstract &lt;T&gt; Serializable getIdentifier(@Nonnull PMD metadata, @Nonnull T bean);
+
+	/**
+	 * Retrieves the identifier of the given object by using the provided persistence metadata or
+	 * {@link PropertyAccessor}.
+	 * If the identifier cannot be retrieved, an exception is thrown.
+	 *
+	 * @param metadata the ClassMetadata of the object (may be null)
+	 * @param bean     the object
+	 * @return the identifier or {@code null} if the identifier cannot be retrieved or is {@code null}
+	 * @see #getIdentifier(PMD, Object)
+	 */
+	@Nonnull
+	public &lt;T&gt; Serializable getIdentifierValue(@Nonnull PMD metadata, @Nonnull T bean) {
+		Serializable identifier = getIdentifier(metadata, bean);
+		if (identifier == null) {
+			// If the identifier of the database object is null, it is really null, which indicates a database problem, or it cannot be retrieved
+			throw throwPropertyValueException("Cannot read identifier", bean);
+		}
+		return identifier;
+	}
+
+	/**
+	 * Returns whether the Hibernate entity associated with the given metadata is versioned.&lt;br/&gt;
+	 *
+	 * @param metadata the metadata
+	 * @return {@link true}
+	 */
+	public abstract boolean isVersioned(@Nonnull PMD metadata);
+
+	/**
+	 * Returns the name of the property of the entity used for versioning (if available).
+	 *
+	 * @param metadata the metadata
+	 * @return the name of the version property or {@code null} if the entity is not versioned
+	 */
+	@Nullable
+	public abstract String getVersionPropertyName(@Nonnull PMD metadata);
+
+	/**
+	 * Retrieves the property of the given object.
+	 *
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
+	 * @return the property
+	 * @see PropertyAccessor#getPropertyValue(String)
+	 */
+	@Nullable
+	public abstract Object getPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName);
+
+	/**
+	 * Sets the property of the given object.
+	 *
+	 * @param metadata     the ClassMetadata of the object (may be null)
+	 * @param bean         the object
+	 * @param propertyName the name of the property
+	 * @param value        the value to set
+	 * @see PropertyAccessor#setPropertyValue(String, Object)
+	 */
+	public abstract void setPropertyValue(@Nullable PMD metadata, @Nonnull Object bean, @Nonnull String propertyName, @Nullable Object value);
+
+	/**
+	 * Returns the property names of the given object.
+	 *
+	 * @param obj The object
+	 * @return The property names
+	 */
+	@Nonnull
+	public String[] getPropertyNames(@Nonnull Object obj) {
+		Set&lt;String&gt; names = IntrospectorUtils.getDescriptorMap(getClass(obj)).keySet();
+		return names.toArray(new String[names.size()]);
+	}
+
+	/**
+	 * Returns the type of the given named property.
+	 *
+	 * @param clazz        the class containing the property
+	 * @param propertyName the name of the property
+	 * @return the type of the property
+	 */
+	@Nonnull
+	public abstract Class&lt;?&gt; getPropertyType(@Nonnull Class&lt;?&gt; clazz, @Nonnull String propertyName);
+
+	/**
+	 * Returns a {@link PropertyAccessor} for accessing the objects properties.
+	 * &lt;p/&gt;
+	 * This method automatically detects the best strategy for accessing field values, which is either property access
+	 * (by using {@link org.springframework.beans.BeanWrapper BeanWrapper} or field access (by using
+	 * {@link org.springframework.beans.DirectFieldAccessor DirectFieldAccessor}.
+	 * &lt;p/&gt;
+	 * The decision is made by applying the following algorithm:&lt;br/&gt;
+	 * If there is persistence metadata available and
+	 * &lt;ul&gt;
+	 * &lt;li&gt;if the {@code javax.persistence.Id} annotation was found on a getter method or&lt;/li&gt;
+	 * &lt;li&gt;if the object is a proxy modified by Javassist and its but it is not accessible&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 * the properties are access via getter and setter methods.&lt;br/&gt;
+	 * Otherwise the fields are accessed directly via reflection.
+	 * &lt;p/&gt;
+	 * &lt;b&gt;Note that if the given object is an uninitialized Javassist proxy, the object becomes initialized immediately
+	 * if the direct field access strategy is chosen.&lt;br/&gt;
+	 * Otherwise Hibernate will trigger the initialization automatically upon getter invocation as usual.&lt;/b&gt;
+	 *
+	 * @param metadata the class metadata
+	 * @param obj      the object
+	 * @return the property accessor
+	 */
+	@Nullable
+	public abstract PropertyAccessor getPropertyAccessor(@Nullable PMD metadata, @Nonnull Object obj);
+
+	/**
+	 * Returns the {@link AbstractPropertyAccessStrategy} to use for accessing properties of the given type.&lt;br/&gt;
+	 * If no strategy is defined for the type, a new one is created on-demand.
+	 *
+	 * @param clazz the type
+	 * @return the strategy to use
+	 * @see #createStrategy(Class)
+	 */
+	@Nonnull
+	public AbstractPropertyAccessStrategy getPropertyAccessStrategy(@Nonnull Class&lt;?&gt; clazz) {
+		clazz = getClass(clazz);
+		AbstractPropertyAccessStrategy strategy = STRATEGY_MAP.get(clazz);
+		if (strategy == null) {
+			synchronized (STRATEGY_MAP) {
+				strategy = STRATEGY_MAP.get(clazz);
+				if (strategy == null) {
+					strategy = createStrategy(clazz);
+					STRATEGY_MAP.put(clazz, strategy);
+				}
+			}
+		}
+		return strategy;
+	}
+
+	/**
+	 * Creates a new {@link AbstractPropertyAccessStrategy} instance for the given type.
+	 *
+	 * @param clazz the type
+	 * @return the strategy to use
+	 */
+	@Nonnull
+	protected abstract AbstractPropertyAccessStrategy createStrategy(@Nonnull Class&lt;?&gt; clazz);
+
+	/**
+	 * Checks if the named property is transient.
+	 *
+	 * @param obj the object to check
+	 * @param propertyName the name of the property
+	 * @return {@code true} if the property is transient, {@code false} otherwise
+	 */
+	public boolean isTransient(@Nonnull Object obj, @Nonnull String propertyName) {
+		return getMetadata(obj) != null &amp;&amp; !getPropertyAccessStrategy(getClass(obj)).isProperty(propertyName);
+	}
+
+	/**
+	 * Checks if the given object is a proxy maintained by the JPA provider.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the object is a JPA entity proxy, {@code false} otherwise
+	 * @see #isInitialized(Object)
+	 */
+	public abstract boolean isProxy(@Nullable Object obj);
+
+	/**
+	 * Check if the proxy or persistent collection is initialized.&lt;br/&gt;
+	 * If the objects is neither an entity nor a persistent collection e.g., a {@link String}, {@code true} is returned.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the argument is already initialized, or is not a proxy or collection
+	 */
+	public abstract boolean isInitialized(@Nullable Object obj);
+
+	/**
+	 * Checks if a certain property of a JPA entity proxy is uninitialized and the corresponding value of the transient
+	 * entity is {@code null}.&lt;br/&gt;
+	 * If the property of the persistent entity is uninitialized, it is assumed to be loaded lazily. Thus the property
+	 * of the transient entity must be {@code null}. If is is not, an exception is thrown.
+	 *
+	 * @param propertyName the name of the property to check
+	 * @param dbObj        the persistent entity
+	 * @param dbValue      the value of the persistent entity
+	 * @param trValue      the value of the transient entity
+	 * @return {@code true} if it is uninitialized, {@code false} otherwise
+	 * @throws RuntimeException if the property of the persistent entity is uninitialized but the transient value is not {@code null}
+	 * @see #throwLazyPropertyNotNullException(Object, Object, String)
+	 */
+	public abstract boolean isUninitialized(@Nonnull String propertyName, @Nonnull Object dbObj, @Nonnull Object dbValue, @Nullable Object trValue);
+
+	/**
+	 * Checks if the given class is a proxy of a persistent object that has been generated by using Javassist.
+	 *
+	 * @param clazz the class to check
+	 * @return {@code true} if the given class is a Javassist proxy.
+	 */
+	public boolean isJavassistProxy(@Nonnull Class&lt;?&gt; clazz) {
+		return clazz.getSimpleName().contains("$$_javassist");
+	}
+
+	/**
+	 * Checks if the given object is a persistent collection.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the object is a persistent collection, {@code false} otherwise
+	 * @see #isInitializedPersistentCollection(Object)
+	 */
+	public abstract boolean isPersistentCollection(@Nullable Object obj);
+
+	/**
+	 * Checks if the given object is an initialized persistent collection.
+	 *
+	 * @param obj the object to check
+	 * @return {@code true} if the object is an initialized persistent collection, {@code false} otherwise
+	 * @see #isPersistentCollection(Object)
+	 */
+	public abstract boolean isInitializedPersistentCollection(@Nullable Object obj);
+
+	/**
+	 * Return the persistent instance of the given entity class with the given identifier, or {@code null} if there is
+	 * no such persistent instance.&lt;br/&gt;
+	 * If the instance is already associated with the persistence context, return that instance.
+	 * This method never returns an uninitialized instance.
+	 *
+	 * @param clazz the persistent class
+	 * @param id    the identifier
+	 * @return the persistent instance
+	 */
+	@Nullable
+	public abstract &lt;T&gt; T find(@Nonnull Class&lt;T&gt; clazz, @Nonnull Serializable id);
+
+	/**
+	 * Force the current persistence context to flush.
+	 * &lt;p/&gt;
+	 * &lt;i&gt;Flushing&lt;/i&gt; is the process of synchronizing the underlying persistent store with persistable state held in
+	 * memory.
+	 */
+	public abstract void flush();
+
+	/**
+	 * Persists the given transient instance.
+	 *
+	 * @param obj a transient instance of a persistent class
+	 * @return the generated identifier
+	 */
+	@Nonnull
+	public abstract &lt;K&gt; K persist(@Nonnull Object obj);
+
+	/**
+	 * Throws an exception indicating that the object must be saved manually before continuing.
+	 *
+	 * @param object the object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwUnsavedTransientInstanceException(@Nonnull Object object);
+
+	/**
+	 * Throws an exception indicating that the object has no valid identifier.
+	 *
+	 * @param object the object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwNullIdentifierException(@Nonnull Object object);
+
+	/**
+	 * Throws an exception when a lazy property holds a value while {@code null} was expected.
+	 *
+	 * @param trValue      the transient value (that should be {@code null})
+	 * @param dbObj        the persistent entity
+	 * @param propertyName the name of the property
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwLazyPropertyNotNullException(@Nonnull Object trValue, @Nonnull Object dbObj, @Nonnull String propertyName);
+
+	/**
+	 * Throws an exception when an optimistic locking conflict occurs.
+	 *
+	 * @param dbValue    the persistent value causing the conflict
+	 * @param identifier the identifier of the entity
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwOptimisticLockException(@Nonnull Object dbValue, @Nonnull Serializable identifier);
+
+	/**
+	 * Throws an exception when an entity reference is accessed but the entity does not exist.
+	 *
+	 * @param identifier the identifier of the entity attempted to retrieve
+	 * @param trObj      the transient object
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwEntityNotFoundException(@Nonnull Serializable identifier, @Nonnull Object trObj);
+
+	/**
+	 * Throws an exception when a property is not accessible or holds an unexpected value.
+	 *
+	 * @param message the detail message
+	 * @param bean    the bean caused the exception
+	 * @return nothing
+	 * @throws RuntimeException the exception
+	 */
+	public abstract RuntimeException throwPropertyValueException(@Nonnull String message, @Nonnull Object bean);
+
+	/**
+	 * Obtains the current persistence context.
+	 *
+	 * @return the persistence context to use
+	 */
+	@Nonnull
+	public abstract PC getPersistenceContext();
+}
+
+  </pre>
+</div>
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div> <!-- jd-content -->
+
+</div><!-- end doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

@@ -144,19 +144,25 @@
               <ul>
                 
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/package-summary.html">at.schauer.gregor.dormancy</a></li>
+  <a href="./at/dormancy/package-summary.html">at.dormancy</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/beans/package-summary.html">at.schauer.gregor.dormancy.beans</a></li>
+  <a href="./at/dormancy/access/package-summary.html">at.dormancy.access</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/function/package-summary.html">at.schauer.gregor.dormancy.function</a></li>
+  <a href="./at/dormancy/aop/package-summary.html">at.dormancy.aop</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/interceptor/package-summary.html">at.schauer.gregor.dormancy.interceptor</a></li>
+  <a href="./at/dormancy/persistence/package-summary.html">at.dormancy.persistence</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/persister/package-summary.html">at.schauer.gregor.dormancy.persister</a></li>
+  <a href="./at/dormancy/persister/package-summary.html">at.dormancy.persister</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/persister/predicate/package-summary.html">at.schauer.gregor.dormancy.persister.predicate</a></li>
+  <a href="./at/dormancy/persister/callback/package-summary.html">at.dormancy.persister.callback</a></li>
     <li class="api apilevel-">
-  <a href="./at/schauer/gregor/dormancy/util/package-summary.html">at.schauer.gregor.dormancy.util</a></li>
+  <a href="./at/dormancy/persister/filter/package-summary.html">at.dormancy.persister.filter</a></li>
+    <li class="api apilevel-">
+  <a href="./at/dormancy/persister/function/package-summary.html">at.dormancy.persister.function</a></li>
+    <li class="api apilevel-">
+  <a href="./at/dormancy/persister/predicate/package-summary.html">at.dormancy.persister.predicate</a></li>
+    <li class="api apilevel-">
+  <a href="./at/dormancy/util/package-summary.html">at.dormancy.util</a></li>
               </ul><br/>
             </div> <!-- end packages -->
           </div> <!-- end resize-packages -->
@@ -211,8 +217,9 @@
     <a href="#letter_E">E</a>
     <a href="#letter_F">F</a>
     <a href="#letter_G">G</a>
+    <a href="#letter_H">H</a>
     <a href="#letter_I">I</a>
-    <a href="#letter_L">L</a>
+    <a href="#letter_J">J</a>
     <a href="#letter_M">M</a>
     <a href="#letter_N">N</a>
     <a href="#letter_P">P</a>
@@ -226,38 +233,56 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/AbstractContainerPersister.html">AbstractContainerPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/AbstractContainerPersister.html">AbstractContainerPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Processes non Hibernate managed objects including wrappers and containers such as collections.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/util/AbstractDormancyUtils.html">AbstractDormancyUtils</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/util/AbstractDormancyUtils.html">AbstractDormancyUtils</a>&lt;PU,&nbsp;PC,&nbsp;PMD,&nbsp;PUP&nbsp;extends&nbsp;<a href="./at/dormancy/persistence/PersistenceUnitProvider.html">PersistenceUnitProvider</a>&lt;PU,&nbsp;PC,&nbsp;PMD&gt;&gt;</td>
             <td class="jd-descrcol" width="100%">Common utility methods for Dormancy support code.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/AbstractEntityPersister.html">AbstractEntityPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Abstract implementation containing some convenience methods.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/AbstractPropertyAccessorPersister.html">AbstractPropertyAccessorPersister</a>&lt;C,&nbsp;PA&nbsp;extends&nbsp;PropertyAccessor&gt;</td>
             <td class="jd-descrcol" width="100%">Uses PropertyAccessors for reading and writing bean properties.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</td>
-            <td class="jd-descrcol" width="100%">Processes all types of arrays by traversing them and invoking the desired operation of the appropriate
- <code><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/access/AbstractPropertyAccessStrategy.html">AbstractPropertyAccessStrategy</a></td>
+            <td class="jd-descrcol" width="100%">Determines how to access entity properties based on various criteria defined by the persistence provider.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/predicate/AssignablePredicate.html">AssignablePredicate</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/access/AbstractPropertyAccessStrategy.AccessType.html">AbstractPropertyAccessStrategy.AccessType</a></td>
+            <td class="jd-descrcol" width="100%">The access type.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/access/AnnotationPropertyAccessStrategy.html">AnnotationPropertyAccessStrategy</a></td>
+            <td class="jd-descrcol" width="100%">Determines how to access entity properties based on annotations located on them.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/ArrayPersister.html">ArrayPersister</a>&lt;C&gt;</td>
+            <td class="jd-descrcol" width="100%">Processes all types of arrays by traversing them and invoking the desired operation of the appropriate
+ <code><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/predicate/AssignablePredicate.html">AssignablePredicate</a></td>
             <td class="jd-descrcol" width="100%">Predicate implementation that returns <code>true</code> if the input may be assigned to at least one of the types
  stored in this Predicate.&nbsp;</td>
         </tr>
@@ -271,14 +296,14 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</td>
-            <td class="jd-descrcol" width="100%">Processes all named properties by retrieving the value, invoking the desired <code><a href="./at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></code> operation and writing
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/BeanPropertiesPersister.html">BeanPropertiesPersister</a>&lt;C&gt;</td>
+            <td class="jd-descrcol" width="100%">Processes all named properties by retrieving the value, invoking the desired <code><a href="./at/dormancy/Dormancy.html">Dormancy</a></code> operation and writing
  the result back to the bean.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/BeanPropertyAccessorPersister.html">BeanPropertyAccessorPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Uses BeanWrappers for reading and writing bean properties.&nbsp;</td>
         </tr>
     
@@ -291,27 +316,33 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/CollectionFunction.html">CollectionFunction</a>&lt;E&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&lt;D&gt;,&nbsp;D&gt;</td>
-            <td class="jd-descrcol" width="100%">Iterates over collections, invoking the provided <code><a href="./at/schauer/gregor/dormancy/function/CollectionFunction.html">CollectionFunction</a></code> on every element.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/util/ClassLookup.html">ClassLookup</a></td>
+            <td class="jd-descrcol" width="100%">Performs class lookups using the default ClassLoader.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</td>
-            <td class="jd-descrcol" width="100%">Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a></code>s by traversing them and invoking the desired operation of the appropriate
- <code><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/CollectionFunction.html">CollectionFunction</a>&lt;E&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&lt;D&gt;,&nbsp;D&gt;</td>
+            <td class="jd-descrcol" width="100%">Iterates over collections, invoking the provided <code><a href="./at/dormancy/persister/function/CollectionFunction.html">CollectionFunction</a></code> on every element.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/ConstantValueFunction.html">ConstantValueFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">Applies a constant value to every <code><a href="./at/schauer/gregor/dormancy/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/CollectionPersister.html">CollectionPersister</a>&lt;C&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a>&gt;</td>
+            <td class="jd-descrcol" width="100%">Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Collection.html">Collection</a></code>s by traversing them and invoking the desired operation of the appropriate
+ <code><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all elements.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/ContextFunction.html">ContextFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">Applies this Function to the given <code><a href="./at/schauer/gregor/dormancy/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/ConstantValueFunction.html">ConstantValueFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Applies a constant value to every <code><a href="./at/dormancy/persister/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/ContextFunction.html">ContextFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Applies this Function to the given <code><a href="./at/dormancy/persister/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
         </tr>
     
     
@@ -323,61 +354,61 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/DelegateFunction.html">DelegateFunction</a>&lt;E,&nbsp;D&gt;</td>
-            <td class="jd-descrcol" width="100%">Invokes the provided <code><a href="./at/schauer/gregor/dormancy/function/ContextFunction.html">ContextFunction</a></code> on the object.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/DelegateFunction.html">DelegateFunction</a>&lt;E,&nbsp;D&gt;</td>
+            <td class="jd-descrcol" width="100%">Invokes the provided <code><a href="./at/dormancy/persister/function/ContextFunction.html">ContextFunction</a></code> on the object.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/DirectFieldAccessorPersister.html">DirectFieldAccessorPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Uses ConfigurablePropertyAccessors for reading and writing bean properties.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></td>
-            <td class="jd-descrcol" width="100%">Clones Hibernate entities and merges them into a Session.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/Dormancy.html">Dormancy</a>&lt;PU,&nbsp;PC,&nbsp;PMD&gt;</td>
+            <td class="jd-descrcol" width="100%">Clones Hibernate entities and merges them into a persistence context.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/interceptor/DormancyAdvisor.html">DormancyAdvisor</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/aop/DormancyAdvisor.html">DormancyAdvisor</a></td>
             <td class="jd-descrcol" width="100%">Intercepts calls and performs cloning and merging of Hibernate entities.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/interceptor/DormancyAdvisor.Mode.html">DormancyAdvisor.Mode</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/aop/DormancyAdvisor.Mode.html">DormancyAdvisor.Mode</a></td>
             <td class="jd-descrcol" width="100%">&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/DormancyCloneFunction.html">DormancyCloneFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">Uses <code><a href="./at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></code> to clone the objects.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/DormancyCloneFunction.html">DormancyCloneFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Uses <code><a href="./at/dormancy/Dormancy.html">Dormancy</a></code> to clone the objects.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/DormancyFunction.html">DormancyFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">This class exists as a convenience for internal implementations, which use <code><a href="./at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></code>.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/DormancyFunction.html">DormancyFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">This class exists as a convenience for internal implementations, which use <code><a href="./at/dormancy/Dormancy.html">Dormancy</a></code>.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/DormancyMergeFunction.html">DormancyMergeFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">Uses <code><a href="./at/schauer/gregor/dormancy/Dormancy.html">Dormancy</a></code> to clone the objects.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/DormancyMergeFunction.html">DormancyMergeFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Uses <code><a href="./at/dormancy/Dormancy.html">Dormancy</a></code> to clone the objects.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/util/DormancyUtils.html">DormancyUtils</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/util/DormancyUtils.html">DormancyUtils</a></td>
             <td class="jd-descrcol" width="100%">Utility methods for Dormancy support code.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/DynamicEntityPersister.html">DynamicEntityPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Dynamically decides if a certain object type can be persisted.&nbsp;</td>
         </tr>
     
@@ -390,14 +421,20 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</td>
-            <td class="jd-descrcol" width="100%">Contains operations for cloning Hibernate managed objects and merging them into a org.hibernate.Session.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/callback/EntityCallback.html">EntityCallback</a>&lt;T,&nbsp;PU,&nbsp;PC,&nbsp;PMD&gt;</td>
+            <td class="jd-descrcol" width="100%">Callback interface for JPA code.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/EntityPersisterConfiguration.html">EntityPersisterConfiguration</a></td>
-            <td class="jd-descrcol" width="100%">The configuration for <code><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code>s.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a>&lt;C&gt;</td>
+            <td class="jd-descrcol" width="100%">Contains operations for cloning Hibernate managed objects and merging them into a persistence context.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/EntityPersisterConfiguration.html">EntityPersisterConfiguration</a></td>
+            <td class="jd-descrcol" width="100%">The configuration for <code><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a></code>s.&nbsp;</td>
         </tr>
     
     
@@ -409,20 +446,20 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</td>
-            <td class="jd-descrcol" width="100%">Uses org.springframework.util.ReflectionUtils.FieldFilters for determining the properties to process.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/FieldFilterPersister.html">FieldFilterPersister</a>&lt;C&gt;</td>
+            <td class="jd-descrcol" width="100%">Uses FieldFilters for determining the properties to process.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/FunctionContext.html">FunctionContext</a>&lt;T&gt;</td>
-            <td class="jd-descrcol" width="100%">Holds context sensitive variables for stateless <code><a href="./at/schauer/gregor/dormancy/function/ContextFunction.html">ContextFunction</a></code>s.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/FunctionContext.html">FunctionContext</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">Holds context sensitive variables for stateless <code><a href="./at/dormancy/persister/function/ContextFunction.html">ContextFunction</a></code>s.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/FunctionPersister.html">FunctionPersister</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Uses Function Functions for cloning/merging of Iterable Iterables containing JPA entities.&nbsp;</td>
         </tr>
     
     
@@ -434,8 +471,39 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/GenericEntityPersister.html">GenericEntityPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Determines the properties to process dynamically.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_H">H</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/HibernateDormancy.html">HibernateDormancy</a></td>
+            <td class="jd-descrcol" width="100%">Clones Hibernate entities and merges them into a Session.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persistence/HibernatePersistenceContextProvider.html">HibernatePersistenceContextProvider</a></td>
+            <td class="jd-descrcol" width="100%">Provides access to the current Hibernate Session.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persistence/HibernatePersistenceUnitProvider.html">HibernatePersistenceUnitProvider</a></td>
+            <td class="jd-descrcol" width="100%">Provides access to the SessionFactory and ClassMetadata of managed Hibernate entities.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/access/HibernatePropertyAccessStrategy.html">HibernatePropertyAccessStrategy</a></td>
+            <td class="jd-descrcol" width="100%">Uses Hibernate 4 specific annotations for determining how to access properties of Hibernate entities.&nbsp;</td>
         </tr>
     
     
@@ -447,7 +515,7 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/util/IntrospectorUtils.html">IntrospectorUtils</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/util/IntrospectorUtils.html">IntrospectorUtils</a></td>
             <td class="jd-descrcol" width="100%">Utility class that simplifies bean introspection and caches PropertyDescriptors for improved performance.&nbsp;</td>
         </tr>
     
@@ -455,13 +523,13 @@
 </table>
 
 
-<h2 id="letter_L">L</h2>
+<h2 id="letter_J">J</h2>
 <table class="jd-sumtable">
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/beans/LazyInitializerPropertyAccessor.html">LazyInitializerPropertyAccessor</a></td>
-            <td class="jd-descrcol" width="100%">Uses PropertyUtils and a LazyInitializer for retrieving properties of Hibernate proxies.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/util/JpaProviderUtils.html">JpaProviderUtils</a></td>
+            <td class="jd-descrcol" width="100%">Utilities for making JPA providers compatible.&nbsp;</td>
         </tr>
     
     
@@ -473,15 +541,21 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/MapFunction.html">MapFunction</a>&lt;K,&nbsp;V,&nbsp;E&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;&gt;</td>
-            <td class="jd-descrcol" width="100%">Iterates over collections, invoking the provided <code><a href="./at/schauer/gregor/dormancy/function/CollectionFunction.html">CollectionFunction</a></code>s on every key and element.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/MapFunction.html">MapFunction</a>&lt;K,&nbsp;V,&nbsp;E&nbsp;extends&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;&gt;</td>
+            <td class="jd-descrcol" width="100%">Iterates over collections, invoking the provided <code><a href="./at/dormancy/persister/function/CollectionFunction.html">CollectionFunction</a></code>s on every key and element.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/MapPersister.html">MapPersister</a></td>
-            <td class="jd-descrcol" width="100%">Processes all types of <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/Map.html">Map</a></code>s by traversing them and invoking the desired operation of the
- appropriate <code><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all keys and values.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/MapPersister.html">MapPersister</a></td>
+            <td class="jd-descrcol" width="100%">Processes all types of Maps by traversing them and invoking the desired operation of the appropriate
+ <code><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a></code> for all keys and values.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/filter/MemberFilter.html">MemberFilter</a></td>
+            <td class="jd-descrcol" width="100%">Callback used to filter fields or methods to be operated on by a field/method callback.&nbsp;</td>
         </tr>
     
     
@@ -493,31 +567,43 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/filter/NonStaticFinalFieldFilter.html">NonStaticFinalFieldFilter</a></td>
+            <td class="jd-descrcol" width="100%">Selects Fields or Methods, which are not <code>static final</code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/filter/NonTransientPropertyFilter.html">NonTransientPropertyFilter</a></td>
+            <td class="jd-descrcol" width="100%">Selects Fields or Methods not annotated with javax.persistence.Transient.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/NoOpPersister.html">NoOpPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Simply returns the given entities.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/NoOpPersister.NoOpEntityPersisterHolder.html">NoOpPersister.NoOpEntityPersisterHolder</a></td>
             <td class="jd-descrcol" width="100%">&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/function/NullFunction.html">NullFunction</a>&lt;E&gt;</td>
-            <td class="jd-descrcol" width="100%">Applies <code>null</code> to every <code><a href="./at/schauer/gregor/dormancy/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/function/NullFunction.html">NullFunction</a>&lt;E&gt;</td>
+            <td class="jd-descrcol" width="100%">Applies <code>null</code> to every <code><a href="./at/dormancy/persister/function/FunctionContext.html">FunctionContext</a></code>.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/NullPersister.html">NullPersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Simply returns <code>null</code>.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/NullPersister.NullPersisterHolder.html">NullPersister.NullPersisterHolder</a></td>
             <td class="jd-descrcol" width="100%">&nbsp;</td>
         </tr>
     
@@ -530,21 +616,33 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/predicate/PackagePredicate.html">PackagePredicate</a></td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/predicate/PackagePredicate.html">PackagePredicate</a></td>
             <td class="jd-descrcol" width="100%">Predicate implementation that returns <code>true</code> if the class of the input is located within a certain
  package location stored in this Predicate.&nbsp;</td>
         </tr>
     
     
         <tr class=" api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/interceptor/PersistenceEndpoint.html">PersistenceEndpoint</a></td>
-            <td class="jd-descrcol" width="100%">Provides metadata for the <code><a href="./at/schauer/gregor/dormancy/interceptor/DormancyAdvisor.html">DormancyAdvisor</a></code>.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persistence/PersistenceContextProvider.html">PersistenceContextProvider</a>&lt;PC&gt;</td>
+            <td class="jd-descrcol" width="100%">Interface used to access the entity manager for the persistence unit.&nbsp;</td>
         </tr>
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</td>
-            <td class="jd-descrcol" width="100%">Evaluates a Predicate for determining the <code><a href="./at/schauer/gregor/dormancy/persister/EntityPersister.html">EntityPersister</a></code> to use for processing certain objects.&nbsp;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/aop/PersistenceEndpoint.html">PersistenceEndpoint</a></td>
+            <td class="jd-descrcol" width="100%">Provides metadata for the <code><a href="./at/dormancy/aop/DormancyAdvisor.html">DormancyAdvisor</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persistence/PersistenceUnitProvider.html">PersistenceUnitProvider</a>&lt;PU,&nbsp;PC,&nbsp;PMD&gt;</td>
+            <td class="jd-descrcol" width="100%">Interface used to access the entity manager factory for the persistence unit.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/PredicatePersister.html">PredicatePersister</a>&lt;C,&nbsp;P&nbsp;extends&nbsp;Predicate&gt;</td>
+            <td class="jd-descrcol" width="100%">Evaluates a Predicate for determining the <code><a href="./at/dormancy/persister/EntityPersister.html">EntityPersister</a></code> to use for processing certain objects.&nbsp;</td>
         </tr>
     
     
@@ -556,8 +654,14 @@
     
     
         <tr class="alt-color api apilevel-" >
-            <td class="jd-linkcol"><a href="./at/schauer/gregor/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</td>
+            <td class="jd-linkcol"><a href="./at/dormancy/persister/SimplePersister.html">SimplePersister</a>&lt;C&gt;</td>
             <td class="jd-descrcol" width="100%">Processes all non-static non-final fields that are declared in the transient as well as the persistent object.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./at/dormancy/access/StrategyPropertyAccessor.html">StrategyPropertyAccessor</a></td>
+            <td class="jd-descrcol" width="100%">Uses the provided <code><a href="./at/dormancy/access/AbstractPropertyAccessStrategy.html">AbstractPropertyAccessStrategy</a></code> to determine how to access an object´s properties.&nbsp;</td>
         </tr>
     
     
