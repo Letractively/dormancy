@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,12 +33,18 @@ public class UserPersister extends AbstractEntityPersister<User> {
 	@Inject
 	SessionFactory sessionFactory;
 
+	public UserPersister() {
+		setSupportedTypes(Collections.<Class<? extends User>>singleton(User.class));
+	}
+
 	@Override
 	public <T extends User> User clone_(@Nullable T dbObj, @Nonnull Map<Object, Object> tree) {
 		if (dbObj == null || tree.containsKey(dbObj)) {
 			return (User) tree.get(dbObj);
 		}
+		// Create a new user object
 		User trObj = new User();
+		// Copy all properties except the transient one
 		BeanUtils.copyProperties(dbObj, trObj, new String[] {"password"});
 		return trObj;
 	}
@@ -47,6 +54,7 @@ public class UserPersister extends AbstractEntityPersister<User> {
 		if (trObj == null || tree.containsKey(trObj)) {
 			return (User) tree.get(trObj);
 		}
+		// Retrieve the persistent entity with the same name and merge them
 		User dbObj = (User) sessionFactory.getCurrentSession().get(trObj.getClass(), trObj.getUsername());
 		return merge_(trObj, dbObj, tree);
 	}
@@ -56,12 +64,10 @@ public class UserPersister extends AbstractEntityPersister<User> {
 		if (trObj == null || dbObj == null || tree.containsKey(trObj)) {
 			return (User) tree.get(trObj);
 		}
+		// Copy all properties from the transient entity to the persistent entity except username and password
+		// username is the primary key and might not be changed anyway
+		// The client must not modify the password this way i.e., prohibiting identity theft
 		BeanUtils.copyProperties(trObj, dbObj, new String[] {"username", "password"});
 		return dbObj;
-	}
-
-	@Override
-	public Class<?>[] getSupportedTypes() {
-		return new Class[] {User.class};
 	}
 }

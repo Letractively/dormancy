@@ -37,7 +37,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public class EntityCallbackDormancyTest extends AbstractDormancyTest {
+public class EntityCallbackTest extends AbstractDormancyTest {
 	@Test
 	public void testEntityCallback() throws SQLException {
 		EntityCallback<Employee, SessionFactory, Session, ClassMetadata> callback = new EntityCallback<Employee, SessionFactory, Session, ClassMetadata>() {

@@ -16,7 +16,7 @@
 package at.dormancy.util;
 
 import at.dormancy.access.AbstractPropertyAccessStrategy;
-import at.dormancy.access.JpaAccessTypeStrategy;
+import at.dormancy.access.JpaPropertyAccessStrategy;
 import at.dormancy.access.StrategyPropertyAccessor;
 import at.dormancy.persistence.JpaPersistenceUnitProvider;
 import org.apache.log4j.Logger;
@@ -177,13 +177,13 @@ public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, E
 				Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
 			}
 		}
-		return new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
+		return new StrategyPropertyAccessor(obj, getPropertyAccessStrategy(AopUtils.getTargetClass(obj)));
 	}
 
 	@Nonnull
 	@Override
 	protected AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz) {
-		return new JpaAccessTypeStrategy(clazz);
+		return new JpaPropertyAccessStrategy(clazz);
 	}
 
 	@Nullable

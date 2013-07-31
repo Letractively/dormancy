@@ -26,13 +26,13 @@ import javax.persistence.Id;
  * @since 2.0.0
  */
 @SuppressWarnings("unchecked")
-public class JpaAccessTypeStrategy extends AnnotationPropertyAccessStrategy {
+public class JpaPropertyAccessStrategy extends AnnotationPropertyAccessStrategy {
 	static {
 		accessAnnotations = new Class[]{Access.class};
 		idAnnotations = new Class[]{Id.class};
 	}
 
-	public JpaAccessTypeStrategy(@Nonnull Class<?> entityType) {
+	public JpaPropertyAccessStrategy(@Nonnull Class<?> entityType) {
 		super(entityType);
 	}
 }
