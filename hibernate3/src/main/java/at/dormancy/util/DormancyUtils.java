@@ -154,7 +154,7 @@ public class DormancyUtils extends AbstractDormancyUtils<SessionFactory, Session
 				Logger.getLogger(getClass()).warn("Cannot retrieve field named 'handler' of type 'org.hibernate.proxy.LazyInitializer' from " + ObjectUtils.identityToString(obj));
 			}
 		}
-		return new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
+		return new StrategyPropertyAccessor(obj, getPropertyAccessStrategy(AopUtils.getTargetClass(obj)));
 	}
 
 	@Nonnull

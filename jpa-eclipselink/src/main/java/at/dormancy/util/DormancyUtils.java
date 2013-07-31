@@ -16,7 +16,7 @@
 package at.dormancy.util;
 
 import at.dormancy.access.AbstractPropertyAccessStrategy;
-import at.dormancy.access.JpaAccessTypeStrategy;
+import at.dormancy.access.JpaPropertyAccessStrategy;
 import at.dormancy.access.StrategyPropertyAccessor;
 import at.dormancy.persistence.JpaPersistenceUnitProvider;
 import org.eclipse.persistence.indirection.IndirectCollection;
@@ -153,13 +153,13 @@ public class DormancyUtils extends AbstractDormancyUtils<EntityManagerFactory, E
 	@Override
 	public PropertyAccessor getPropertyAccessor(@Nullable EntityType<?> metadata, @Nonnull Object obj) {
 		return metadata == null ? PropertyAccessorFactory.forDirectFieldAccess(obj)
-				: new StrategyPropertyAccessor(obj, getAccessTypeStrategy(AopUtils.getTargetClass(obj)));
+				: new StrategyPropertyAccessor(obj, getPropertyAccessStrategy(AopUtils.getTargetClass(obj)));
 	}
 
 	@Nonnull
 	@Override
 	protected AbstractPropertyAccessStrategy createStrategy(@Nonnull Class<?> clazz) {
-		return new JpaAccessTypeStrategy(clazz);
+		return new JpaPropertyAccessStrategy(clazz);
 	}
 
 	@Nullable

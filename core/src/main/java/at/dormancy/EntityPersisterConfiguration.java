@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * The configuration for {@link at.dormancy.persister.EntityPersister EntityPersister}s.
+ * The configuration for {@link at.dormancy.persister.EntityPersister}s.
  *
  * @author Gregor Schauer
  */

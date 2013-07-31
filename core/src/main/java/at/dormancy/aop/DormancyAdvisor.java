@@ -48,18 +48,18 @@ import java.util.concurrent.Callable;
 /**
  * Intercepts calls and performs cloning and merging of Hibernate entities.
  * <p/>
- * At first, an {@link at.dormancy.persister.EntityPersister} is resolved in the following sequence:
+ * At first, an {@link EntityPersister} is resolved in the following sequence:
  * <ol>
  * <li>Use the metadata of the {@link PersistenceEndpoint} annotation on the method to invoke</li>
  * <li>Use the metadata of the {@link PersistenceEndpoint} annotation on the object instance</li>
  * </ol>
- * If any {@link PersistenceEndpoint} annotation is present, get an {@link at.dormancy.persister.EntityPersister} from the {@link org.springframework.beans.factory.BeanFactory}
- * with the given {@code name}. Otherwise, get an {@link at.dormancy.persister.EntityPersister} of the specified {@code type} from
- * {@link at.dormancy.Dormancy}. If no appropriate {@link at.dormancy.persister.EntityPersister} is registered, {@link at.dormancy.Dormancy} will be used.
+ * If any {@link PersistenceEndpoint} annotation is present, get an {@link EntityPersister} from the {@link BeanFactory}
+ * with the given {@code name}. Otherwise, get an {@link EntityPersister} of the specified {@code type} from
+ * {@link Dormancy}. If no appropriate {@link EntityPersister} is registered, {@link Dormancy} will be used.
  *
  * @author Gregor Schauer
- * @see at.dormancy.Dormancy
- * @see at.dormancy.persister.EntityPersister
+ * @see Dormancy
+ * @see EntityPersister
  * @see PersistenceEndpoint
  */
 @Aspect
@@ -71,7 +71,18 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	protected Integer order;
 
 	public enum Mode {
-		PARAMETERS, RESULT, BOTH
+		/**
+		 * Processes parameters of intercepted methods only.
+		 */
+		PARAMETERS,
+		/**
+		 * Processes results of intercepted methods only.
+		 */
+		RESULT,
+		/**
+		 * Processes parameters as well as results of intercepted methods.
+		 */
+		BOTH
 	}
 
 	protected Dormancy dormancy;

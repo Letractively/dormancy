@@ -16,7 +16,6 @@
 package at.dormancy.access;
 
 import javax.annotation.Nonnull;
-import javax.persistence.Access;
 import javax.persistence.Id;
 
 /**
@@ -28,7 +27,7 @@ import javax.persistence.Id;
 @SuppressWarnings("unchecked")
 public class HibernatePropertyAccessStrategy extends AnnotationPropertyAccessStrategy {
 	static {
-		accessAnnotations = new Class[]{AccessType.class, Access.class};
+		accessAnnotations = new Class[]{org.hibernate.annotations.AccessType.class, javax.persistence.Access.class};
 		idAnnotations = new Class[]{Id.class};
 	}
 

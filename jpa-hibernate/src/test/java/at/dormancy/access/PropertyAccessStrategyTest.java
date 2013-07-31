@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 public class PropertyAccessStrategyTest {
 	@Test
 	public void testApplication() {
-		AnnotationPropertyAccessStrategy strategy = new JpaAccessTypeStrategy(Application.class);
+		AnnotationPropertyAccessStrategy strategy = new JpaPropertyAccessStrategy(Application.class);
 		assertEquals(PROPERTY, strategy.getDefaultAccessType());
 		assertEquals(PROPERTY, strategy.getAccessType("id"));
 		assertEquals(FIELD, strategy.getAccessType("lastUpdate"));
@@ -38,14 +38,14 @@ public class PropertyAccessStrategyTest {
 
 	@Test
 	public void testBook() {
-		AnnotationPropertyAccessStrategy strategy = new JpaAccessTypeStrategy(Book.class);
+		AnnotationPropertyAccessStrategy strategy = new JpaPropertyAccessStrategy(Book.class);
 		assertEquals(FIELD, strategy.getAccessType("id"));
 		assertEquals(FIELD, strategy.getAccessType("title"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidProperty() {
-		AnnotationPropertyAccessStrategy strategy = new JpaAccessTypeStrategy(Book.class);
+		AnnotationPropertyAccessStrategy strategy = new JpaPropertyAccessStrategy(Book.class);
 		strategy.getAccessType("");
 	}
 }

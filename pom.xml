@@ -11,6 +11,7 @@
 	<modules>
 		<module>closure</module>
 		<module>core</module>
+		<module>sample</module>
 	</modules>
 
 

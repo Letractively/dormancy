@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class UserPersisterTest {
 	@Inject
-	Dormancy dormancy;
+	Dormancy<?, ?, ?> dormancy;
 	@Inject
 	UserPersister userPersister;
 	@Inject
@@ -55,7 +55,6 @@ public class UserPersisterTest {
 		assertEquals(user.getMail(), clone.getMail());
 		assertEquals(null, clone.getPassword());
 
-		// clone.setUsername("jdeere");
 		clone.setMail("jdeere@acme.org");
 		clone.setPassword("public");
 

@@ -295,8 +295,7 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	public abstract PropertyAccessor getPropertyAccessor(@Nullable PMD metadata, @Nonnull Object obj);
 
 	/**
-	 * Returns the {@link at.dormancy.access.AnnotationPropertyAccessStrategy} to use for accessing properties
-	 * of the given type.<br/>
+	 * Returns the {@link AbstractPropertyAccessStrategy} to use for accessing properties of the given type.<br/>
 	 * If no strategy is defined for the type, a new one is created on-demand.
 	 *
 	 * @param clazz the type
@@ -304,7 +303,7 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 * @see #createStrategy(Class)
 	 */
 	@Nonnull
-	public AbstractPropertyAccessStrategy getAccessTypeStrategy(@Nonnull Class<?> clazz) {
+	public AbstractPropertyAccessStrategy getPropertyAccessStrategy(@Nonnull Class<?> clazz) {
 		clazz = getClass(clazz);
 		AbstractPropertyAccessStrategy strategy = STRATEGY_MAP.get(clazz);
 		if (strategy == null) {
@@ -336,7 +335,7 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 * @return {@code true} if the property is transient, {@code false} otherwise
 	 */
 	public boolean isTransient(@Nonnull Object obj, @Nonnull String propertyName) {
-		return getMetadata(obj) != null && !getAccessTypeStrategy(getClass(obj)).isProperty(propertyName);
+		return getMetadata(obj) != null && !getPropertyAccessStrategy(getClass(obj)).isProperty(propertyName);
 	}
 
 	/**

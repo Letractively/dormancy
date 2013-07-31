@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Gregor Schauer
+ * Copyright 2013 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 package at.dormancy.sample;
 
 import at.dormancy.Dormancy;
+import at.dormancy.persistence.HibernatePersistenceUnitProvider;
+import at.dormancy.persistence.PersistenceUnitProvider;
 import at.dormancy.persister.EntityPersister;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -39,8 +44,13 @@ import java.util.Properties;
 		includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EntityPersister.class))
 public class SampleSpringConfig {
 	@Bean
-	public Dormancy dormancy() {
-		return new Dormancy();
+	public Dormancy<SessionFactory, Session, ClassMetadata> dormancy() {
+		return new Dormancy<SessionFactory, Session, ClassMetadata>(persistenceUnitProvider());
+	}
+	
+	@Bean
+	public PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider() {
+		return new HibernatePersistenceUnitProvider(sessionFactory().getObject());
 	}
 
 	@Bean
@@ -57,8 +67,6 @@ public class SampleSpringConfig {
 	public DataSource dataSource() {
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
 		return builder.setType(EmbeddedDatabaseType.HSQL).build();
-		// return new SingleConnectionDataSource("jdbc:hsqldb:mem:db_" + System.nanoTime(), true);
-		// return new SingleConnectionDataSource("jdbc:hsqldb:file:db/db;shutdown=true;hsqldb.write_delay=0", true);
 	}
 
 	@Bean

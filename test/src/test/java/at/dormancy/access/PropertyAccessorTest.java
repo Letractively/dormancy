@@ -51,7 +51,7 @@ public class PropertyAccessorTest {
 	@Test
 	public void testApplication() {
 		Application application = new Application();
-		PropertyAccessor accessor = new StrategyPropertyAccessor(application, getUtils().getAccessTypeStrategy(application.getClass()));
+		PropertyAccessor accessor = new StrategyPropertyAccessor(application, getUtils().getPropertyAccessStrategy(application.getClass()));
 		assertSame(Long.class, accessor.getPropertyType("id"));
 		assertSame(Long.class, accessor.getPropertyTypeDescriptor("id").getType());
 		assertSame(String.class, accessor.getPropertyType("name"));
@@ -70,7 +70,7 @@ public class PropertyAccessorTest {
 	@Test(expected = MethodInvocationException.class)
 	public void testReadOnlyEntity() {
 		Object entity = new UnsupportedWriteEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getAccessTypeStrategy(entity.getClass()));
+		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getPropertyAccessStrategy(entity.getClass()));
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
@@ -86,7 +86,7 @@ public class PropertyAccessorTest {
 	@Test(expected = InvalidPropertyException.class)
 	public void testWriteOnlyEntity() {
 		Object entity = new UnsupportedReadEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getAccessTypeStrategy(entity.getClass()));
+		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getPropertyAccessStrategy(entity.getClass()));
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
