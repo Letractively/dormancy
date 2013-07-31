@@ -3,7 +3,7 @@
 
 = Getting Started =
 === Using Dormancy in your project ===
-Please refer to the following page for [UsingDormancyInYourProject using Dormancy in your project].
+Please refer to the following page for [GettingDormancy using Dormancy in your project].
 
 === Getting more information ===
 To get a deeper understand of how Dormancy works, it is recommended to have a look at the [Architecture architecture].

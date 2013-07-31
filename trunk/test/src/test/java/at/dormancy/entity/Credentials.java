@@ -44,6 +44,7 @@ public class Credentials implements Serializable {
 	}
 
 	@Access(AccessType.FIELD)
+	@org.hibernate.annotations.AccessType("field")
 	@Transient
 	public String getPassword() {
 		return password;

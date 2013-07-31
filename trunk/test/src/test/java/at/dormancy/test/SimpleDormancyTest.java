@@ -426,7 +426,6 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 		strategy.setPropertyFilter(NonStaticFinalFieldFilter.getInstance());
 		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
-		dormancy.getConfig().setSkipTransient(false);
 
 		Credentials clone = dormancy.clone(credentials);
 		assertEquals(credentials.getUsername(), clone.getUsername());
@@ -439,7 +438,6 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 
 		strategy.setPropertyFilter(NonTransientPropertyFilter.getInstance());
 		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
-		dormancy.getConfig().setSkipTransient(true);
 		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 
 
