@@ -15,6 +15,7 @@
  */
 package at.dormancy.access;
 
+import at.dormancy.persister.filter.MemberFilter;
 import at.dormancy.persister.filter.NonTransientPropertyFilter;
 import org.apache.commons.lang.ArrayUtils;
 
@@ -44,6 +45,8 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	@SuppressWarnings("unchecked")
 	protected static Class<? extends Annotation>[] idAnnotations = ArrayUtils.EMPTY_CLASS_ARRAY;
 
+	protected MemberFilter propertyFilter = NonTransientPropertyFilter.getInstance();
+
 	/**
 	 * Creates a new strategy instance.
 	 *
@@ -60,6 +63,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	 * @param entityType the entity type
 	 */
 	protected void initialize(@Nonnull Class<?> entityType) {
+		propertyAccessTypeMap.clear();
 		// Retrieve the default access type for the entity type by looking up access annotations on type level
 		Annotation accessType = getAnnotation(entityType, getAccessAnnotations());
 		AccessType entityAccessType = accessType != null ? valueOf(upperCase(String.valueOf(getValue(accessType)))) : null;
@@ -99,7 +103,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
 					propertyAccessTypeMap.put(field.getName(), accessType);
 				}
-			}, NonTransientPropertyFilter.getInstance());
+			}, propertyFilter);
 		} else {
 			// If property access is used by default, scan for methods annotated with an access annotation
 			doWithMethods(entityType, new MethodCallback() {
@@ -117,7 +121,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 					AccessType accessType = annotation != null ? valueOf(upperCase(String.valueOf(getValue(annotation)))) : finalEntityAccessType;
 					propertyAccessTypeMap.put(descriptor.getName(), accessType);
 				}
-			}, NonTransientPropertyFilter.getInstance());
+			}, propertyFilter);
 		}
 	}
 
@@ -157,5 +161,9 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 			}
 		}
 		return null;
+	}
+
+	public void setPropertyFilter(MemberFilter propertyFilter) {
+		this.propertyFilter = propertyFilter;
 	}
 }
