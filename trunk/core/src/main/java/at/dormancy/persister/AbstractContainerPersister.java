@@ -16,7 +16,6 @@
 package at.dormancy.persister;
 
 import at.dormancy.Dormancy;
-import at.dormancy.EntityPersisterConfiguration;
 import at.dormancy.persistence.PersistenceUnitProvider;
 
 import javax.annotation.Nonnull;
@@ -30,12 +29,10 @@ import javax.inject.Inject;
 public abstract class AbstractContainerPersister<C> extends AbstractEntityPersister<C> {
 	protected PersistenceUnitProvider<?, ?, ?> persistenceUnitProvider;
 	protected Dormancy<?, ?, ?> dormancy;
-	protected EntityPersisterConfiguration config;
 
 	@Inject
 	protected AbstractContainerPersister(@Nonnull Dormancy dormancy) {
 		this.dormancy = dormancy;
-		this.config = new EntityPersisterConfiguration(dormancy.getConfig());
 	}
 
 	/**
@@ -46,25 +43,6 @@ public abstract class AbstractContainerPersister<C> extends AbstractEntityPersis
 	@Inject
 	public void setPersistentUnitProvider(@Nonnull PersistenceUnitProvider<?, ?, ?> persistenceUnitProvider) {
 		this.persistenceUnitProvider = persistenceUnitProvider;
-	}
-
-	/**
-	 * Returns the {@code EntityPersisterConfiguration} that should be used.
-	 *
-	 * @return the configuration to use
-	 */
-	@Nonnull
-	public EntityPersisterConfiguration getConfig() {
-		return config;
-	}
-
-	/**
-	 * Sets the {@code EntityPersisterConfiguration} that should be used.
-	 *
-	 * @param config the configuration to use
-	 */
-	public void setConfig(@Nonnull EntityPersisterConfiguration config) {
-		this.config = config;
 	}
 
 	/**

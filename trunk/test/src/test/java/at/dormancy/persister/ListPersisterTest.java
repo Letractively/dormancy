@@ -38,7 +38,6 @@ public class ListPersisterTest extends AbstractPersisterTest<CollectionPersister
 		super.postConstruct();
 		persister = new CollectionPersister<List>(dormancy);
 		persister.setPersistentUnitProvider(persistenceUnitProvider);
-		persister.setConfig(dormancy.getConfig());
 	}
 
 	@Test
