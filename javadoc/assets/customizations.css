@@ -1,73 +1,11 @@
 #header {
-  border-bottom: 3px solid #07a407;/*#0767a4;*/
+  border-bottom: 3px solid #0767a4;
 }
 
 #search_filtered .jd-selected {
-  background-color: #07a407;/*#0767a4;*/
+  background-color: #0767a4;
 }
 
-a, a code {
-  color:#009900;/*#006699;*/
-}
-
-a:visited,
-a:visited code {
-  color:#009900;/*#006699;*/
-}
-
-#footerlinks a,
-#footerlinks a:visited {
-  color:#009900;/*#006699;*/
-}
-
-#leftSearchControl .gsc-resultsHeader .gsc-title {
-  color:#009900;/*#006699;*/
-}
-
-#leftSearchControl div.gs-visibleUrl-long {
-  display : block;
-  color:#009900;/*#006699;*/
-}
-
-.gsc-cursor-box .gsc-cursor div.gsc-cursor-page,
-.gsc-cursor-box .gsc-trailing-more-results a.gsc-trailing-more-results,
-#leftSearchControl a,
-#leftSearchControl a b {
-  color:#009900;/*#006699;*/
-}
-
-#masthead-title {
-  font-size:28px;
-  color: #2fae2f;/*#2f74ae;*/
-}
-
-th {
-  background-color:#2fae2f;/*#dee8f1;*/
-  color: #ffffff;
-}
-
-.sidebox {
-  border-left:1px solid #def1de;/*#dee8f1;*/
-}
-
-#mainBodyFixed h1,
-#mainBodyFluid h1 {
-  color:#436E43;/*#435a6e*/
-}
-
-#side-nav .selected {
-  color: #ffffff;/*none*/
-  background-color: #436e43;/*#435a6e;*/
-}
-
-#jd-header.guide-header {
-  color:#436e43;
-}
-
-/* IE6 quirk (won't chain classes, so just keep background blue) */
-* html #side-nav li.selected,
-* html #side-nav li.selected *,
-* html #side-nav div.label.selected,
-* html #side-nav div.label.selected * {
-  background-color: #436e43 !important;/*#435a6e*/
+code, pre {
+  color: #000070;
 }

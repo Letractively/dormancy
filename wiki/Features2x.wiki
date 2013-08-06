@@ -45,11 +45,13 @@ public Long getLastUpdate() {
 == Introduced `EntityCallback` ==
 Due to the modularization of the Dormancy core, the support for Spring´s `HibernateCallback` was dropped. Instead, a more generic `EntityCallback` was introduced, which can be used independently of the persistence provider.
 {{{
-EntityCallback<Employee, SessionFactory, Session, ClassMetadata> callback = new EntityCallback<Employee, SessionFactory, Session, ClassMetadata>() {
+EntityCallback<Employee, SessionFactory, Session, ClassMetadata> callback =
+		new EntityCallback<Employee, SessionFactory, Session, ClassMetadata>() {
 	@Override
 	public Employee work(PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider) {
 		Session session = persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext();
-		return (Employee) session.createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees LEFT JOIN FETCH e.colleagues WHERE e.id = 1").uniqueResult();
+		return (Employee) session.createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.employees "
+				+ "LEFT JOIN FETCH e.colleagues WHERE e.id = 1").uniqueResult();
 	}
 };
 
