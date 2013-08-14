@@ -18,14 +18,14 @@ package at.dormancy.scenario.client.service;
 import at.dormancy.scenario.shared.model.Employee;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Gregor Schauer
  * @since 1.0.2
  */
 public interface DormancyScenarioServiceAsync {
-	void listEmployees(AsyncCallback<ArrayList<Employee>> async);
+	void listEmployees(AsyncCallback<List<Employee>> async);
 
 	void save(Employee employee, AsyncCallback<Void> async);
 }

@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
 	   xmlns:ctx="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:c="http://www.springframework.org/schema/c" xmlns:p="http://www.springframework.org/schema/p"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	   http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 	   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
@@ -15,26 +16,21 @@
 		<ctx:include-filter type="annotation" expression="org.springframework.transaction.annotation.Transactional" />
 	</ctx:component-scan>
 
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory"/>
-	</bean>
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+		  p:sessionFactory-ref="sessionFactory"/>
 
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" lazy-init="false">
-		<property name="packagesToScan" value="at.dormancy.scenario.shared.model"/>
-		<property name="hibernateProperties" ref="hibernateProperties"/>
-		<property name="dataSource" ref="dataSource"/>
-	</bean>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+		  lazy-init="false" p:packagesToScan="at.dormancy.scenario.shared.model"
+		  p:hibernateProperties-ref="hibernateProperties" p:dataSource-ref="dataSource"/>
 
+	<!--
 	<jdbc:initialize-database data-source="dataSource">
 		<jdbc:script location="/WEB-INF/init.sql"/>
 	</jdbc:initialize-database>
+	-->
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-		<property name="url" value="jdbc:hsqldb:mem:database"/>
-		<property name="username" value="sa"/>
-		<property name="suppressClose" value="true"/>
-	</bean>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource" p:suppressClose="true"
+		  p:driverClassName="org.hsqldb.jdbcDriver" p:url="jdbc:hsqldb:mem:database" p:username="sa"/>
 
 	<bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="properties">
@@ -51,16 +47,8 @@
 		<aop:advisor advice-ref="dormancyAspect" pointcut-ref="persistenceEndpoint" order="1000"/>
 	</aop:config>
 
-	<bean id="dormancyAspect" class="at.dormancy.aop.DormancyAdvisor">
-		<constructor-arg ref="dormancy"/>
-	</bean>
+	<bean id="dormancyAspect" class="at.dormancy.aop.DormancyAdvisor"/>
 
-	<bean id="dormancy" class="at.dormancy.Dormancy">
-		<property name="config">
-			<bean class="at.dormancy.EntityPersisterConfiguration">
-				<property name="saveNewEntities" value="true"/>
-			</bean>
-		</property>
-	</bean>
+	<bean class="at.dormancy.HibernateDormancy"/>
 
 </beans>

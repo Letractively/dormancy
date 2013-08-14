@@ -15,10 +15,14 @@
  */
 package at.dormancy;
 
+import at.dormancy.persistence.HibernatePersistenceUnitProvider;
 import at.dormancy.persistence.PersistenceUnitProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 /**
  * Clones Hibernate entities and merges them into a {@link Session}.
@@ -36,7 +40,12 @@ import org.hibernate.metadata.ClassMetadata;
  * @see Dormancy
  */
 public class HibernateDormancy extends Dormancy<SessionFactory, Session, ClassMetadata> {
-	public HibernateDormancy(PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider) {
+	@Inject
+	public HibernateDormancy(@Nonnull SessionFactory sessionFactory) {
+		this(new HibernatePersistenceUnitProvider(sessionFactory));
+	}
+
+	public HibernateDormancy(@Nonnull PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider) {
 		super(persistenceUnitProvider);
 	}
 }

@@ -16,9 +16,12 @@
 package at.dormancy.scenario.server.service;
 
 import at.dormancy.scenario.client.service.DormancyScenarioService;
+import at.dormancy.scenario.server.DormancyScenarioModule;
 import at.dormancy.scenario.server.dao.DormancyScenarioDao;
 import at.dormancy.scenario.shared.model.Employee;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -26,27 +29,33 @@ import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Gregor Schauer
  * @since 1.0.2
  */
 public class DormancyScenarioServiceImpl extends RemoteServiceServlet implements DormancyScenarioService {
-	private WebApplicationContext ctx;
 	@Inject
-	private DormancyScenarioDao dormancyScenarioDao;
+	DormancyScenarioDao dormancyScenarioDao;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		ServletContext servletContext = config.getServletContext();
-		ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-		ctx.getAutowireCapableBeanFactory().autowireBean(this);
+		try {
+			// Attempt to inject the dependencies via Spring
+			WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+			ctx.getAutowireCapableBeanFactory().autowireBean(this);
+		} catch (IllegalStateException e) {
+			// If Spring is not configured, use the equivalent Guice configuration instead
+			Injector injector = Guice.createInjector(new DormancyScenarioModule());
+			injector.injectMembers(this);
+		}
 	}
 
 	@Override
-	public ArrayList<Employee> listEmployees() {
+	public List<Employee> listEmployees() {
 		return dormancyScenarioDao.listEmployees();
 	}
 

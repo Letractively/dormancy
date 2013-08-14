@@ -15,7 +15,9 @@
  */
 package at.dormancy.persistence;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -32,6 +34,14 @@ public class JpaPersistenceUnitProvider implements PersistenceUnitProvider<Entit
 	protected JpaPersistenceContext persistenceContext;
 	protected EntityManagerFactory emf;
 	protected EntityManager em;
+
+	public JpaPersistenceUnitProvider() {
+	}
+
+	@Inject
+	public JpaPersistenceUnitProvider(@Nonnull EntityManagerFactory emf) {
+		this.emf = emf;
+	}
 
 	@Override
 	public EntityManagerFactory getPersistenceUnit() {

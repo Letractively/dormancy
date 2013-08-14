@@ -15,8 +15,11 @@
  */
 package at.dormancy;
 
+import at.dormancy.persistence.JpaPersistenceUnitProvider;
 import at.dormancy.persistence.PersistenceUnitProvider;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
@@ -37,7 +40,12 @@ import javax.persistence.metamodel.EntityType;
  * @see Dormancy
  */
 public class JpaDormancy extends Dormancy<EntityManagerFactory, EntityManager, EntityType<?>> {
-	public JpaDormancy(PersistenceUnitProvider<EntityManagerFactory, EntityManager, EntityType<?>> persistenceUnitProvider) {
+	@Inject
+	public JpaDormancy(@Nonnull EntityManagerFactory emf) {
+		this(new JpaPersistenceUnitProvider(emf));
+	}
+
+	public JpaDormancy(@Nonnull PersistenceUnitProvider<EntityManagerFactory, EntityManager, EntityType<?>> persistenceUnitProvider) {
 		super(persistenceUnitProvider);
 	}
 }
