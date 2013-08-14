@@ -5,6 +5,7 @@
 		* [GettingDormancy Getting Dormancy]
 		* [Architecture]
 		* [UsingSpring Using Spring]
+		* [UsingGuice Using Guice]
 	* Advanced Topics
 		* [AOPSupport AOP Support]
 		* [ComplexQueries Complex Queries]

@@ -449,6 +449,24 @@ Summary:
             
             
             
+            &lt;T&gt;
+            <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/List.html">List</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;T&gt;&gt;</nobr>
+        </td>
+        <td class="jd-linkcol" width="100%"><nobr>
+        <span class="sympad"><a href="../../../at/dormancy/util/ClassLookup.html#list()">list</a></span>()</nobr>
+        
+        <div class="jd-descrdiv">Performs the lookup with the full-qualified class names and returns all classes found.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><nobr>
+            
+            
+            
+            
             
             <a href="../../../at/dormancy/util/ClassLookup.html">ClassLookup</a></nobr>
         </td>
@@ -461,7 +479,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -479,7 +497,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -497,7 +515,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol"><nobr>
             
             
@@ -900,6 +918,48 @@ From class
  <p/>
  If an exception was provided, it is thrown if no class was found. Otherwise, the provided default class or
  <code>null</code> is returned if none was set.
+ <p/>
+ If the exception is checked i.e., it is neither of type <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/RuntimeException.html">RuntimeException</a></code> nor Error, it gets
+ wrapped in a <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/RuntimeException.html">RuntimeException</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the class found or <code>null</code> if the lookup failed and no default was provided
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="list()"></A>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        <a href="http://download.oracle.com/javase/6/docs/api/index.html?java/util/List.html">List</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;T&gt;&gt;
+      </span>
+      <span class="sympad">list</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Performs the lookup with the full-qualified class names and returns all classes found.
+ <p/>
+ If an exception was provided, it is thrown if no class was found.<br/>
+ The resulting list does neither <code>null</code> values nor the default class (if provided).
  <p/>
  If the exception is checked i.e., it is neither of type <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/RuntimeException.html">RuntimeException</a></code> nor Error, it gets
  wrapped in a <code><a href="http://download.oracle.com/javase/6/docs/api/index.html?java/lang/RuntimeException.html">RuntimeException</a></code>.</p></div>

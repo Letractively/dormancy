@@ -373,7 +373,7 @@ public class Dormancy&lt;PU, PC, PMD&gt; extends AbstractEntityPersister&lt;Obje
 	protected boolean registerDefaultEntityPersisters = true;
 
 	@Inject
-	public Dormancy(PersistenceUnitProvider&lt;PU, PC, PMD&gt; persistenceUnitProvider) {
+	public Dormancy(@Nonnull PersistenceUnitProvider&lt;PU, PC, PMD&gt; persistenceUnitProvider) {
 		this.persistenceUnitProvider = persistenceUnitProvider;
 	}
 
@@ -887,6 +887,7 @@ public class Dormancy&lt;PU, PC, PMD&gt; extends AbstractEntityPersister&lt;Obje
 	 * @param types                the types of objects supported by the EntityPersister (may be {@code null})
 	 * @see #addEntityPersister(AbstractEntityPersister, Class[])
 	 */
+	@SuppressWarnings("unchecked")
 	public void addEntityPersister(@Nonnull Class&lt;? extends AbstractEntityPersister&gt; entityPersisterClass, @Nullable Class&lt;?&gt;... types) {
 		Constructor&lt;? extends AbstractEntityPersister&gt; constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
 		AbstractEntityPersister&lt;?&gt; entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : BeanUtils.instantiateClass(entityPersisterClass);

@@ -21,6 +21,7 @@ public class DormancyScenarioModule extends AbstractModule {
 		// bind(Dormancy.class).to(JpaDormancy.class).in(Scopes.SINGLETON);
 	}
 }
+}}}
 
 *Approach 2*: Declare a `Dormancy` instance as well as a `PersistenceUnitProvider` such as `HibernatePersistenceProvider` or `JpaPersistenceProvider` or use a custom implementation for providing the persistence unit:
 {{{

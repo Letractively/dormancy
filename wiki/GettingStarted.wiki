@@ -64,12 +64,14 @@ public class DormancyScenarioDao {
 
 	// methods ommitted...
 }
+}}}
 
 Whenever a method retrieves a parameter, which should be merged into the database or it returns a parameter containing unserializable Hibernate/JPA proxies, simply use the provided `Dormancy` instance:
 {{{
 	@SuppressWarnings("unchecked")
 	public List<Employee> listEmployees() {
-		List<Employee> employees = (List<Employee>) sessionFactory.getCurrentSession().createQuery("FROM Employee").list();
+		List<Employee> employees = (List<Employee>) sessionFactory.getCurrentSession()
+			.createQuery("FROM Employee").list();
 		/*
 		 * Remove all unitialized proxies by setting their references to null
 		 * and replace all initialized proxies by plain JPA entities.
@@ -84,8 +86,9 @@ Whenever a method retrieves a parameter, which should be merged into the databas
 		 */
 		Employee merged = dormancy.merge(employee);
 	}
+}
 }}}
 
-It´s on the dice that Dormancy works like an aspect i.e., whenever a transient JPA entity is retrieved, it is very likely that the changes should be persisted. Moreover, every persistent JPA entity, which is returned to the client, has to be detached and all proxies including persistent collections have to be replaced by serializable objects. Thus Dormancy can be configured as either an AspectJ aspect or a `MethodInterceptor` applied by a Java or CGLIB proxy.
+It´s on the dice that Dormancy works like an aspect i.e., whenever a transient JPA entity is retrieved, it is very likely that the changes should be persisted. Moreover, every persistent JPA entity, which is returned to the client, has to be detached and all proxies including persistent collections have to be replaced by serializable objects. Thus Dormancy can be configured as either an AspectJ aspect or a `MethodInterceptor` applied by a CGLIB or Java dynamic proxy.
 
 For further information about configuring your application to use Dormancy as a transparent facade between client and GWT services, please refer to [AOPSupport AOP Support].
