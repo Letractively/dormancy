@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.view.client.HasData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Gregor Schauer
@@ -85,14 +85,14 @@ public class EmployeesPresenter {
 
 	public void reload() {
 		view.setEmployee(null);
-		service.listEmployees(new AsyncCallback<ArrayList<Employee>>() {
+		service.listEmployees(new AsyncCallback<List<Employee>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Employee> result) {
+			public void onSuccess(List<Employee> result) {
 				view.getTable().setRowData(0, result);
 			}
 		});

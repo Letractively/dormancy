@@ -19,6 +19,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -31,7 +32,7 @@ public class HibernatePersistenceUnitProvider implements PersistenceUnitProvider
 	protected HibernatePersistenceContextProvider persistenceContextProvider;
 
 	@Inject
-	public HibernatePersistenceUnitProvider(SessionFactory sessionFactory) {
+	public HibernatePersistenceUnitProvider(@Nonnull SessionFactory sessionFactory) {
 		this.persistenceContextProvider = new HibernatePersistenceContextProvider(sessionFactory);
 	}
 

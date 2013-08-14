@@ -5,7 +5,7 @@
 
 The `DormancyAdvisor` is capable of intercepting method invocations like service calls and transparently performs the appropriate clone or merge operations for the parameters and the return value, respectively.
 It provides maximum flexibility by implementing `org.springframework.aop.support.AbstractPointcutAdvisor` as well as `org.aopalliance.intercept.MethodInterceptor`.
-Thus it is possible to use it as a simple method interceptor for a dynamic proxies or CGLIB proxies which can be created comfortably by a `org.springframework.aop.framework.ProxyFactoryBean` for example.
+Thus it is possible to use it as a simple method interceptor for a Java dynamic proxies or CGLIB proxies which can be created comfortably by a `org.springframework.aop.framework.ProxyFactoryBean` for example.
 Additionally, it contains a configurable `org.springframework.aop.Pointcut` that matches any methods annotated with `PersistenceEndpoint` or its declaring class is annotated with the annotation.
 
 For more complex scenarios, it is possible to declare it as an AspectJ aspect instead of modifying the pointcut of the previous approach.
@@ -48,7 +48,7 @@ This alternative approach is easier to configure and only recommended for tests 
 The listing below creates a `ProxyFactoryBean`, which can also be defined declaratively in the `beans.xml` and applies the `DormancyAdvisor` as a `MethodInterceptor` to a target object.
 
 {{{
-Dormancy dormancy = ...		// obtain an instance of Dormancy
+Dormancy dormancy = ...		// obtain the Dormancy instance
 ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 factoryBean.addAdvice(new DormancyAdvisor(dormancy));
 factoryBean.setTarget(target);	// object to proxify

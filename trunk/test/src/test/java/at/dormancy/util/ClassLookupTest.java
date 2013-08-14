@@ -66,5 +66,19 @@ public class ClassLookupTest {
 		} catch (RuntimeException e) {
 			assertEquals(true, e.toString().endsWith(ExceptionUtils.getMessage(e)));
 		}
+
+		try {
+			ClassLookup.find().orThrow(msg).list();
+			fail(RuntimeException.class.getSimpleName() + " expected");
+		} catch (Exception e) {
+			assertEquals(true, e.toString().endsWith(ExceptionUtils.getMessage(e)));
+		}
+	}
+
+	@Test
+	public void testList() throws Exception {
+		assertEquals(0, ClassLookup.find().list().size());
+		assertEquals(0, ClassLookup.find("").list().size());
+		assertEquals(1, ClassLookup.find("", Object.class.getName()).list().size());
 	}
 }

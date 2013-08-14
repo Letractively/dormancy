@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.dormancy.scenario.client.service;
+package at.dormancy.scenario.server.dao;
 
+import at.dormancy.HibernateDormancy;
 import at.dormancy.scenario.shared.model.Employee;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.hibernate.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author Gregor Schauer
  * @since 1.0.2
  */
-@RemoteServiceRelativePath("DormancyScenarioService")
-public interface DormancyScenarioService extends RemoteService {
-	class App {
-		private static final DormancyScenarioServiceAsync instance = (DormancyScenarioServiceAsync) GWT.create(DormancyScenarioService.class);
-		public static DormancyScenarioServiceAsync getInstance() {
-			return instance;
-		}
-	}
-	ArrayList<Employee> listEmployees();
+@Transactional
+public class DormancyScenarioDao {
+	@Inject
+	SessionFactory sessionFactory;
+	@Inject
+	HibernateDormancy dormancy;
 
-	void save(Employee employee);
+	@SuppressWarnings("unchecked")
+	public List<Employee> listEmployees() {
+		return (List<Employee>) sessionFactory.getCurrentSession().createQuery("FROM Employee").list();
+	}
+
+	public void save(Employee employee) {
+		Employee merge = dormancy.merge(employee);
+	}
 }

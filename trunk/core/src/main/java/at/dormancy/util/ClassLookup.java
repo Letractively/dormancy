@@ -144,11 +144,37 @@ public final class ClassLookup {
 			}
 		}
 		if (exception != null) {
-			if (exception instanceof RuntimeException) {
-				throw (RuntimeException) exception;
-			}
-			throw new RuntimeException(exception);
+			throw (exception instanceof RuntimeException)
+					? RuntimeException.class.cast(exception) : new RuntimeException(exception);
 		}
 		return (Class<T>) defaultClass;
+	}
+
+	/**
+	 * Performs the lookup with the full-qualified class names and returns all classes found.
+	 * <p/>
+	 * If an exception was provided, it is thrown if no class was found.<br/>
+	 * The resulting list does neither {@code null} values nor the default class (if provided).
+	 * <p/>
+	 * If the exception is checked i.e., it is neither of type {@link RuntimeException} nor {@link Error}, it gets
+	 * wrapped in a {@link RuntimeException}.
+	 *
+	 * @return the class found or {@code null} if the lookup failed and no default was provided
+	 */
+	@Nonnull
+	@SuppressWarnings("unchecked")
+	public <T> List<Class<? extends T>> list() {
+		List<Class<? extends T>> list = new ArrayList<Class<? extends T>>(names.size());
+		for (String name : names) {
+			Class<T> clazz = forName(name);
+			if (clazz != null) {
+				list.add(clazz);
+			}
+		}
+		if (exception != null) {
+			throw (exception instanceof RuntimeException)
+					? RuntimeException.class.cast(exception) : new RuntimeException(exception);
+		}
+		return list;
 	}
 }
