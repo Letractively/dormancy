@@ -25,8 +25,9 @@ import at.dormancy.domain.WriteOnlyDTO;
 import at.dormancy.entity.*;
 import at.dormancy.persister.AbstractEntityPersister;
 import at.dormancy.persister.NoOpPersister;
-import at.dormancy.persister.filter.NonStaticFinalFieldFilter;
-import at.dormancy.persister.filter.NonTransientPropertyFilter;
+import at.dormancy.persister.filter.NotFilter;
+import at.dormancy.persister.filter.StaticFinalFieldFilter;
+import at.dormancy.persister.filter.TransientFilter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.junit.Before;
@@ -424,7 +425,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		AnnotationPropertyAccessStrategy strategy = ReflectionTestUtils.invokeMethod(dormancy.getUtils(), "createStrategy", Credentials.class);
 		strategyMap.put(Credentials.class, strategy);
 
-		strategy.setPropertyFilter(NonStaticFinalFieldFilter.getInstance());
+		strategy.setPropertyFilter(new NotFilter(StaticFinalFieldFilter.getInstance()));
 		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
 
 		Credentials clone = dormancy.clone(credentials);
@@ -436,7 +437,7 @@ public class SimpleDormancyTest extends AbstractDormancyTest {
 		assertEquals(credentials.getPassword(), merge.getPassword());
 
 
-		strategy.setPropertyFilter(NonTransientPropertyFilter.getInstance());
+		strategy.setPropertyFilter(new NotFilter(TransientFilter.getInstance()));
 		ReflectionTestUtils.invokeMethod(strategy, "initialize", Credentials.class);
 		persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
 

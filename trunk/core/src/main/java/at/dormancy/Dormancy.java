@@ -76,8 +76,8 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 		// Initialize JPA provider specific DormancyUtils
 		if (utils == null) {
 			String className = "at.dormancy.util.DormancyUtils";
-			Class<?> type = ClassLookup.find(className).orThrow(
-					"Cannot initialize Dormancy: Missing class \"%s\"\n" +
+			Class<? extends AbstractDormancyUtils<PU, PC, PMD, PersistenceUnitProvider<PU, PC, PMD>>> type =
+					ClassLookup.find(className).orThrow("Cannot initialize Dormancy: Missing class \"%s\"\n" +
 							"Please make sure that there is exactly one Dormancy backend in the classpath.\n" +
 							"Official implementations are:\n" +
 							"x) hibernate3\n" +
@@ -85,8 +85,8 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 							"x) jpa-hibernate\n" +
 							"x) jpa-eclipselink\n", className).get();
 
-			Constructor<? extends AbstractDormancyUtils> ctor = ConstructorUtils.getAccessibleConstructor(
-					type, persistenceUnitProvider.getClass());
+			Constructor<? extends AbstractDormancyUtils<PU, PC, PMD, PersistenceUnitProvider<PU, PC, PMD>>> ctor =
+					ConstructorUtils.getAccessibleConstructor(type, persistenceUnitProvider.getClass());
 			utils = BeanUtils.instantiateClass(ctor, persistenceUnitProvider);
 		}
 
@@ -578,8 +578,8 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	 */
 	@SuppressWarnings("unchecked")
 	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class<?>... types) {
-		Constructor<? extends AbstractEntityPersister> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
-		AbstractEntityPersister<?> entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : BeanUtils.instantiateClass(entityPersisterClass);
+		Constructor<? extends AbstractEntityPersister<?>> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
+		AbstractEntityPersister entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : (AbstractEntityPersister) BeanUtils.instantiateClass(entityPersisterClass);
 		if (entityPersister instanceof AbstractContainerPersister) {
 			((AbstractContainerPersister<?>) entityPersister).setPersistentUnitProvider(persistenceUnitProvider);
 		}
