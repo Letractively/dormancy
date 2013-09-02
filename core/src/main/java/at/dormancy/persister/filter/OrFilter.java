@@ -18,31 +18,37 @@ package at.dormancy.persister.filter;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 /**
- * Selects {@link Field}s or {@link Method}s, which are not {@code static final}.
+ * Combines multiple {@link MemberFilter}s with <i>or</i> semantics.
  *
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public class NonStaticFinalFieldFilter implements MemberFilter {
-	private static final NonStaticFinalFieldFilter INSTANCE = new NonStaticFinalFieldFilter();
+public class OrFilter implements MemberFilter {
+	private final MemberFilter[] memberFilters;
 
-	public static NonStaticFinalFieldFilter getInstance() {
-		return INSTANCE;
-	}
-
-	private NonStaticFinalFieldFilter() {
+	public OrFilter(@Nonnull MemberFilter... memberFilters) {
+		this.memberFilters = memberFilters;
 	}
 
 	@Override
 	public boolean matches(@Nonnull Field field) {
-		return !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers());
+		for (MemberFilter memberFilter : memberFilters) {
+			if (memberFilter.matches(field)) {
+				return true;
+			}
+		}
+		return memberFilters.length == 0;
 	}
 
 	@Override
-	public boolean matches(Method method) {
-		return !Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers());
+	public boolean matches(@Nonnull Method method) {
+		for (MemberFilter memberFilter : memberFilters) {
+			if (memberFilter.matches(method)) {
+				return true;
+			}
+		}
+		return memberFilters.length == 0;
 	}
 }

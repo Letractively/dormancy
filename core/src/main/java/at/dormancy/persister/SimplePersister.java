@@ -16,7 +16,8 @@
 package at.dormancy.persister;
 
 import at.dormancy.Dormancy;
-import at.dormancy.persister.filter.NonStaticFinalFieldFilter;
+import at.dormancy.persister.filter.NotFilter;
+import at.dormancy.persister.filter.StaticFinalFieldFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
 
@@ -42,7 +43,7 @@ public class SimplePersister<C> extends FieldFilterPersister<C> implements Dynam
 	@Inject
 	public SimplePersister(@Nonnull Dormancy dormancy) {
 		super(dormancy);
-		setFieldFilters(NonStaticFinalFieldFilter.getInstance());
+		setFieldFilters(new NotFilter(StaticFinalFieldFilter.getInstance()));
 	}
 
 	@Nullable

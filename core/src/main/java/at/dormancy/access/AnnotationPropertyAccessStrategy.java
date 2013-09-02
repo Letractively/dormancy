@@ -16,7 +16,8 @@
 package at.dormancy.access;
 
 import at.dormancy.persister.filter.MemberFilter;
-import at.dormancy.persister.filter.NonTransientPropertyFilter;
+import at.dormancy.persister.filter.NotFilter;
+import at.dormancy.persister.filter.TransientFilter;
 import org.apache.commons.lang.ArrayUtils;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,14 @@ import static org.springframework.util.ReflectionUtils.*;
 
 /**
  * Determines how to access entity properties based on annotations located on them.
+ * <p/>
+ * {@link MemberFilter}s can be used to restrict access to certain properties.<br/>
+ * All properties matching the filter condition are included i.e., {@link MemberFilter#matches(java.lang.reflect.Field)}
+ * or {@link MemberFilter#matches(java.lang.reflect.Method)} respectively, returns {@code true}.
+ * <p/>
+ * If no custom {@link MemberFilter} is provided, all <i>transient</i> properties are excluded.<br/>
+ * <i>Transient</i> refers to the definition of JPA. In other words, fields with a {@code transient} modified as well
+ * as fields or properties annotated with {@link javax.persistence.Transient @Transient} are not persisted.
  *
  * @author Gregor Schauer
  * @since 2.0.0
@@ -45,7 +54,7 @@ public abstract class AnnotationPropertyAccessStrategy extends AbstractPropertyA
 	@SuppressWarnings("unchecked")
 	protected static Class<? extends Annotation>[] idAnnotations = ArrayUtils.EMPTY_CLASS_ARRAY;
 
-	protected MemberFilter propertyFilter = NonTransientPropertyFilter.getInstance();
+	protected MemberFilter propertyFilter = new NotFilter(TransientFilter.getInstance());
 
 	/**
 	 * Creates a new strategy instance.
