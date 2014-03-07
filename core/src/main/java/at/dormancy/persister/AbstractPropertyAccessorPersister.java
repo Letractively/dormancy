@@ -43,13 +43,15 @@ public abstract class AbstractPropertyAccessorPersister<C, PA extends PropertyAc
 			return (C) tree.get(dbObj);
 		}
 		T trObj = createObject(dbObj);
+		tree.put(dbObj, trObj);
+
 		PA dbPropertyAccessor = createPropertyAccessor(dbObj);
-		PA trPopertyAccessor = createPropertyAccessor(trObj);
+		PA trPropertyAccessor = createPropertyAccessor(trObj);
 		for (String name : getPropertyNames(dbPropertyAccessor)) {
-			if (dbPropertyAccessor.isReadableProperty(name) && trPopertyAccessor.isWritableProperty(name)) {
+			if (dbPropertyAccessor.isReadableProperty(name) && trPropertyAccessor.isWritableProperty(name)) {
 				Object dbValue = dbPropertyAccessor.getPropertyValue(name);
 				Object trValue = dormancy.clone_(dbValue, tree);
-				trPopertyAccessor.setPropertyValue(name, trValue);
+				trPropertyAccessor.setPropertyValue(name, trValue);
 			}
 		}
 		return trObj;
