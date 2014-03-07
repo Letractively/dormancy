@@ -27,9 +27,9 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Common utility methods for Dormancy support code.
@@ -37,7 +37,7 @@ import java.util.Set;
  * @author Gregor Schauer
  */
 public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends PersistenceUnitProvider<PU, PC, PMD>> {
-	protected static final Map<Class<?>, AbstractPropertyAccessStrategy> STRATEGY_MAP = new HashMap<Class<?>, AbstractPropertyAccessStrategy>();
+	protected static final Map<Class<?>, AbstractPropertyAccessStrategy> STRATEGY_MAP = new ConcurrentHashMap<Class<?>, AbstractPropertyAccessStrategy>();
 	protected static final Class<? extends Annotation> idClass;
 	protected PUP persistenceUnitProvider;
 
@@ -307,13 +307,8 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 		clazz = getClass(clazz);
 		AbstractPropertyAccessStrategy strategy = STRATEGY_MAP.get(clazz);
 		if (strategy == null) {
-			synchronized (STRATEGY_MAP) {
-				strategy = STRATEGY_MAP.get(clazz);
-				if (strategy == null) {
-					strategy = createStrategy(clazz);
-					STRATEGY_MAP.put(clazz, strategy);
-				}
-			}
+			strategy = createStrategy(clazz);
+			STRATEGY_MAP.put(clazz, strategy);
 		}
 		return strategy;
 	}

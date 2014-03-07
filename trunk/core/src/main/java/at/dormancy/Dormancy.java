@@ -44,8 +44,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Clones Hibernate entities and merges them into a persistence context.<br/>
@@ -453,7 +453,7 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	@Nonnull
 	public Map<Class<?>, AbstractEntityPersister<?>> getPersisterMap() {
 		if (persisterMap == null) {
-			persisterMap = new LinkedHashMap<Class<?>, AbstractEntityPersister<?>>();
+			persisterMap = new ConcurrentHashMap<Class<?>, AbstractEntityPersister<?>>();
 		}
 		return persisterMap;
 	}
@@ -491,10 +491,12 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 					}
 				}
 			}
-			if (logger.isDebugEnabled()) {
-				logger.trace(String.format("Registering %s for type %s", entityPersister, clazz.getName()));
+			if (entityPersister != null) {
+				if (logger.isDebugEnabled()) {
+					logger.trace(String.format("Registering %s for type %s", entityPersister, clazz.getName()));
+				}
+				getPersisterMap().put(clazz, entityPersister);
 			}
-			getPersisterMap().put(clazz, entityPersister);
 		}
 		return entityPersister;
 	}
@@ -578,8 +580,10 @@ public class Dormancy<PU, PC, PMD> extends AbstractEntityPersister<Object> imple
 	 */
 	@SuppressWarnings("unchecked")
 	public void addEntityPersister(@Nonnull Class<? extends AbstractEntityPersister> entityPersisterClass, @Nullable Class<?>... types) {
-		Constructor<? extends AbstractEntityPersister<?>> constructor = ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
-		AbstractEntityPersister entityPersister = constructor != null ? BeanUtils.instantiateClass(constructor, this) : (AbstractEntityPersister) BeanUtils.instantiateClass(entityPersisterClass);
+		Constructor<? extends AbstractEntityPersister<?>> constructor = (Constructor<AbstractEntityPersister<?>>) ClassUtils.getConstructorIfAvailable(entityPersisterClass, Dormancy.class);
+		AbstractEntityPersister<?> entityPersister = constructor != null
+				? BeanUtils.instantiateClass(constructor, this)
+				: (AbstractEntityPersister<?>) BeanUtils.instantiateClass(entityPersisterClass);
 		if (entityPersister instanceof AbstractContainerPersister) {
 			((AbstractContainerPersister<?>) entityPersister).setPersistentUnitProvider(persistenceUnitProvider);
 		}
