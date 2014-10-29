@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,7 @@ package at.dormancy.access;
 import at.dormancy.entity.Application;
 import at.dormancy.entity.UnsupportedReadEntity;
 import at.dormancy.entity.UnsupportedWriteEntity;
+import at.dormancy.metadata.ObjectMetadata;
 import at.dormancy.util.DormancyUtils;
 import com.google.common.base.Throwables;
 import org.junit.Test;
@@ -39,7 +40,8 @@ public class PropertyAccessorTest {
 	public DormancyUtils getUtils() {
 		if (utils == null) {
 			try {
-				Constructor<DormancyUtils> ctor = (Constructor<DormancyUtils>) DormancyUtils.class.getConstructors()[0];
+				Constructor<DormancyUtils> ctor =
+						(Constructor<DormancyUtils>) DormancyUtils.class.getConstructors()[0];
 				utils = BeanUtils.instantiateClass(ctor, new Object[]{null});
 			} catch (Exception e) {
 				throw Throwables.propagate(e);
@@ -51,7 +53,8 @@ public class PropertyAccessorTest {
 	@Test
 	public void testApplication() {
 		Application application = new Application();
-		PropertyAccessor accessor = new StrategyPropertyAccessor(application, getUtils().getPropertyAccessStrategy(application.getClass()));
+		ObjectMetadata metadata = getUtils().getObjectMetadata(application.getClass());
+		PropertyAccessor accessor = new MetadataPropertyAccessor(application, metadata);
 		assertSame(Long.class, accessor.getPropertyType("id"));
 		assertSame(Long.class, accessor.getPropertyTypeDescriptor("id").getType());
 		assertSame(String.class, accessor.getPropertyType("name"));
@@ -70,7 +73,8 @@ public class PropertyAccessorTest {
 	@Test(expected = MethodInvocationException.class)
 	public void testReadOnlyEntity() {
 		Object entity = new UnsupportedWriteEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getPropertyAccessStrategy(entity.getClass()));
+		ObjectMetadata metadata = getUtils().getObjectMetadata(entity.getClass());
+		PropertyAccessor accessor = new MetadataPropertyAccessor(entity, metadata);
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 
@@ -86,7 +90,8 @@ public class PropertyAccessorTest {
 	@Test(expected = InvalidPropertyException.class)
 	public void testWriteOnlyEntity() {
 		Object entity = new UnsupportedReadEntity(1L, "val");
-		PropertyAccessor accessor = new StrategyPropertyAccessor(entity, getUtils().getPropertyAccessStrategy(entity.getClass()));
+		ObjectMetadata metadata = getUtils().getObjectMetadata(entity.getClass());
+		PropertyAccessor accessor = new MetadataPropertyAccessor(entity, metadata);
 		assertEquals(1L, accessor.getPropertyValue("id"));
 		assertEquals("val", accessor.getPropertyValue("value"));
 

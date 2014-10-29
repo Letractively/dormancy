@@ -34,6 +34,7 @@ import com.google.gwt.view.client.HasData;
  */
 public class EmployeesView extends Composite implements EmployeesPresenter.Display {
 	private static EmployeesUiBinder uiBinder = GWT.create(EmployeesUiBinder.class);
+
 	interface EmployeesUiBinder extends UiBinder<HTMLPanel, EmployeesView> {
 	}
 

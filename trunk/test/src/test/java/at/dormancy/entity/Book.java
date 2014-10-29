@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,15 +53,5 @@ public class Book implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Book");
-		sb.append("{id=").append(id);
-		sb.append(", title='").append(title).append('\'');
-		sb.append('}');
-		return sb.toString();
 	}
 }

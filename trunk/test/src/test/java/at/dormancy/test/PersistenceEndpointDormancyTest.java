@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,9 +20,10 @@ import at.dormancy.Dormancy;
 import at.dormancy.container.Team;
 import at.dormancy.entity.Book;
 import at.dormancy.entity.Employee;
-import at.dormancy.persister.CollectionPersister;
-import at.dormancy.persister.NoOpPersister;
-import at.dormancy.persister.TeamPersister;
+import at.dormancy.handler.BasicTypeHandler;
+import at.dormancy.handler.CollectionHandler;
+import at.dormancy.handler.ObjectHandler;
+import at.dormancy.handler.TeamHandler;
 import org.junit.Test;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -30,23 +31,23 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
 
 /**
  * @author Gregor Schauer
  */
 public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implements ApplicationContextAware {
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testPersisterTypePersistenceEndpoint() {
-		dormancy.getPersisterMap().clear();
-		dormancy.addEntityPersister(new TeamPersister(dormancy), Team.class);
-		dormancy.addEntityPersister(new CollectionPersister<List<?>>(dormancy), List.class);
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
+	public void testObjectHandlerTypePersistenceEndpoint() {
+		((Map<Class<?>, ObjectHandler<?>>) getField(dormancy.getRegistry(), "handlerMap")).clear();
+		dormancy.getRegistry().addObjectHandler(new TeamHandler(dormancy), Team.class);
+		dormancy.getRegistry().addObjectHandler(new CollectionHandler<List<?>>(dormancy), List.class);
+		dormancy.getRegistry().addObjectHandler(new BasicTypeHandler<Object>());
 
 		genericService.save(new Book(UUID.randomUUID().toString()));
 		Team team = new Team(service.get(Employee.class, refA.getId()));
@@ -55,12 +56,15 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		assertEquals(Collections.<Employee>emptySet(), pass.getEmployees().get(0).getEmployees());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testPersisterNamePersistenceEndpoint() {
-		dormancy.getPersisterMap().clear();
-		dormancy.getPersisterMap().put(TeamPersister.class, new TeamPersister(dormancy));
-		dormancy.getPersisterMap().put(List.class, new CollectionPersister<List<?>>(dormancy));
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
+	public void testObjectHandlerNamePersistenceEndpoint() {
+		Map<Class<?>, ObjectHandler<?>> handlerMap =
+				(Map<Class<?>, ObjectHandler<?>>) getField(dormancy.getRegistry(), "handlerMap");
+		handlerMap.clear();
+		handlerMap.put(TeamHandler.class, new TeamHandler(dormancy));
+		handlerMap.put(List.class, new CollectionHandler<Collection>(dormancy));
+		dormancy.getRegistry().addObjectHandler(new BasicTypeHandler<Object>());
 
 		genericService.save(new Book(UUID.randomUUID().toString()));
 		Team team = new Team(service.get(Employee.class, refA.getId()));
@@ -70,24 +74,11 @@ public class PersistenceEndpointDormancyTest extends AbstractDormancyTest implem
 		assertNotSame(team.getEmployees().get(0), pass.getEmployees().get(0));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testUnavailablePersisterPersistenceEndpoint() {
-		if (isJpa()) {
-			throw new IllegalArgumentException();
-		}
-
-		dormancy.getPersisterMap().clear();
-		dormancy.addEntityPersister(NoOpPersister.getInstance());
-		genericService.save(new Book(UUID.randomUUID().toString()));
-
-		service.next(new Team(service.get(Employee.class, refA.getId())));
-	}
-
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		GenericApplicationContext ctx = GenericApplicationContext.class.cast(applicationContext);
 		ConstructorArgumentValues values = new ConstructorArgumentValues();
 		values.addIndexedArgumentValue(0, ctx.getBean(Dormancy.class));
-		ctx.registerBeanDefinition("teamPersister", new RootBeanDefinition(TeamPersister.class, values, null));
+		ctx.registerBeanDefinition("teamHandler", new RootBeanDefinition(TeamHandler.class, values, null));
 	}
 }

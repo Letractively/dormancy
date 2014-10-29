@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,15 @@
  */
 package at.dormancy.entity;
 
+import at.dormancy.access.AccessType;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.net.URL;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author Gregor Schauer
@@ -34,13 +38,26 @@ public class DataTypes implements Serializable {
 	String string;
 	Date date;
 	Timestamp timestamp;
-	int[] intArray;
-	Integer[] integerArray;
+
+	Calendar calendar;
+	TimeZone timeZone;
+	Currency currency;
+	Locale locale;
+	Class<?> clazz;
+	AccessType accessType;
+	URL url;
+	UUID uuid;
+	Blob blob;
+	Clob clob;
 
 	public DataTypes() {
 	}
 
-	public DataTypes(Long longWrapper, long longValue, Boolean booleanWrapper, boolean booleanValue, String string, Date date, Timestamp timestamp, int[] intArray, Integer[] integerArray) {
+	public DataTypes(Long longWrapper, long longValue, Boolean booleanWrapper, boolean booleanValue, String string,
+					 Date date, Timestamp timestamp, Calendar calendar, TimeZone timeZone,
+					 Currency currency, Locale locale,
+					 Class<?> clazz, AccessType accessType, URL url, UUID uuid,
+					 Blob blob, Clob clob) {
 		this.longWrapper = longWrapper;
 		this.longValue = longValue;
 		this.booleanWrapper = booleanWrapper;
@@ -48,8 +65,16 @@ public class DataTypes implements Serializable {
 		this.string = string;
 		this.date = date;
 		this.timestamp = timestamp;
-		this.intArray = intArray;
-		this.integerArray = integerArray;
+		this.calendar = calendar;
+		this.timeZone = timeZone;
+		this.currency = currency;
+		this.locale = locale;
+		this.clazz = clazz;
+		this.accessType = accessType;
+		this.url = url;
+		this.uuid = uuid;
+		this.blob = blob;
+		this.clob = clob;
 	}
 
 	@Id
@@ -119,37 +144,86 @@ public class DataTypes implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public int[] getIntArray() {
-		return intArray;
+	@Temporal(TemporalType.DATE)
+	public Calendar getCalendar() {
+		return calendar;
 	}
 
-	public void setIntArray(int[] intArray) {
-		this.intArray = intArray;
+	public void setCalendar(Calendar calendar) {
+		this.calendar = calendar;
 	}
 
-	public Integer[] getIntegerArray() {
-		return integerArray;
+	public TimeZone getTimeZone() {
+		return timeZone;
 	}
 
-	public void setIntegerArray(Integer[] integerArray) {
-		this.integerArray = integerArray;
+	public void setTimeZone(TimeZone timeZone) {
+		this.timeZone = timeZone;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("DataTypes");
-		sb.append("{id=").append(id);
-		sb.append(", longWrapper=").append(longWrapper);
-		sb.append(", longValue=").append(longValue);
-		sb.append(", booleanWrapper=").append(booleanWrapper);
-		sb.append(", booleanValue=").append(booleanValue);
-		sb.append(", string='").append(string).append('\'');
-		sb.append(", date=").append(date);
-		sb.append(", timestamp=").append(timestamp);
-		sb.append(", intArray=").append(intArray == null ? "null" : Arrays.asList(intArray).toString());
-		sb.append(", integerArray=").append(integerArray == null ? "null" : Arrays.asList(integerArray).toString());
-		sb.append('}');
-		return sb.toString();
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public Class<?> getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
+	}
+
+	public AccessType getAccessType() {
+		return accessType;
+	}
+
+	public void setAccessType(AccessType accessType) {
+		this.accessType = accessType;
+	}
+
+	public URL getUrl() {
+		return url;
+	}
+
+	public void setUrl(URL url) {
+		this.url = url;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	@Lob
+	public Blob getBlob() {
+		return blob;
+	}
+
+	public void setBlob(Blob blob) {
+		this.blob = blob;
+	}
+
+	@Lob
+	public Clob getClob() {
+		return clob;
+	}
+
+	public void setClob(Clob clob) {
+		this.clob = clob;
 	}
 }

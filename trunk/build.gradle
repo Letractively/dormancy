@@ -1,0 +1,348 @@
+apply plugin: 'build-announcements'
+
+description = 'Dormancy'
+
+
+ext {
+//	profile = 'eclipselink'
+//	profile = 'hibernate3'
+	profile = 'hibernate4'
+//	profile = 'hibernate-jpa'
+
+	aspectJVersion = '1.7.3'
+	guavaVersion = '14.0.1'
+	hibernate3Version = '3.3.2.GA'
+	hibernate4Version = '4.2.0.Final'
+	slf4jVersion = '1.5.8'
+	springVersion = '3.1.0.RELEASE'
+
+	javadocLinks = [
+			"http://docs.oracle.com/javase/${JavaVersion.current().majorVersion}/docs/api/",
+			"http://docs.oracle.com/javaee/7/api/",
+			"http://docs.spring.io/spring/docs/$springVersion/javadoc-api/",
+			"http://docs.guava-libraries.googlecode.com/git-history/v$guavaVersion/javadoc/",
+			(profile() == 'hibernate3'
+					? "https://docs.jboss.org/hibernate/core/${hibernate3Version.substring(0, 3)}/api/"
+					: "https://docs.jboss.org/hibernate/core/${hibernate4Version.substring(0, 3)}/javadocs/"),
+			'http://findbugs.sourceforge.net/api/'
+	] as String[]
+}
+
+
+allprojects {
+	apply plugin: 'java'
+
+	group = 'at.dormancy'
+	version = '2.0.0'
+	sourceCompatibility = 1.6
+
+	buildDir = "${System.properties['java.io.tmpdir']}/dormancy/${project.name}/build"
+
+	dependencies {
+		compile 'com.google.code.findbugs:jsr305:3.0.0'
+		compile "com.google.guava:guava:$guavaVersion"
+		compile 'commons-lang:commons-lang:2.6'
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	compileJava.options*.compilerArgs = [
+			"-Xlint:varargs", "-Xlint:cast", "-Xlint:classfile",
+			"-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+			"-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+			"-Xlint:try", "-Xlint:fallthrough", "-Xlint:deprecation",
+			"-Xlint:unchecked", "-Xlint:-options", "-Werror"
+	]
+
+	compileTestJava.options*.compilerArgs = [
+			"-Xlint:varargs", "-Xlint:cast", "-Xlint:classfile",
+			"-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+			"-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+			"-Xlint:try", "-Xlint:-fallthrough", "-Xlint:-deprecation",
+			"-Xlint:-unchecked", "-Xlint:-options"
+	]
+}
+
+
+subprojects {
+	archivesBaseName = "$rootProject.name-$project.name"
+}
+
+
+project(':core') {
+	dependencies {
+		compile 'cglib:cglib:2.2.2'
+		compile 'javax.inject:javax.inject:1'
+		compile 'log4j:log4j:1.2.17'
+		compile "org.aspectj:aspectjrt:$aspectJVersion"
+		compile "org.aspectj:aspectjweaver:$aspectJVersion"
+		compile 'org.javassist:javassist:3.16.1-GA'
+		compile "org.slf4j:slf4j-api:$slf4jVersion"
+		compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+		compile "org.springframework:spring-orm:$springVersion"
+		compile "org.springframework:spring-test:$springVersion"
+		compile "org.springframework:spring-tx:$springVersion"
+	}
+}
+
+project(':eclipselink') {
+	dependencies {
+		compile project(':core')
+		compile 'org.eclipse.persistence:javax.persistence:2.1.0'
+		compile 'org.eclipse.persistence:org.eclipse.persistence.jpa:2.5.2'
+	}
+}
+
+project(':hibernate3') {
+	dependencies {
+		compile project(':core')
+		compile "org.hibernate:hibernate-core:$hibernate3Version"
+		compile 'org.hibernate:hibernate-annotations:3.4.0.GA'
+	}
+}
+
+project(':hibernate4') {
+	dependencies {
+		compile project(':core')
+		compile "org.hibernate:hibernate-core:$hibernate4Version"
+	}
+}
+
+project(':hibernate-jpa') {
+	dependencies {
+		compile project(':core')
+		compile "org.hibernate:hibernate-entitymanager:$hibernate4Version"
+	}
+}
+
+project(':test') {
+	apply plugin: 'jacoco'
+
+	configurations {
+		javaAgentOpenJpa
+	}
+
+	sourceSets {
+		test {
+			java {
+				exclude isJpa() ? '**/Hibernate**' : '**/Jpa**'
+			}
+		}
+	}
+
+	dependencies {
+		testCompile project(":${profile()}")
+		if (profile() == 'hibernate3') {
+			testCompile 'org.hibernate:hibernate-annotations:3.4.0.GA'
+			testCompile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
+		} else if (profile() in ['eclipselink', 'openjpa']) {
+			testCompile('org.hibernate:hibernate-annotations:3.4.0.GA') {
+				exclude group: 'org.hibernate', module: 'ejb3-persistence'
+				exclude group: 'org.hibernate', module: 'hibernate-core'
+			}
+		}
+
+
+		testCompile project(':core')
+		testCompile 'commons-beanutils:commons-beanutils:1.8.3'
+		testCompile 'junit:junit:4.11'
+		testCompile 'org.hsqldb:hsqldb:2.3.2'
+
+		javaAgentOpenJpa "org.apache.openjpa:openjpa:2.2.2"
+	}
+
+	jacoco {
+		toolVersion = '0.7.1.201405082137'
+		reportsDir = file("$buildDir/jacoco")
+	}
+
+	jacocoTestReport {
+		def projects = configurations.testCompile.getAllDependencies().withType(ProjectDependency).collect{it.getDependencyProject()}
+		projects.each {
+			additionalSourceDirs files(it.sourceSets.main.java.srcDirs)
+			additionalClassDirs files(it.sourceSets.main.output)
+		}
+
+		reports {
+			html.enabled
+			html.destination "${buildDir}/reports/jacoco"
+		}
+	}
+
+	tasks.withType(JavaCompile) {
+		options.debug = true
+		options.compilerArgs = ["-g"]
+	}
+
+	test {
+		if (profile() == 'openjpa') {
+			def jvmArgsOpenJpa = "-javaagent:${configurations.javaAgentOpenJpa.files.iterator().next()}"
+			println "Additional JVM parameters: $jvmArgsOpenJpa"
+			jvmArgs jvmArgsOpenJpa
+		}
+	}
+}
+
+
+def distProjects = [project(':core'), project(":${profile()}")].toSet()
+
+def String profile() {
+	if (!hasProperty('profile')) {
+		throw new IllegalArgumentException("Please provide a profile by specifying -Pprofile= and one of the supported values:\n" +
+				"x) eclipselink\n" +
+				"x) hibernate3\n" +
+				"x) hibernate4\n" +
+				"x) hibernate-jpa")
+	}
+	getProperty('profile')
+}
+
+def boolean isJpa() {
+	!(profile() in ['hibernate3', 'hibernate4'])
+}
+
+
+configure(rootProject) {
+	// don't publish the default jar for the root project
+	configurations.archives.artifacts.clear()
+
+	task dist(type: Jar, dependsOn: ['sourceJar', distProjects.collect { "$it.name:build" }]) {
+		appendix = profile()
+		distProjects.each { p ->
+			from {
+				p.configurations.archives.allArtifacts.files.collect { zipTree(it) }
+			}
+		}
+	}
+
+	task sourceJar(type: Jar) {
+		appendix = profile()
+		classifier = 'sources'
+		from distProjects.sourceSets.main.allSource
+	}
+
+	task api(type: Javadoc) {
+		group = "Documentation"
+		description = "Generates aggregated Javadoc API documentation."
+		title = "$rootProject.description $version API"
+
+		dependsOn {
+			distProjects.collect {
+				it.tasks.getByName("jar")
+			}
+		}
+		options.memberLevel = JavadocMemberLevel.PROTECTED
+		options.author = true
+		options.header = rootProject.description
+		options.linkSource = true
+		options.overview = "src/api/overview.html"
+		options.stylesheetFile = file("src/api/stylesheet.css")
+		options.splitIndex = true
+		options.links(project.ext.javadocLinks)
+		if (JavaVersion.current().isJava8Compatible()) {
+			options.addStringOption('Xdoclint:none', '-quiet')
+		} else {
+			options.addStringOption('-quiet')
+		}
+
+		source distProjects.collect { project ->
+			project.sourceSets.main.allJava
+		}
+
+		maxMemory = "1024m"
+		destinationDir = new File(buildDir, "api")
+
+		doFirst {
+			classpath += files(distProjects.collect { it.sourceSets.main.compileClasspath })
+		}
+	}
+
+	task docsZip(type: Zip) {
+		group = "Distribution"
+		appendix = profile()
+		classifier = "docs"
+		description = "Builds -${classifier} archive containing api and reference " +
+				"for deployment at http://static.springframework.org/spring-framework/docs."
+
+		from("src/dist") {
+			include "changelog.txt"
+		}
+
+		from (api) {
+			into "javadoc-api"
+		}
+	}
+
+	task distZip(type: Zip, dependsOn: [docsZip]) {
+		group = "Distribution"
+		appendix = profile()
+		classifier = "dist"
+		description = "Builds -${classifier} archive, containing all jars and docs, " +
+				"suitable for community download page."
+
+		ext.baseDir = "${baseName}-${project.version}";
+
+		from("src/dist") {
+			include "readme.txt"
+			include "license.txt"
+			include "notice.txt"
+			into "${baseDir}"
+			expand(copyright: new Date().format("yyyy"), version: project.version)
+		}
+
+		from(zipTree(docsZip.archivePath)) {
+			into "${baseDir}/docs"
+		}
+
+		distProjects.each { subproject ->
+			into ("${baseDir}/libs") {
+				from subproject.jar
+				if (subproject.tasks.findByPath("sourcesJar")) {
+					from subproject.sourcesJar
+				}
+				if (subproject.tasks.findByPath("javadocJar")) {
+					from subproject.javadocJar
+				}
+			}
+		}
+	}
+
+	// Create an distribution that contains all dependencies (required and optional).
+	// Not published by default; only for use when building from source.
+	task depsZip(type: Zip, dependsOn: distZip) { zipTask ->
+		group = "Distribution"
+		appendix = profile()
+		classifier = "dist-with-deps"
+		description = "Builds -${classifier} archive, containing everything " +
+				"in the -${distZip.classifier} archive plus all runtime dependencies."
+
+		from zipTree(distZip.archivePath)
+
+		gradle.taskGraph.whenReady { taskGraph ->
+			if (taskGraph.hasTask(":${zipTask.name}")) {
+				def projectNames = distProjects*.name
+				def artifacts = new HashSet()
+				distProjects.each { subproject ->
+					subproject.configurations.runtime.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+						def dependency = artifact.moduleVersion.id
+						if (!projectNames.contains(dependency.name)) {
+							artifacts << artifact.file
+						}
+					}
+				}
+
+				zipTask.from(artifacts) {
+					into "${distZip.baseDir}/deps"
+				}
+			}
+		}
+	}
+
+	artifacts {
+		archives dist
+		archives docsZip
+		archives distZip
+	}
+}

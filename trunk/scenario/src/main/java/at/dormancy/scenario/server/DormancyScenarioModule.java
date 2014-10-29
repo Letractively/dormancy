@@ -6,6 +6,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -74,7 +75,8 @@ public class DormancyScenarioModule extends AbstractModule {
 
 		// Configure transaction management
 		// Like the SessionFactory, the transaction management is done by using Spring.
-		PlatformTransactionManager transactionManager = new HibernateTransactionManager(sessionFactoryBean.getObject());
+		PlatformTransactionManager transactionManager =
+				new HibernateTransactionManager(sessionFactoryBean.getObject());
 		bind(PlatformTransactionManager.class).toInstance(transactionManager);
 
 		TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
@@ -90,7 +92,9 @@ public class DormancyScenarioModule extends AbstractModule {
 		 */
 		Iterable<Class<?>> classes = ImmutableList.of();
 		try {
-			classes = transform(ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive("at.dormancy.scenario"), new Function<ClassPath.ClassInfo, Class<?>>() {
+			ImmutableSet<ClassPath.ClassInfo> classInfos = ClassPath.from(getClass().getClassLoader())
+					.getTopLevelClassesRecursive("at.dormancy.scenario");
+			classes = transform(classInfos, new Function<ClassPath.ClassInfo, Class<?>>() {
 				@Nonnull
 				@Override
 				public Class<?> apply(ClassPath.ClassInfo input) {

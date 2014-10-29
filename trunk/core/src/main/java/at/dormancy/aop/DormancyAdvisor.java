@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,11 @@
 package at.dormancy.aop;
 
 import at.dormancy.Dormancy;
-import at.dormancy.persister.EntityPersister;
+import at.dormancy.handler.ObjectHandler;
+import at.dormancy.util.DormancyContext;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,11 +31,8 @@ import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.aop.support.annotation.AnnotationMethodMatcher;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,30 +42,20 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
+import static com.google.common.base.Throwables.propagate;
+import static com.google.common.base.Throwables.propagateIfPossible;
+
 /**
- * Intercepts calls and performs cloning and merging of Hibernate entities.
- * <p/>
- * At first, an {@link EntityPersister} is resolved in the following sequence:
- * <ol>
- * <li>Use the metadata of the {@link PersistenceEndpoint} annotation on the method to invoke</li>
- * <li>Use the metadata of the {@link PersistenceEndpoint} annotation on the object instance</li>
- * </ol>
- * If any {@link PersistenceEndpoint} annotation is present, get an {@link EntityPersister} from the {@link BeanFactory}
- * with the given {@code name}. Otherwise, get an {@link EntityPersister} of the specified {@code type} from
- * {@link Dormancy}. If no appropriate {@link EntityPersister} is registered, {@link Dormancy} will be used.
+ * Intercepts calls and performs cloning and merging of JPA entities.
  *
  * @author Gregor Schauer
  * @see Dormancy
- * @see EntityPersister
- * @see PersistenceEndpoint
+ * @see ObjectHandler
  */
 @Aspect
 @Order(Ordered.LOWEST_PRECEDENCE) // make sure this is invoked after other aspects e.g., transaction or validation
-public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodInterceptor, BeanFactoryAware {
+public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodInterceptor {
 	protected static final Logger logger = Logger.getLogger(DormancyAdvisor.class);
-	protected Class<? extends Annotation> annotationType = PersistenceEndpoint.class;
-	protected Pointcut pointcut;
-	protected Integer order;
 
 	public enum Mode {
 		/**
@@ -85,9 +72,11 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		BOTH
 	}
 
+	protected Class<? extends Annotation> annotationType = PersistenceEndpoint.class;
 	protected Dormancy dormancy;
 	protected Mode mode = Mode.RESULT;
-	protected BeanFactory beanFactory;
+	protected Pointcut pointcut;
+	protected Integer order;
 
 	@Inject
 	public DormancyAdvisor(@Nonnull Dormancy dormancy) {
@@ -96,53 +85,18 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 
 	@Nullable
 	@SuppressWarnings("unchecked")
-	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target, @Nonnull Callable<?> callable) throws Throwable {
-		// If the method to invoke takes no parameters and does not return anything, directly invoke it
-		if (args.length == 0 && method.getReturnType() == void.class) {
-			return callable.call();
-		}
-
-		EntityPersister entityPersister = dormancy;
-
-		// Retrieve the persistence endpoint annotation from the method (if present)
-		Annotation annotation = method.getAnnotation(annotationType);
-		if (annotation == null) {
-			// Retrieve the annotation from the object instance (if present)
-			annotation = target.getClass().getAnnotation(annotationType);
-		}
-
-		// If a persistence endpoint annotation was found
-		if (annotation != null && annotation.annotationType() == PersistenceEndpoint.class) {
-			PersistenceEndpoint persistenceEndpoint = PersistenceEndpoint.class.cast(annotation);
-			String name = persistenceEndpoint.name();
-			if (!StringUtils.isEmpty(name)) {
-				// If the name attribute is set, retrieve an EntityPersister from the BeanFactory
-				Assert.notNull(beanFactory, "BeanFactory must not be null");
-				entityPersister = beanFactory.getBean(name, EntityPersister.class);
-			} else if (persistenceEndpoint.types().length > 0) {
-				// If types are set, look for an registered EntityPersister
-				Class<? extends EntityPersister>[] types = persistenceEndpoint.types();
-				for (Class<? extends EntityPersister> clazz : types) {
-					entityPersister = dormancy.getEntityPersister(clazz);
-					if (entityPersister != null) {
-						break;
-					}
-				}
-				if (entityPersister == null) {
-					throw new IllegalArgumentException("No EntityPersister registered for any of the types: " + Arrays.toString(types));
-				}
-			}
-		}
-
+	private Object process(@Nonnull Object[] args, @Nonnull Method method, @Nonnull Object target,
+						   @Nonnull Callable<?> callable) throws Throwable {
 		// Process method parameters (if enabled)
-		if (mode == Mode.PARAMETERS || mode == Mode.BOTH) {
+		ObjectHandler<Object> handler = dormancy.asObjectHandler();
+		if (args.length > 0 && (mode == Mode.PARAMETERS || mode == Mode.BOTH)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("Using %s for method invocation %s.%s(%s)",
-						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
+						handler.getClass().getSimpleName(), target.getClass().getName(),
 						method.getName(), Arrays.toString(args)));
 			}
 			for (int i = 0; i < args.length; i++) {
-				args[i] = entityPersister.merge(args[i]);
+				args[i] = dormancy.asObjectHandler().apply(args[i], new DormancyContext());
 			}
 		}
 
@@ -150,13 +104,13 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 		Object result = callable.call();
 
 		// Process the result (if enabled)
-		if (mode == Mode.RESULT || mode == Mode.BOTH) {
+		if (method.getReturnType() != void.class && result != null && (mode == Mode.RESULT || mode == Mode.BOTH)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("Using %s for method result %s.%s(%s) => %s",
-						entityPersister.getClass().getSimpleName(), target.getClass().getName(),
+						handler.getClass().getSimpleName(), target.getClass().getName(),
 						method.getName(), Arrays.toString(args), result));
 			}
-			result = result != null ? entityPersister.clone(result) : result;
+			result = handler.disconnect(result, new DormancyContext());
 		}
 		return result;
 	}
@@ -169,10 +123,9 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 			public Object call() throws Exception {
 				try {
 					return joinPoint.proceed();
-				} catch (Exception e) {
-					throw e;
 				} catch (Throwable throwable) {
-					throw new RuntimeException(throwable);
+					propagateIfPossible(throwable, Exception.class);
+					throw propagate(throwable);
 				}
 			}
 		});
@@ -181,18 +134,18 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	@Nullable
 	@Override
 	public Object invoke(@Nonnull final MethodInvocation invocation) throws Throwable {
-		return process(invocation.getArguments(), invocation.getMethod(), invocation.getThis(), new Callable<Object>() {
-			@Override
-			public Object call() throws Exception {
-				try {
-					return invocation.proceed();
-				} catch (Exception e) {
-					throw e;
-				} catch (Throwable throwable) {
-					throw new RuntimeException(throwable);
-				}
-			}
-		});
+		return process(invocation.getArguments(), invocation.getMethod(), invocation.getThis(),
+				new Callable<Object>() {
+					@Override
+					public Object call() throws Exception {
+						try {
+							return invocation.proceed();
+						} catch (Throwable throwable) {
+							propagateIfPossible(throwable, Exception.class);
+							throw propagate(throwable);
+						}
+					}
+				});
 	}
 
 	@Nonnull
@@ -205,7 +158,7 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 				public MethodMatcher getMethodMatcher() {
 					return new AnnotationMethodMatcher(annotationType) {
 						@Override
-						public boolean matches(Method method, Class targetClass) {
+						public boolean matches(@Nonnull Method method, @Nonnull Class targetClass) {
 							return super.matches(method, targetClass)
 									|| AopUtils.getTargetClass(targetClass).isAnnotationPresent(annotationType);
 						}
@@ -237,11 +190,6 @@ public class DormancyAdvisor extends AbstractPointcutAdvisor implements MethodIn
 	@Override
 	public void setOrder(int order) {
 		this.order = order;
-	}
-
-	@Override
-	public void setBeanFactory(@Nonnull BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
 	}
 
 	/**

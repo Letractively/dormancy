@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,17 @@
 package at.dormancy.test;
 
 import at.dormancy.AbstractDormancyTest;
+import at.dormancy.aop.DormancyAdvisor;
 import at.dormancy.entity.Application;
 import at.dormancy.entity.Book;
-import at.dormancy.aop.DormancyAdvisor;
-import org.hibernate.StaleObjectStateException;
+import at.dormancy.util.ClassLookup;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
-import javax.persistence.OptimisticLockException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -37,6 +37,10 @@ import static org.junit.Assert.fail;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class VersioningDormancyTest extends AbstractDormancyTest {
+	List<Class<?>> exceptions = ClassLookup.find(
+			"org.hibernate.StaleObjectStateException",
+			"javax.persistence.OptimisticLockException").list();
+
 	@Inject
 	DormancyAdvisor dormancyAdvisor;
 
@@ -62,12 +66,9 @@ public class VersioningDormancyTest extends AbstractDormancyTest {
 		try {
 			app.setName(UUID.randomUUID().toString());
 			service.save(app);
-			fail(String.format("%s or %s expected", StaleObjectStateException.class.getSimpleName(),
-					OptimisticLockException.class.getSimpleName()));
-		} catch (StaleObjectStateException e) {
-			// expected with Hibernate
-		} catch (OptimisticLockException e) {
-			// expected with JPA
+			fail(getMessage(exceptions));
+		} catch (Exception e) {
+			assertEquals(getMessage(exceptions), true, exceptions.contains(e.getClass()));
 		}
 	}
 
@@ -77,12 +78,9 @@ public class VersioningDormancyTest extends AbstractDormancyTest {
 		ReflectionTestUtils.setField(app, "lastUpdate", app.getLastUpdate() + 1);
 		try {
 			service.save(app);
-			fail(String.format("%s or %s expected", StaleObjectStateException.class.getSimpleName(),
-					OptimisticLockException.class.getSimpleName()));
-		} catch (StaleObjectStateException e) {
-			// expected with Hibernate
-		} catch (OptimisticLockException e) {
-			// expected with JPA
+			fail(getMessage(exceptions));
+		} catch (Exception e) {
+			assertEquals(getMessage(exceptions), true, exceptions.contains(e.getClass()));
 		}
 	}
 

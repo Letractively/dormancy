@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
- * Clones Hibernate entities and merges them into a {@link Session}.
+ * Disconnects Hibernate entities and applies changes to their persistence counterparts.
  * <p/>
  * This class is a convenient subclass for using {@link Dormancy} along with Hibernate.<br/>
  * Its main purpose is to avoid the specification of the generic types explicitly. Thus the appropriate types for
@@ -45,7 +45,8 @@ public class HibernateDormancy extends Dormancy<SessionFactory, Session, ClassMe
 		this(new HibernatePersistenceUnitProvider(sessionFactory));
 	}
 
-	public HibernateDormancy(@Nonnull PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider) {
+	public HibernateDormancy(@Nonnull PersistenceUnitProvider<SessionFactory, Session, ClassMetadata>
+									 persistenceUnitProvider) {
 		super(persistenceUnitProvider);
 	}
 }

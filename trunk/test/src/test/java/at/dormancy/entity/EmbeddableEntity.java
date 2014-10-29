@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  */
 package at.dormancy.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
@@ -24,7 +25,9 @@ import java.io.Serializable;
 @Embeddable
 public class EmbeddableEntity implements Serializable {
 	static transient long counter;
+	@Column(name = "identifier")
 	private Long id = ++counter;
+	@Column(name = "name")
 	private Long timestamp = System.currentTimeMillis();
 
 	public Long getId() {
@@ -44,16 +47,6 @@ public class EmbeddableEntity implements Serializable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("EmbeddableEntity");
-		sb.append("{id=").append(id);
-		sb.append(", timestamp=").append(timestamp);
-		sb.append('}');
-		return sb.toString();
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -63,15 +56,7 @@ public class EmbeddableEntity implements Serializable {
 		}
 
 		EmbeddableEntity that = (EmbeddableEntity) o;
-
-		if (!id.equals(that.id)) {
-			return false;
-		}
-		if (!timestamp.equals(that.timestamp)) {
-			return false;
-		}
-
-		return true;
+		return id.equals(that.id) && timestamp.equals(that.timestamp);
 	}
 
 	@Override
