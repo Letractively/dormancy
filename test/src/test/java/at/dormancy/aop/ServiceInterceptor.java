@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,12 @@ package at.dormancy.aop;
 import at.dormancy.Dormancy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang.SerializationUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+
+import static org.apache.commons.lang.SerializationUtils.deserialize;
+import static org.apache.commons.lang.SerializationUtils.serialize;
 
 /**
  * @author Gregor Schauer
@@ -33,12 +35,6 @@ public class ServiceInterceptor implements MethodInterceptor {
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		Object result = invocation.proceed();
-
-		if (result != null) {
-			byte[] bytes = SerializationUtils.serialize((Serializable) result);
-			result = SerializationUtils.deserialize(bytes);
-		}
-
-		return result;
+		return result == null ? null : deserialize(serialize((Serializable) result));
 	}
 }

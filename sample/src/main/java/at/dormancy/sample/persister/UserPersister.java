@@ -45,7 +45,7 @@ public class UserPersister extends AbstractEntityPersister<User> {
 		// Create a new user object
 		User trObj = new User();
 		// Copy all properties except the transient one
-		BeanUtils.copyProperties(dbObj, trObj, new String[] {"password"});
+		BeanUtils.copyProperties(dbObj, trObj, new String[]{"password"});
 		return trObj;
 	}
 
@@ -67,7 +67,7 @@ public class UserPersister extends AbstractEntityPersister<User> {
 		// Copy all properties from the transient entity to the persistent entity except username and password
 		// username is the primary key and might not be changed anyway
 		// The client must not modify the password this way i.e., prohibiting identity theft
-		BeanUtils.copyProperties(trObj, dbObj, new String[] {"username", "password"});
+		BeanUtils.copyProperties(trObj, dbObj, new String[]{"username", "password"});
 		return dbObj;
 	}
 }

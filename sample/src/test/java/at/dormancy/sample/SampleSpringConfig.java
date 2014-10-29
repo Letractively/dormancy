@@ -23,7 +23,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
@@ -47,7 +46,7 @@ public class SampleSpringConfig {
 	public Dormancy<SessionFactory, Session, ClassMetadata> dormancy() {
 		return new Dormancy<SessionFactory, Session, ClassMetadata>(persistenceUnitProvider());
 	}
-	
+
 	@Bean
 	public PersistenceUnitProvider<SessionFactory, Session, ClassMetadata> persistenceUnitProvider() {
 		return new HibernatePersistenceUnitProvider(sessionFactory().getObject());
@@ -57,7 +56,7 @@ public class SampleSpringConfig {
 	public AnnotationSessionFactoryBean sessionFactory() {
 		AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan(new String[] {this.getClass().getPackage().getName()});
+		sessionFactory.setPackagesToScan(new String[]{this.getClass().getPackage().getName()});
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}

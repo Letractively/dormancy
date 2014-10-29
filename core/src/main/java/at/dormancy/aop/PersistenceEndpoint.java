@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,9 @@
  */
 package at.dormancy.aop;
 
-import at.dormancy.persister.EntityPersister;
+import at.dormancy.handler.ObjectHandler;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.*;
 
 /**
@@ -31,16 +32,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface PersistenceEndpoint {
 	/**
-	 * The name of the {@link EntityPersister} to use.
+	 * The type of the {@link ObjectHandler} to use.
 	 *
-	 * @return the entity persister name
+	 * @return the entity handler type
 	 */
-	String name() default "";
-
-	/**
-	 * The type of the {@link EntityPersister} to use.
-	 *
-	 * @return the entity persister type
-	 */
-	Class<? extends EntityPersister>[] types() default {};
+	@Nonnull Class<? extends ObjectHandler<?>>[] types() default {};
 }

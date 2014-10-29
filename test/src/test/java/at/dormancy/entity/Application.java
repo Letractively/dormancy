@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package at.dormancy.entity;
-
-import org.hibernate.annotations.AccessType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,8 +51,8 @@ public class Application implements Serializable {
 		this.id = id;
 	}
 
-	@Access(javax.persistence.AccessType.FIELD)
-	@AccessType("field")
+	@javax.persistence.Access(javax.persistence.AccessType.FIELD)
+	@org.hibernate.annotations.AccessType("field")
 	@Version
 	public Long getLastUpdate() {
 		return lastUpdate;
@@ -97,19 +95,5 @@ public class Application implements Serializable {
 
 	public void setAuthKey(String authKey) {
 		this.authKey = authKey;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Application");
-		sb.append("{id=").append(id);
-		sb.append(", lastUpdate=").append(lastUpdate);
-		sb.append(", name='").append(name).append('\'');
-		sb.append(", responsibleUser=").append(responsibleUser);
-		sb.append(", employees=").append(employees);
-		sb.append(", authKey='").append(authKey).append('\'');
-		sb.append('}');
-		return sb.toString();
 	}
 }

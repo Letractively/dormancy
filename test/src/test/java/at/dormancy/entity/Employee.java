@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,18 +111,6 @@ public class Employee implements Serializable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Employee");
-		sb.append("{id=").append(id);
-		sb.append(", version=").append(version);
-		sb.append(", name='").append(name).append('\'');
-		sb.append(", boss=").append(boss);
-		sb.append('}');
-		return sb.toString();
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -132,16 +120,11 @@ public class Employee implements Serializable {
 		}
 
 		Employee employee = (Employee) obj;
-
-		if (id != null ? !id.equals(employee.id) : employee.id != null) {
-			return false;
-		}
-
-		return true;
+		return getId() == null ? employee.getId() == null : getId().equals(employee.getId());
 	}
 
 	@Override
 	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		return getId() != null ? getId().hashCode() : 0;
 	}
 }

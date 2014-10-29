@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="dormancy">
+		<class>at.dormancy.entity.Account</class>
+		<class>at.dormancy.entity.Application</class>
+		<class>at.dormancy.entity.Book</class>
+		<class>at.dormancy.entity.Clock</class>
+		<class>at.dormancy.entity.CollectionEntity</class>
+		<class>at.dormancy.entity.CompositeEntity</class>
+		<class>at.dormancy.entity.Credentials</class>
+		<class>at.dormancy.entity.DataTypes</class>
+		<class>at.dormancy.entity.EmbeddableEntity</class>
+		<class>at.dormancy.entity.EmbeddedIdEntity</class>
+		<class>at.dormancy.entity.Employee</class>
+		<class>at.dormancy.entity.IdClassEntity</class>
+		<class>at.dormancy.entity.InvalidEntity</class>
+		<class>at.dormancy.entity.MappedSuperclassEntity</class>
+		<class>at.dormancy.entity.MappedSuperclassParent</class>
+		<class>at.dormancy.entity.MultipleIdEntity</class>
+		<class>at.dormancy.entity.ReadOnlyEntity</class>
+		<class>at.dormancy.entity.UnsupportedReadEntity</class>
+		<class>at.dormancy.entity.UnsupportedWriteEntity</class>
+		<class>at.dormancy.entity.WriteOnlyEntity</class>
+	</persistence-unit>
+</persistence>

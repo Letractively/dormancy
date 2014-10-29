@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,6 @@ import at.dormancy.AbstractDormancyTest;
 import at.dormancy.Dormancy;
 import at.dormancy.aop.DormancyAdvisor;
 import at.dormancy.entity.Employee;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -29,6 +28,7 @@ import org.junit.Test;
 
 import java.lang.annotation.*;
 
+import static org.apache.commons.lang.ArrayUtils.EMPTY_CLASS_ARRAY;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -51,7 +51,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 	}
 
 	@Perform(name = "PersistenceContext.get(Object, Serializable)", n = 100)
-	@Test(timeout = 500)
+	@Test(timeout = 1000)
 	public void testGet() {
 		Perform perform = getAnnotation();
 		assertNotNull(perform);
@@ -59,30 +59,30 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
 			genericService.get(Employee.class, refB.getId());
-			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+			persistenceContextHolder.clear();
 		}
 
 		log(perform, start);
 	}
 
-	@Perform(name = "Dormancy.clone(Object)", n = 100)
-	@Test(timeout = 300)
-	public void testClone() {
+	@Perform(name = "Dormancy.disconnect(Object)", n = 100)
+	@Test(timeout = 1000)
+	public void testDisconnect() {
 		Perform perform = getAnnotation();
 		Employee b = genericService.get(Employee.class, refB.getId());
 		assertNotNull(b);
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
-			Employee clone = dormancy.clone(b);
+			dormancy.disconnect(b);
 		}
 
 		log(perform, start);
 	}
 
-	@Perform(name = "Dormancy.merge(Object)", n = 100)
-	@Test(timeout = 400)
-	public void testMerge() {
+	@Perform(name = "Dormancy.apply(Object)", n = 100)
+	@Test(timeout = 5000)
+	public void testApply() {
 		Perform perform = getAnnotation();
 		Employee b = service.get(Employee.class, refB.getId());
 		assertNotNull(b);
@@ -90,14 +90,14 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
-			Employee merge = dormancy.merge(b);
-			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+			Employee merged = dormancy.apply(b);
+			persistenceContextHolder.clear();
 		}
 
 		log(perform, start);
 	}
 
-	@Perform(name = "Dormancy.merge(Object, Object)", n = 100)
+	@Perform(name = "Dormancy.apply(Object, Object)", n = 100)
 	@Test(timeout = 1000)
 	public void testMergeTogether() {
 		Perform perform = getAnnotation();
@@ -107,8 +107,8 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < perform.n(); i++) {
-			Employee merge = dormancy.merge(bt, bp);
-			persistenceUnitProvider.getPersistenceContextProvider().getPersistenceContext().clear();
+			Employee merged = dormancy.apply(bt, bp);
+			persistenceContextHolder.clear();
 		}
 
 		log(perform, start);
@@ -116,7 +116,8 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 	private void log(Perform perform, long start) {
 		if (logger.isInfoEnabled()) {
-			logger.info(String.format("Executed %d times %s in %d ms", perform.n(), perform.name(), System.currentTimeMillis() - start));
+			logger.info(String.format("Executed %d times %s in %d ms",
+					perform.n(), perform.name(), System.currentTimeMillis() - start));
 		}
 	}
 
@@ -132,7 +133,7 @@ public class PerformanceDormancyTest extends AbstractDormancyTest {
 
 	protected Perform getAnnotation() {
 		String methodName = getMethodName();
-		return MethodUtils.getAccessibleMethod(getClass(), methodName, ArrayUtils.EMPTY_CLASS_ARRAY).getAnnotation(Perform.class);
+		return MethodUtils.getAccessibleMethod(getClass(), methodName, EMPTY_CLASS_ARRAY).getAnnotation(Perform.class);
 	}
 
 	protected static String getMethodName() {

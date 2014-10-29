@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Gregor Schauer
+ * Copyright 2014 Gregor Schauer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.base.Throwables.propagate;
 
 /**
  * Performs class lookups using the default {@link ClassLoader}.
@@ -46,13 +48,14 @@ public final class ClassLookup {
 	 * Any other serious exception such as {@link ExceptionInInitializerError} or {@link LinkageError} is forwarded to
 	 * the caller immediately.
 	 *
+	 * @param <T>  the type of the class
 	 * @param name the full-qualified name of the desired class.
 	 * @return the {@code Class} object for the class with the specified name or {@code null}.
 	 * @see Class#forName(String)
 	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T> Class<T> forName(@Nonnull String name) {
+	public static <T> Class<T> forName(@Nullable String name) {
 		try {
 			return (Class<T>) Class.forName(StringUtils.defaultIfEmpty(name, ""));
 		} catch (ClassNotFoundException e) {
@@ -82,8 +85,10 @@ public final class ClassLookup {
 	 * @return this instance
 	 */
 	@Nonnull
-	public ClassLookup or(@Nonnull String name) {
-		this.names.add(name);
+	public ClassLookup or(@Nullable String name) {
+		if (name != null) {
+			this.names.add(name);
+		}
 		return this;
 	}
 
@@ -114,7 +119,8 @@ public final class ClassLookup {
 	/**
 	 * Throws a {@link ClassNotFoundException} in case of none of the lookups was successful.
 	 *
-	 * @param msg the detail message
+	 * @param msg  the detail message
+	 * @param args the arguments referenced by the format specifiers in the message
 	 * @return this instance
 	 * @see #orThrow(Exception)
 	 */
@@ -132,6 +138,7 @@ public final class ClassLookup {
 	 * If the exception is checked i.e., it is neither of type {@link RuntimeException} nor {@link Error}, it gets
 	 * wrapped in a {@link RuntimeException}.
 	 *
+	 * @param <T> the type of the class
 	 * @return the class found or {@code null} if the lookup failed and no default was provided
 	 */
 	@Nullable
@@ -144,8 +151,7 @@ public final class ClassLookup {
 			}
 		}
 		if (exception != null) {
-			throw (exception instanceof RuntimeException)
-					? RuntimeException.class.cast(exception) : new RuntimeException(exception);
+			throw propagate(exception);
 		}
 		return (Class<T>) defaultClass;
 	}
@@ -159,6 +165,7 @@ public final class ClassLookup {
 	 * If the exception is checked i.e., it is neither of type {@link RuntimeException} nor {@link Error}, it gets
 	 * wrapped in a {@link RuntimeException}.
 	 *
+	 * @param <T> the common super type of the classes
 	 * @return the class found or {@code null} if the lookup failed and no default was provided
 	 */
 	@Nonnull
@@ -172,8 +179,7 @@ public final class ClassLookup {
 			}
 		}
 		if (exception != null) {
-			throw (exception instanceof RuntimeException)
-					? RuntimeException.class.cast(exception) : new RuntimeException(exception);
+			throw propagate(exception);
 		}
 		return list;
 	}

@@ -29,7 +29,9 @@ import java.util.List;
 @RemoteServiceRelativePath("DormancyScenarioService")
 public interface DormancyScenarioService extends RemoteService {
 	class App {
-		private static final DormancyScenarioServiceAsync instance = (DormancyScenarioServiceAsync) GWT.create(DormancyScenarioService.class);
+		private static final DormancyScenarioServiceAsync instance =
+				(DormancyScenarioServiceAsync) GWT.create(DormancyScenarioService.class);
+
 		public static DormancyScenarioServiceAsync getInstance() {
 			return instance;
 		}
