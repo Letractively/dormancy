@@ -20,7 +20,6 @@ import at.dormancy.entity.CollectionEntity;
 import at.dormancy.util.DormancyContext;
 import org.junit.Test;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 import static at.dormancy.AbstractDormancyTest.isManaged;
@@ -32,9 +31,7 @@ import static org.junit.Assert.assertNotSame;
  */
 public class MapHandlerTest extends AbstractObjectHandlerTest<MapHandler> {
 	@Override
-	@PostConstruct
-	public void postConstruct() {
-		super.postConstruct();
+	protected void createHandler() {
 		handler = new MapHandler(dormancy);
 	}
 

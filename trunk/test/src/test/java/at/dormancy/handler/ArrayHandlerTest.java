@@ -21,8 +21,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.PostConstruct;
-
 import static at.dormancy.AbstractDormancyTest.isManaged;
 import static org.junit.Assert.*;
 
@@ -32,9 +30,7 @@ import static org.junit.Assert.*;
  */
 public class ArrayHandlerTest extends AbstractObjectHandlerTest<ArrayHandler<Object>> {
 	@Override
-	@PostConstruct
-	public void postConstruct() {
-		super.postConstruct();
+	protected void createHandler() {
 		handler = new ArrayHandler<Object>(dormancy);
 	}
 

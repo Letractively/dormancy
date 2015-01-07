@@ -19,7 +19,6 @@ import at.dormancy.entity.Employee;
 import at.dormancy.util.DormancyContext;
 import org.junit.Test;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,9 +31,7 @@ import static org.junit.Assert.*;
  */
 public class SetHandlerTest extends AbstractObjectHandlerTest<CollectionHandler<Set>> {
 	@Override
-	@PostConstruct
-	public void postConstruct() {
-		super.postConstruct();
+	protected void createHandler() {
 		handler = new CollectionHandler<Set>(dormancy);
 	}
 

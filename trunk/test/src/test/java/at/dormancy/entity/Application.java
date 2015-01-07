@@ -52,6 +52,7 @@ public class Application implements Serializable {
 	}
 
 	@javax.persistence.Access(javax.persistence.AccessType.FIELD)
+	@SuppressWarnings("deprecation")
 	@org.hibernate.annotations.AccessType("field")
 	@Version
 	public Long getLastUpdate() {

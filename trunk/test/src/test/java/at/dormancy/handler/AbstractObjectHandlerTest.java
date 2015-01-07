@@ -66,8 +66,8 @@ public abstract class AbstractObjectHandlerTest<T extends ObjectHandler> {
 	protected final Employee refWorker = new Employee("Worker", refBoss);
 
 	@PostConstruct
-	public void postConstruct() {
-		Object session = persistenceContextHolder.open();
+	public final void postConstruct() {
+		persistenceContextHolder.open();
 
 		refCollectionEntity.setIntegers(Arrays.asList(1, 2, 3));
 		refCollectionEntity.setBooks(new ArrayList<Book>(Collections.singletonList(refBook)));
@@ -86,7 +86,11 @@ public abstract class AbstractObjectHandlerTest<T extends ObjectHandler> {
 
 		persistenceContextHolder.flush();
 		persistenceContextHolder.close();
+
+		createHandler();
 	}
+
+	protected abstract void createHandler();
 
 	@Test
 	@SuppressWarnings("unchecked")

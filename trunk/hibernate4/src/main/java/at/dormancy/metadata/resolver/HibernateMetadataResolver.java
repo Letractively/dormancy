@@ -18,6 +18,7 @@ package at.dormancy.metadata.resolver;
 import at.dormancy.access.AccessType;
 import at.dormancy.persistence.PersistenceUnitProvider;
 import at.dormancy.util.AbstractDormancyUtils;
+import at.dormancy.util.ClassLookup;
 import com.google.common.collect.ImmutableSet;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.ComponentType;
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Set;
 
 import static org.springframework.util.ReflectionUtils.findField;
@@ -45,7 +47,11 @@ public class HibernateMetadataResolver extends AnnotationMetadataResolver<ClassM
 			? extends PersistenceUnitProvider<?, ?, ClassMetadata>> utils) {
 		super(utils);
 
-		accessAnnotations = new Class[]{org.hibernate.annotations.AccessType.class, javax.persistence.Access.class};
+		List<Class<?>> accessAnnotationTypes = ClassLookup.find(
+				"org.hibernate.annotations.AttributeAccessor",
+				"org.hibernate.annotations.AccessType").list();
+		accessAnnotationTypes.add(javax.persistence.Access.class);
+		accessAnnotations = accessAnnotationTypes.toArray(new Class[accessAnnotationTypes.size()]);
 		idAnnotations = new Class[]{javax.persistence.Id.class, javax.persistence.EmbeddedId.class};
 	}
 
