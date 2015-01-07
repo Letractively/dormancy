@@ -28,7 +28,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Common utility methods for Dormancy support code.
@@ -273,7 +272,7 @@ public abstract class AbstractDormancyUtils<PU, PC, PMD, PUP extends Persistence
 	 * @return {@code true} if the given class is a proxy.
 	 */
 	public boolean isProxy(@Nonnull Class<?> clazz) {
-		return clazz.getSimpleName().contains("$$_javassist");
+		return clazz.getSimpleName().contains("$$_javassist") || clazz.getSimpleName().contains("$$_jvst");
 	}
 
 	/**

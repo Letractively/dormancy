@@ -45,10 +45,8 @@ public class DormancyConfigTest extends AbstractDormancyTest {
 		}
 	}
 
-	@Override
 	@PostConstruct
-	public void postConstruct() {
-		super.postConstruct();
+	public void postConstructConfig() {
 		try {
 			config = (DormancyConfiguration) BeanUtils.cloneBean(dormancy.getConfig());
 		} catch (Exception e) {

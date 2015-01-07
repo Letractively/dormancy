@@ -196,10 +196,10 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Service service(Dormancy<?, ?, ?> dormancy, GenericService genericService) throws Exception {
+	public Service service(DormancyAdvisor dormancyAdvisor, GenericService genericService) throws Exception {
 		ProxyFactoryBean factoryBean = new ProxyFactoryBean();
 		factoryBean.addAdvice(serviceInterceptor());
-		factoryBean.addAdvice(dormancyAdvisor(dormancy));
+		factoryBean.addAdvice(dormancyAdvisor);
 		factoryBean.setTarget(genericService);
 		return (Service) factoryBean.getObject();
 	}
@@ -210,7 +210,7 @@ public class DormancySpringConfig {
 	}
 
 	@Bean
-	public Advice dormancyAdvisor(Dormancy<?, ?, ?> dormancy) throws Exception {
+	public DormancyAdvisor dormancyAdvisor(Dormancy<?, ?, ?> dormancy) throws Exception {
 		DormancyAdvisor support = new DormancyAdvisor(dormancy);
 		support.setMode(DormancyAdvisor.Mode.BOTH);
 		return support;

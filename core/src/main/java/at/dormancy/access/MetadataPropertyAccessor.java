@@ -16,13 +16,16 @@
 package at.dormancy.access;
 
 import at.dormancy.metadata.ObjectMetadata;
+import at.dormancy.util.ClassLookup;
 import org.apache.log4j.Logger;
 import org.springframework.beans.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 
 import static at.dormancy.access.AccessType.FIELD;
 
@@ -41,10 +44,22 @@ import static at.dormancy.access.AccessType.FIELD;
  */
 public class MetadataPropertyAccessor extends AbstractPropertyAccessor {
 	private static final Logger logger = Logger.getLogger(MetadataPropertyAccessor.class);
+	protected static Field typeConverterDelegateField;
 	protected ObjectMetadata metadata;
 	protected ConfigurablePropertyAccessor fieldAccessor;
 	protected BeanWrapper propertyAccessor;
 	protected Object target;
+
+	static {
+		if (ClassLookup.forName("org.springframework.beans.TypeConverterSupport") != null) {
+			String typeConverterDelegateClassName = "org.springframework.beans.TypeConverterDelegate";
+			Class<Object> typeConverterDelegateClass = ClassLookup.find(typeConverterDelegateClassName)
+					.orThrow(typeConverterDelegateClassName).get();
+			typeConverterDelegateField = ReflectionUtils.findField(MetadataPropertyAccessor.class,
+					"typeConverterDelegate", typeConverterDelegateClass);
+			ReflectionUtils.makeAccessible(typeConverterDelegateField);
+		}
+	}
 
 	public MetadataPropertyAccessor(@Nonnull Object target, @Nonnull ObjectMetadata metadata) {
 		this.target = target;
@@ -124,6 +139,10 @@ public class MetadataPropertyAccessor extends AbstractPropertyAccessor {
 	public ConfigurablePropertyAccessor getFieldAccessor() {
 		if (fieldAccessor == null) {
 			fieldAccessor = PropertyAccessorFactory.forDirectFieldAccess(target);
+			if (typeConverterDelegateField != null) {
+				Object delegate = ReflectionUtils.getField(typeConverterDelegateField, fieldAccessor);
+				ReflectionUtils.setField(typeConverterDelegateField, this, delegate);
+			}
 		}
 		return fieldAccessor;
 	}
@@ -138,6 +157,10 @@ public class MetadataPropertyAccessor extends AbstractPropertyAccessor {
 	public BeanWrapper getPropertyAccessor() {
 		if (propertyAccessor == null) {
 			propertyAccessor = PropertyAccessorFactory.forBeanPropertyAccess(target);
+			if (typeConverterDelegateField != null) {
+				Object delegate = ReflectionUtils.getField(typeConverterDelegateField, propertyAccessor);
+				ReflectionUtils.setField(typeConverterDelegateField, this, delegate);
+			}
 		}
 		return propertyAccessor;
 	}

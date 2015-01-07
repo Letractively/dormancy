@@ -47,6 +47,7 @@ public class Credentials implements Serializable {
 	}
 
 	@javax.persistence.Access(AccessType.FIELD)
+	@SuppressWarnings("deprecation")
 	@org.hibernate.annotations.AccessType("field")
 	@Transient
 	public String getPassword() {

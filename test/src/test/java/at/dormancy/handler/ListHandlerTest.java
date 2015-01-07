@@ -22,7 +22,6 @@ import at.dormancy.util.DormancyContext;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,9 +33,7 @@ import static org.junit.Assert.*;
  */
 public class ListHandlerTest extends AbstractObjectHandlerTest<CollectionHandler<List>> {
 	@Override
-	@PostConstruct
-	public void postConstruct() {
-		super.postConstruct();
+	protected void createHandler() {
 		handler = new CollectionHandler<List>(dormancy);
 	}
 

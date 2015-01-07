@@ -93,7 +93,7 @@ public abstract class AbstractDormancyTest {
 	}
 
 	@PostConstruct
-	public void postConstruct() {
+	public final void postConstruct() {
 		persistenceContextHolder.open();
 
 		persistenceContextHolder.save(refBook);

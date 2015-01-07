@@ -46,6 +46,7 @@ import java.util.Map;
  * @param <PU>  the type of the persistence unit to use
  * @param <PC>  the type of the persistence context to use
  * @param <PMD> the type of the persistence metadata to use
+ * @author Gregor Schauer
  */
 public class Dormancy<PU, PC, PMD> implements ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(Dormancy.class);

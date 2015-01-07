@@ -79,8 +79,8 @@ project(':core') {
 		compile "org.aspectj:aspectjrt:$aspectJVersion"
 		compile "org.aspectj:aspectjweaver:$aspectJVersion"
 		compile 'org.javassist:javassist:3.16.1-GA'
-		compile "org.slf4j:slf4j-api:$slf4jVersion"
-		compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+		compile "org.springframework:spring-aop:$springVersion"
+		compile "org.springframework:spring-context:$springVersion"
 		compile "org.springframework:spring-orm:$springVersion"
 		compile "org.springframework:spring-test:$springVersion"
 		compile "org.springframework:spring-tx:$springVersion"
@@ -100,6 +100,8 @@ project(':hibernate3') {
 		compile project(':core')
 		compile "org.hibernate:hibernate-core:$hibernate3Version"
 		compile 'org.hibernate:hibernate-annotations:3.4.0.GA'
+		compile "org.slf4j:slf4j-api:$slf4jVersion"
+		compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
 	}
 }
 
@@ -233,7 +235,7 @@ configure(rootProject) {
 				it.tasks.getByName("jar")
 			}
 		}
-		options.memberLevel = JavadocMemberLevel.PROTECTED
+		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
 		options.author = true
 		options.header = rootProject.description
 		options.linkSource = true

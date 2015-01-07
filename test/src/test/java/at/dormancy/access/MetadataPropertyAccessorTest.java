@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  * @author Gregor Schauer
  * @since 2.0.0
  */
-public class MetadataResolverTest extends AbstractDormancyTest {
+public class MetadataPropertyAccessorTest extends AbstractDormancyTest {
 	@Test
 	public void test() {
 		Employee entity = new Employee();
@@ -55,6 +55,7 @@ public class MetadataResolverTest extends AbstractDormancyTest {
 
 		ObjectMetadata metadata = metadataResolver.getMetadata(entity.getClass());
 		MetadataPropertyAccessor propertyAccessor = new MetadataPropertyAccessor(entity, metadata);
+		propertyAccessor.getPropertyAccessor();
 
 		assertSame(entity, propertyAccessor.convertIfNecessary(entity, Object.class));
 		assertSame(entity, propertyAccessor.convertIfNecessary(entity, Employee.class));
